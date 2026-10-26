@@ -1,7 +1,6 @@
 import json
 import shutil
 
-from conftest import HashEmbedder
 from evals.runners.rag_eval import mrr, ndcg_at_k, rank_projects, recall_at_k
 from rag import retriever
 from rag.index.vector import build_index
@@ -29,13 +28,13 @@ def test_fixed_chunks_overlap_and_skill_tags():
     assert chunks[0].project == "p1" and set(chunks[0].skills) == {"dbt", "Snowflake"}
 
 
-def test_index_rebuild_embeds_only_changed_documents(tmp_path):
+def test_index_rebuild_embeds_only_changed_documents(tmp_path, offline_rag):
     persona = tmp_path / "fr_ml"
     shutil.copytree(retriever.PERSONAS_DIR / "fr_ml", persona)
     index_dir, manifest = tmp_path / "index", tmp_path / "index" / "manifest.json"
 
     def build():
-        return build_index(persona, index_dir, HashEmbedder(),
+        return build_index(persona, index_dir, offline_rag,
                            lambda d: fixed_chunks(d, 800, 100), "fixed-800-100")
 
     first = build()

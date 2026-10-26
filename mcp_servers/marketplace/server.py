@@ -36,7 +36,7 @@ from agent.marketplace_port import (
     Thread,
 )
 from agent.redact import redact
-from mcp_servers.auth import current_user, static_auth
+from mcp_servers.auth import bearer_auth, current_user
 from mcp_servers.marketplace.adapters.gigsim import GigSimAdapter
 
 READ = ToolAnnotations(read_only_hint=True, open_world_hint=True)
@@ -82,7 +82,7 @@ mcp = MCPServer(
     "gigbid-marketplace",
     instructions="Marketplace jobs, clients, Connects, proposals and messages. Writes need "
                  "explicit human approval upstream; use dry_run to preview.",
-    **static_auth("MARKETPLACE", URL),
+    **bearer_auth(URL),
 )
 
 _calls: dict[str, deque] = defaultdict(deque)

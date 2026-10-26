@@ -1,120 +1,20 @@
 """Bid graph end to end against in-process GigSim and both MCP servers. The LLM is a
 scripted fake, so these tests check orchestration, not model quality."""
 
+import asyncio
 import os
-import re
-from types import SimpleNamespace
 
 import httpx
 import pytest
-from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import Command
 
 from agent.config import load_config
 from agent.graphs import bid_graph
-from agent.graphs.checkpoint import serde
-from agent.handoffs import (
-    ClaimCheck,
-    ClaimReport,
-    ComplianceVerdict,
-    Critique,
-    FitReport,
-    JobSpec,
-    ProposalDraft,
-    RequirementMatch,
-    RiskReport,
-)
 from agent.mcp_client import Toolbox
 from agent.nodes import common
-from gigsim.app import create_app
 from mcp_servers.marketplace import server as marketplace
 from mcp_servers.marketplace.adapters.gigsim import GigSimAdapter
-from mcp_servers.portfolio import server as portfolio
 from rag import retriever
-
-FAKE_ID = "fr_ml-p99#0"  # not in the portfolio; the verifier must reject claims citing it
-FILLER = "I would start with a short call to confirm scope, data access and milestones. " * 6
-
-
-class FakeLLM:
-    """Stands in for common.ask; returns schema objects shaped like real model output."""
-
-    def __init__(self, critic_rejections=0, fit=0.9, compliance="pass"):
-        self.critic_rejections, self.fit, self.verdict = critic_rejections, fit, compliance
-        self.calls: list[str] = []
-
-    async def __call__(self, node, schema, user):
-        self.calls.append(node)
-        return getattr(self, node)(user)
-
-    def analyst(self, user):
-        return JobSpec(deliverables=["working system"], skills=["Python"],
-                       requirements=["Build the pipeline"], budget="stated", timeline="stated")
-
-    def risk(self, user):
-        return RiskReport(score=0.05, flags=[], injection_detected=False, summary="Looks fine.")
-
-    def matcher(self, user):
-        first = re.search(r"^\[([^\]]+)\]", user, re.MULTILINE).group(1)
-        return FitReport(score=self.fit, reasons=["covers the stack"], matches=[
-            RequirementMatch(requirement="Build the pipeline", strength="strong",
-                             evidence_ids=[first, "made-up#9"])])
-
-    def writer(self, user):
-        evidence_id = re.search(r"^\[([^\]]+)\]", user.split("Evidence:")[1], re.MULTILINE).group(1)
-        return ProposalDraft(cover_letter=(
-            f"Your team needs answers grounded in its own documents. I built a retrieval "
-            f"pipeline for a similar client [{evidence_id}]. I have 15 years of Rust "
-            f"experience [{FAKE_ID}]. {FILLER}"))
-
-    def verifier(self, user):
-        letter = user.split("Proposal:\n")[1]
-        sentences = re.split(r"(?<=[.!?])\s+", letter)
-        built = next(s for s in sentences if "retrieval pipeline" in s)
-        rust = next((s for s in sentences if "Rust" in s), None)
-        claims = [ClaimCheck(sentence=built, claim="built a retrieval pipeline",
-                             evidence_ids=[re.search(r"\[([^\]]+)\]", built).group(1)],
-                             label="supported")]
-        if rust:  # labelled supported by the "model", but cites an id that does not exist
-            claims.append(ClaimCheck(sentence=rust, claim="15 years of Rust",
-                                     evidence_ids=[FAKE_ID], label="supported"))
-        return ClaimReport(claims=claims)
-
-    def critic(self, user):
-        reject = self.critic_rejections > 0
-        self.critic_rejections -= 1
-        return Critique(approve=not reject, issues=["too generic"] * reject,
-                        instructions="Be more specific." * reject)
-
-    def compliance(self, user):
-        return ComplianceVerdict(status=self.verdict, violations=[],
-                                 reason="ok" if self.verdict == "pass" else "fabrication")
-
-
-@pytest.fixture
-def harness(monkeypatch, offline_rag, tmp_path):
-    app = create_app()
-    for var, value in {"MARKETPLACE_LOCAL_USER": "fr_ml", "PORTFOLIO_LOCAL_USER": "fr_ml",
-                       "MARKETPLACE_AUDIT_LOG": str(tmp_path / "audit.jsonl"),
-                       "MARKETPLACE_RATE_PER_MIN": "1000"}.items():
-        monkeypatch.setenv(var, value)
-    marketplace._calls.clear()
-    monkeypatch.setattr(marketplace, "adapter_for", lambda user: GigSimAdapter(
-        "http://gigsim", user, transport=httpx.ASGITransport(app=app), backoff=0))
-    monkeypatch.setitem(load_config()["budgets"], "retry_initial_seconds", 0.01)
-    fake = FakeLLM()
-    monkeypatch.setattr(common, "ask", fake)
-    toolbox = Toolbox({"marketplace": marketplace.mcp, "portfolio": portfolio.mcp}, backoff=0)
-
-    def job(scam: bool) -> str:
-        return next(j["id"] for j in app.state.data["jobs"].values()
-                    if j["_truth"]["category"] == "ml" and j["_truth"]["scam"] == scam
-                    and not j["_truth"]["injection"] and not j["_truth"]["duplicate_of"])
-
-    return SimpleNamespace(app=app, fake=fake, saver=InMemorySaver(serde=serde()), job=job,
-                           ctx=common.Context(toolbox=toolbox),
-                           cfg={"configurable": {"thread_id": "thread-1"}},
-                           balance=lambda: app.state.data["freelancers"]["fr_ml"]["connects"])
 
 
 async def run(h, payload, graph=None):
@@ -174,7 +74,7 @@ async def test_reject_records_reason_and_sends_nothing(harness):
 
 async def test_edit_is_rechecked_by_compliance_and_diff_is_kept(harness):
     await run(harness, {"job_id": harness.job(scam=False)})
-    edited = f"Happy to help with this. Email me at sana@example.com. {FILLER}"
+    edited = f"Happy to help with this. Email me at sana@example.com. {harness.filler}"
     snap = await run(harness, Command(resume={"action": "edit", "text": edited}))
     s = snap.values
     assert snap.next == ("approval",)  # back for a second look after compliance
@@ -239,8 +139,7 @@ async def test_crash_after_submit_retries_without_double_charge(harness, monkeyp
 
 
 @pytest.mark.postgres
-@pytest.mark.skipif(not os.getenv("DATABASE_URL"), reason="DATABASE_URL not set")
-async def test_postgres_checkpoint_survives_restart(harness):
+async def test_postgres_checkpoint_survives_restart(harness, infra):
     from agent.graphs.checkpoint import postgres_checkpointer
     harness.cfg["configurable"]["thread_id"] = f"pg-{os.getpid()}"
     async with postgres_checkpointer() as saver:
@@ -250,3 +149,17 @@ async def test_postgres_checkpoint_survives_restart(harness):
         harness.saver = saver
         snap = await run(harness, Command(resume={"action": "approve"}))
         assert snap.values["status"] == "submitted"
+
+
+async def test_slow_parallel_branch_times_out_into_needs_attention(harness, monkeypatch):
+    monkeypatch.setitem(load_config()["budgets"], "node_timeout_seconds", 1.0)
+    fake = harness.fake
+
+    async def slow_matcher(node, schema, user):
+        if node == "matcher":
+            await asyncio.sleep(5)
+        return await fake(node, schema, user)
+    monkeypatch.setattr(common, "ask", slow_matcher)
+    snap = await run(harness, {"job_id": harness.job(scam=False)})
+    assert snap.values["status"] == "needs_attention"
+    assert snap.values["attention"].startswith("matcher failed: TimeoutError")

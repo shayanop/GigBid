@@ -1,3 +1,5 @@
+.PHONY: dev gigsim marketplace-mcp portfolio-mcp data seed api worker diagram run-job eval models test test-live lint
+
 COMPOSE = docker compose -f infra/docker-compose.yml --env-file .env
 
 dev:
@@ -12,8 +14,17 @@ marketplace-mcp:
 portfolio-mcp:
 	uv run python -m mcp_servers.portfolio.server
 
-seed:
+data: # regenerate the synthetic personas and dev labels
 	uv run python -m data.personas.generate
+
+seed: # demo account and saved search
+	uv run python -m apps.api.seed
+
+api:
+	uv run uvicorn apps.api.main:app --port 8000
+
+worker:
+	uv run python -m worker.main
 
 diagram:
 	uv run python -c "from agent.graphs.bid_graph import build; print(build().get_graph().draw_mermaid())" > docs/images/bid_graph.mmd

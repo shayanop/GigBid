@@ -1,5 +1,5 @@
-# Local stack. App services (api, worker, web, other MCP servers) are added
-# as they are built.
+# Local stack: docker compose -f infra/docker-compose.yml --env-file .env up
+# The web app is added with Phase 6.
 name: gigbid
 
 x-python: &python
@@ -7,7 +7,39 @@ x-python: &python
     context: ..
     dockerfile: infra/docker/python.Dockerfile
 
+x-app-env: &app-env
+  DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+  REDIS_URL: redis://redis:6379/0
+  SESSION_SECRET: ${SESSION_SECRET}
+  MCP_SIGNING_SECRET: ${MCP_SIGNING_SECRET}
+  MARKETPLACE_MCP_URL: http://marketplace-mcp:8200/mcp
+  PORTFOLIO_MCP_URL: http://portfolio-mcp:8300/mcp
+  GROQ_API_KEY: ${GROQ_API_KEY}
+  GIGBID_PROFILE: ${GIGBID_PROFILE:-open}
+  OLLAMA_HOST: http://ollama:11434
+  DEMO_EMAIL: ${DEMO_EMAIL}
+  DEMO_PASSWORD: ${DEMO_PASSWORD}
+
 services:
+  api:
+    <<: *python
+    command: uvicorn apps.api.main:app --host 0.0.0.0 --port 8000
+    environment: *app-env
+    ports: ["8000:8000"]
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_started}
+
+  worker: # scheduled scouting and every graph run
+    <<: *python
+    command: python -m worker.main
+    environment: *app-env
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_started}
+      marketplace-mcp: {condition: service_started}
+      portfolio-mcp: {condition: service_started}
+
   gigsim: # marketplace simulator
     <<: *python
     command: uvicorn gigsim.app:create_app --factory --host 0.0.0.0 --port 8100
@@ -20,7 +52,7 @@ services:
       HOST: 0.0.0.0
       GIGSIM_URL: http://gigsim:8100
       MARKETPLACE_MCP_URL: http://marketplace-mcp:8200/mcp
-      MARKETPLACE_MCP_TOKENS: ${MARKETPLACE_MCP_TOKENS}
+      MCP_SIGNING_SECRET: ${MCP_SIGNING_SECRET}
       MARKETPLACE_AUDIT_LOG: /audit/marketplace.jsonl
     volumes: [audit:/audit]
     ports: ["8200:8200"]
@@ -32,7 +64,7 @@ services:
     environment:
       HOST: 0.0.0.0
       PORTFOLIO_MCP_URL: http://portfolio-mcp:8300/mcp
-      PORTFOLIO_MCP_TOKENS: ${PORTFOLIO_MCP_TOKENS}
+      MCP_SIGNING_SECRET: ${MCP_SIGNING_SECRET}
       FASTEMBED_CACHE_PATH: /models
     volumes: [models:/models, index:/app/data/processed/index]
     ports: ["8300:8300"]

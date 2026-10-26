@@ -20,7 +20,7 @@ from mcp.types import ToolAnnotations
 from pydantic import BaseModel, ConfigDict, Field
 
 from gigsim.seed import mentioned_skills
-from mcp_servers.auth import current_user, static_auth
+from mcp_servers.auth import bearer_auth, current_user
 from rag import retriever
 from rag.ingest.loaders import SKILLS, load_persona
 from rag.schema import Chunk, DocType, Document, Evidence
@@ -34,7 +34,7 @@ mcp = MCPServer(
     instructions="Read-only access to one freelancer's portfolio: CV, case studies, code, "
                  "client reviews and past proposals with outcomes. Every claim in a proposal "
                  "should cite an evidence id returned by search_evidence.",
-    **static_auth("PORTFOLIO", URL),
+    **bearer_auth(URL),
 )
 
 

@@ -131,12 +131,15 @@ def _retryable(e: Exception) -> bool:
 def _contained(name: str, fn):
     """Same retries as the graph default, but a final failure becomes needs_attention
     instead of an exception. LangGraph 1.2 skips error_handler when another task runs in
-    the same step, so the parallel branches must catch their own failures."""
+    the same step, so the parallel branches catch their own failures and time themselves
+    out (LangGraph's node timeout would fire outside this wrapper)."""
     async def run(state: dict) -> dict:
-        delay = load_config()["budgets"]["retry_initial_seconds"]
+        budgets = load_config()["budgets"]
+        delay = budgets["retry_initial_seconds"]
         for attempt in range(3):
             try:
-                return await fn(state)
+                async with asyncio.timeout(budgets["node_timeout_seconds"]):
+                    return await fn(state)
             except Exception as e:  # noqa: BLE001 - any failure must end as needs_attention
                 if not _retryable(e) or attempt == 2:
                     reason = f"{name} failed: {type(e).__name__}: {e}"
@@ -183,8 +186,9 @@ def build(checkpointer=None, store=None):
                      ("verifier", verifier.verify), ("critic", critic.review),
                      ("compliance", compliance.check), ("approval", request_approval),
                      ("submit", submit)]:
-        if name in PARALLEL:
-            g.add_node(name, _contained(name, fn), retry_policy=RetryPolicy(max_attempts=1))
+        if name in PARALLEL:  # own retries and timeout; the outer cap is only a backstop
+            g.add_node(name, _contained(name, fn), retry_policy=RetryPolicy(max_attempts=1),
+                       timeout=budgets["node_timeout_seconds"] * 4)
         else:
             g.add_node(name, fn)
     g.add_edge(START, "scout")

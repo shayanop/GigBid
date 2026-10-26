@@ -3,6 +3,7 @@ retries. A target is a URL (deployed, bearer token per server) or an in-process
 MCPServer (tests, single-process dev)."""
 
 import asyncio
+import os
 import time
 from typing import Any
 
@@ -11,6 +12,7 @@ from mcp import Client
 from mcp.client.streamable_http import streamable_http_client
 
 from agent.nodes.common import record
+from mcp_servers.auth import mint
 
 ALLOWLIST: dict[str, set[tuple[str, str]]] = {
     "scout": {("marketplace", "get_job"), ("marketplace", "search_jobs")},
@@ -38,6 +40,14 @@ class Toolbox:
                  backoff: float = 0.5):
         self.targets, self.tokens, self.trace_id = targets, tokens or {}, trace_id
         self.timeout, self.attempts, self.backoff = timeout, attempts, backoff
+
+    @classmethod
+    def for_user(cls, account: str, trace_id: str | None = None) -> "Toolbox":
+        """Deployed MCP servers over HTTP with a one-hour token for this account."""
+        targets = {"marketplace": os.environ["MARKETPLACE_MCP_URL"],
+                   "portfolio": os.environ["PORTFOLIO_MCP_URL"]}
+        token = mint(account)
+        return cls(targets, {server: token for server in targets}, trace_id)
 
     def _client(self, server: str) -> Client:
         target = self.targets[server]

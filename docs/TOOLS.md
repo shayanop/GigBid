@@ -4,7 +4,7 @@ One row per MCP tool. Schemas are snapshotted in `tests/contract/snapshots/`; an
 
 ## Marketplace MCP (`mcp_servers/marketplace`, owned by GigBid)
 
-Transport: Streamable HTTP at `/mcp`. Auth: bearer token mapped to a user (`MARKETPLACE_MCP_TOKENS`); in-process/stdio use `MARKETPLACE_LOCAL_USER`. Every call is rate limited per user (`MARKETPLACE_RATE_PER_MIN`, default 60) and appended to the audit log with user, tool, redacted arguments, redacted result and trace ID (`X-Trace-Id` header, generated if absent). The adapter (GigSim now, Upwork later) comes from `marketplace.adapter` in `agent/config.yaml`.
+Transport: Streamable HTTP at `/mcp`. Auth: signed bearer token `<account>.<expiry>.<hmac>` (`MCP_SIGNING_SECRET`, see `mcp_servers/auth.py`); the API and worker mint a one-hour token per user. In-process/stdio use `MARKETPLACE_LOCAL_USER`. Every call is rate limited per user (`MARKETPLACE_RATE_PER_MIN`, default 60) and appended to the audit log with user, tool, redacted arguments, redacted result and trace ID (`X-Trace-Id` header, generated if absent). The adapter (GigSim now, Upwork later) comes from `marketplace.adapter` in `agent/config.yaml`.
 
 | Tool | Permission | Annotations | Notes |
 | --- | --- | --- | --- |
@@ -21,7 +21,7 @@ Write tools are only called after human approval in GigBid (LangGraph interrupt)
 
 ## Portfolio MCP (`mcp_servers/portfolio`, owned by GigBid)
 
-Read-only. Transport: Streamable HTTP at `/mcp` (bearer token mapped to a persona folder via `PORTFOLIO_MCP_TOKENS`) or stdio for external hosts (`--stdio`, persona from `PORTFOLIO_LOCAL_USER`). Retrieval variant comes from `rag.variant` in `agent/config.yaml`.
+Read-only. Transport: Streamable HTTP at `/mcp` (signed bearer token whose account names the persona folder) or stdio for external hosts (`--stdio`, persona from `PORTFOLIO_LOCAL_USER`). Retrieval variant comes from `rag.variant` in `agent/config.yaml`.
 
 | Name | Kind | Permission | Annotations | Notes |
 | --- | --- | --- | --- | --- |
@@ -32,7 +32,7 @@ Read-only. Transport: Streamable HTTP at `/mcp` (bearer token mapped to a person
 | `portfolio://proposal/{proposal_id}` | resource | read | | past proposal with outcome |
 | `answer_screening_question` | prompt | | | answer a screening question from cited evidence only |
 
-Claude Desktop config example:
+Claude Desktop config example (stdio; for HTTP, mint a token with `uv run python -m mcp_servers.auth fr_ml --days 30`):
 
 ```json
 {"mcpServers": {"gigbid-portfolio": {"command": "uv", "args": ["--directory", "<repo>", "run",

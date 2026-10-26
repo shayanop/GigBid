@@ -61,6 +61,16 @@ budgets: # per graph thread; exhaustion -> needs_attention
   node_timeout_seconds: 120
   retry_initial_seconds: 1.0 # node retries back off from here (3 attempts)
 
+worker:
+  max_jobs: 2 # concurrent graph runs; Groq's free tier rate-limits beyond this
+  orphan_after_minutes: 20 # re-queue threads whose queue entry was lost
+  replay_delay_minutes: 5 # wait before replaying a run that hit an outage or rate limit
+  max_replays: 3
+
+scouting: # conservative: saved searches run at most every 15 minutes (DB constraint)
+  first_run_limit: 5 # newest jobs taken the first time a saved search runs
+  per_run_limit: 10
+
 targets: # declared latency/cost budgets (R8, E5)
   p95_analyze_seconds: 20
   p95_proposal_seconds: 60
