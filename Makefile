@@ -33,7 +33,7 @@ diagram:
 	uv run python -c "from agent.graphs.bid_graph import build; print(build().get_graph().draw_mermaid())" > docs/images/bid_graph.mmd
 	uv run python -c "from agent.graphs.conversation_graph import build; print(build().get_graph().draw_mermaid())" > docs/images/conversation_graph.mmd
 
-run-job: # make run-job JOB=job_00012 (needs GROQ_API_KEY and make gigsim running)
+run-job: # make run-job JOB=job_00012 (needs GROQ_API_KEY; runs GigSim and MCP servers in-process)
 	uv run python -m agent.graphs.bid_graph $(JOB)
 
 eval:

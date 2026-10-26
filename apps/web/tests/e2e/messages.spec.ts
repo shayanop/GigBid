@@ -7,7 +7,10 @@ test("a client's interview request gets times and a reply that is sent only afte
   await page.goto("/messages");
   await page.getByRole("button", { name: "Check for new messages" }).click();
 
-  const interview = page.getByTestId("conversation-row").filter({ hasText: "Interview request" });
+  // The seeded interview thread. Other tests' submissions can earn more interview requests
+  // from GigSim's simulated clients, so match this conversation by its own message.
+  const interview = page.getByTestId("conversation-row")
+    .filter({ hasText: "Are you free for a 30-minute call this week?" });
   await expect(interview.getByText("Needs your approval")).toBeVisible();
   await interview.click();
 

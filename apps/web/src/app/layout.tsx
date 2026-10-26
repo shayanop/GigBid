@@ -4,7 +4,8 @@ import { Atkinson_Hyperlegible_Next, Source_Serif_4 } from "next/font/google";
 import { Providers } from "./providers";
 import "./globals.css";
 
-const sans = Atkinson_Hyperlegible_Next({ subsets: ["latin"], variable: "--font-atkinson" });
+// Next has no metric overrides for this font, so it cannot build an adjusted fallback.
+const sans = Atkinson_Hyperlegible_Next({ subsets: ["latin"], variable: "--font-atkinson", adjustFontFallback: false });
 const serif = Source_Serif_4({ subsets: ["latin"], variable: "--font-source-serif" });
 
 export const metadata: Metadata = {
