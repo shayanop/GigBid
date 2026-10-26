@@ -40,3 +40,9 @@ def test_groq_structured_output():
     out = get_model("analyst", Echo).invoke("Return the word 'gigbid' in the `word` field.")
     assert out["parsed"].word.lower() == "gigbid"
     assert out["raw"].usage_metadata["total_tokens"] > 0
+
+
+def test_api_module_builds_nothing_at_import():
+    # CI has no .env: importing the API must not read secrets or open connections.
+    from apps.api import main
+    assert not hasattr(main, "app") and callable(main.create_app)

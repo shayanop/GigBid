@@ -4,8 +4,8 @@ Run: uv run python -m apps.api.openapi > apps/web/openapi.json"""
 import json
 import os
 
-os.environ.setdefault("SESSION_SECRET", "openapi-export-only")
+from apps.api.main import create_app
 
-from apps.api.main import app
+os.environ.setdefault("SESSION_SECRET", "openapi-export-only")  # only the schema is read
 
-print(json.dumps(app.openapi(), indent=1, sort_keys=True))
+print(json.dumps(create_app().openapi(), indent=1, sort_keys=True))

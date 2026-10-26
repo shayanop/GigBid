@@ -1,7 +1,8 @@
 """GigBid API. Graph runs never happen in request handlers: handlers queue work for the
 worker and read state from the Postgres checkpointer.
 
-Run: uv run uvicorn apps.api.main:app --port 8000
+Run: uv run uvicorn apps.api.main:create_app --factory --port 8000
+(A factory, so importing this module never reads secrets or opens connections.)
 """
 
 import os
@@ -83,5 +84,3 @@ def create_app() -> FastAPI:
         app.include_router(router)
     return app
 
-
-app = create_app()

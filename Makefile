@@ -24,7 +24,7 @@ seed: # demo account and saved search
 	uv run python -m apps.api.seed
 
 api: # selector loop: psycopg async cannot run on Windows' default Proactor loop
-	uv run uvicorn apps.api.main:app --port 8000 --loop asyncio:SelectorEventLoop
+	uv run uvicorn apps.api.main:create_app --factory --port 8000 --loop asyncio:SelectorEventLoop
 
 worker:
 	uv run python -m worker.main

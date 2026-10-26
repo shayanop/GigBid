@@ -9,6 +9,10 @@ try {
   // CI provides the variables directly.
 }
 
+if (!process.env.TEST_DATABASE_URL) {
+  throw new Error("TEST_DATABASE_URL is not set: e2e runs need a test Postgres database (see docs/RUNBOOK.md)");
+}
+
 const ROOT = "../..";
 const PORTS = { web: 3010, api: 8010, gigsim: 8110, marketplace: 8210, portfolio: 8310, workspace: 8410 };
 const env = {
@@ -51,10 +55,11 @@ export default defineConfig({
   webServer: [
     python(`uvicorn gigsim.app:create_app --factory --port ${PORTS.gigsim}`, PORTS.gigsim),
     python("python -m mcp_servers.marketplace.server", PORTS.marketplace),
-    python("python -m mcp_servers.portfolio.server", PORTS.portfolio),
+    // Builds every persona index before listening; a cold CI runner also downloads the model.
+    { ...python("python -m mcp_servers.portfolio.server", PORTS.portfolio), timeout: 600_000 },
     python("python -m mcp_servers.workspace.server", PORTS.workspace),
     // psycopg async needs the selector loop; uvicorn picks Proactor on Windows.
-    python(`uvicorn apps.api.main:app --port ${PORTS.api} --loop asyncio:SelectorEventLoop`, PORTS.api),
+    python(`uvicorn apps.api.main:create_app --factory --port ${PORTS.api} --loop asyncio:SelectorEventLoop`, PORTS.api),
     {
       command: `npx next build && npx next start --port ${PORTS.web}`,
       env: { ...env, API_URL: `http://localhost:${PORTS.api}`, NEXT_DIST_DIR: ".next-e2e" },

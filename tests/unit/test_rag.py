@@ -81,3 +81,9 @@ def test_citations_never_reach_the_client():
     letter = ("I built it [fr_ml-p09#0]. Async endpoints ([fr_ml-p11/app.py#0], "
               "[fr_ml-p12/app.py#0]) and LangGraph [fr_ml-prop001#0], done.")
     assert client_text(letter) == "I built it. Async endpoints and LangGraph, done."
+
+
+def test_warm_all_builds_every_persona_index(offline_rag):
+    from rag import retriever
+    assert retriever.warm_all() == ["fr_da", "fr_fs", "fr_ml"]
+    assert all((retriever.INDEX_DIR / "v0" / p / "vectors.npy").exists() for p in ("fr_da", "fr_fs", "fr_ml"))

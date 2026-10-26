@@ -133,5 +133,7 @@ if __name__ == "__main__":
     if "--stdio" in sys.argv:
         mcp.run("stdio")
     else:
+        # Index before listening: a cold first search would outlast agents' tool timeouts.
+        print(f"portfolio indexes ready: {', '.join(retriever.warm_all())}", flush=True)
         mcp.run("streamable-http", host=os.getenv("HOST", "127.0.0.1"),
                 port=int(os.getenv("PORT", "8300")))

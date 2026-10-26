@@ -40,3 +40,13 @@ def get_retriever(persona: str, variant: str | None = None):
 @cache
 def _cached(persona: str, variant: str | None):
     return build_retriever(persona, variant)
+
+
+def warm_all() -> list[str]:
+    """Builds (or refreshes) every persona's index up front. The first build downloads the
+    embedding model and embeds the whole portfolio, which takes longer than an agent's
+    tool-call timeout, so servers do it before taking requests."""
+    personas = sorted(p.name for p in PERSONAS_DIR.iterdir() if (p / "case_studies").is_dir())
+    for persona in personas:
+        get_retriever(persona)
+    return personas
