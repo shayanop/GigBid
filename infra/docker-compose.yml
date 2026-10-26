@@ -1,0 +1,34 @@
+# Local stack. App services (api, worker, web, MCP servers, GigSim) are added
+# as they are built.
+name: gigbid
+
+services:
+  postgres: # relational data, LangGraph checkpoints/store, pgvector
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7.4-alpine
+    ports: ["6379:6379"]
+
+  ollama: # serves the `local` model profile
+    image: ollama/ollama:0.40.11
+    ports: ["11434:11434"]
+    volumes: [ollama:/root/.ollama]
+
+  phoenix: # tracing UI on :6006, OTLP collector on :4317
+    image: arizephoenix/phoenix:version-20.26.1
+    ports: ["6006:6006", "4317:4317"]
+
+volumes:
+  pgdata:
+  ollama:

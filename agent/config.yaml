@@ -1,0 +1,58 @@
+# GigBid runtime configuration. Agent code reads every model choice, threshold,
+# budget and fee assumption from here; nothing below is hard-coded in nodes.
+
+profile: open # override with GIGBID_PROFILE
+
+# Model specs are "provider:model" (passed to langchain init_chat_model).
+# Nodes not listed under `nodes` use `default`, and fall back to
+# `default_fallback` on errors (cheap nodes only).
+profiles:
+  open: # deployed profile: open-weight models served by Groq
+    default: groq:openai/gpt-oss-20b
+    default_fallback: groq:llama-3.1-8b-instant
+    nodes:
+      writer: groq:openai/gpt-oss-120b
+      critic: groq:openai/gpt-oss-120b
+      liaison: groq:openai/gpt-oss-120b
+
+  open_alt: # second open configuration for the model comparison
+    default: groq:llama-3.1-8b-instant
+    default_fallback: groq:openai/gpt-oss-20b
+    nodes:
+      writer: groq:llama-3.3-70b-versatile
+      critic: groq:llama-3.3-70b-versatile
+      liaison: groq:llama-3.3-70b-versatile
+
+  local: # small nodes on the compose Ollama service, heavy nodes on Groq
+    default: ollama:qwen3:4b
+    default_fallback: groq:openai/gpt-oss-20b
+    nodes:
+      writer: groq:openai/gpt-oss-120b
+      critic: groq:openai/gpt-oss-120b
+      liaison: groq:openai/gpt-oss-120b
+
+marketplace:
+  adapter: gigsim # gigsim | upwork
+
+# Initial values; retune from evals/results.
+decision:
+  bid_min_fit: 0.70
+  watch_min_fit: 0.50
+  bid_max_risk: 0.40
+
+critic:
+  max_revisions: 2
+
+budgets: # per graph thread; exhaustion -> needs_attention
+  max_steps: 40
+  max_tokens: 60000
+
+targets: # declared latency/cost budgets (R8, E5)
+  p95_analyze_seconds: 20
+  p95_proposal_seconds: 60
+  usd_per_analyzed_job: 0.01
+  usd_per_proposal: 0.05
+
+fees: # marketplace assumptions; update here when GigSim policy changes
+  connect_price_usd: 0.15
+  platform_fee_pct: 10
