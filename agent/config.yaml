@@ -64,6 +64,10 @@ budgets: # per graph thread; exhaustion -> needs_attention
   node_timeout_seconds: 120
   retry_initial_seconds: 1.0 # node retries back off from here (3 attempts)
 
+memory: # promotion policy, see agent/memory/promotion_rules.py
+  style_min_support: 2 # separate edits showing the same change before it becomes a preference
+  outcomes_min_samples: 5 # submissions per skill before its reply rate is shown to agents
+
 worker:
   max_jobs: 2 # concurrent graph runs; Groq's free tier rate-limits beyond this
   orphan_after_minutes: 20 # re-queue threads whose queue entry was lost

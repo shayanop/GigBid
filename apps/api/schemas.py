@@ -190,3 +190,30 @@ class ConversationDetail(ConversationSummary):
     reply: str | None = None
     slots: list[TimeSlot] = []
     approval_request: MessageApprovalPayload | None = None
+
+
+class Preference(BaseModel):
+    key: str
+    statement: str
+    edits: int = Field(description="Separate edits that showed this")
+    examples: list[str]
+    sources: list[str]
+    rule: str | None = Field(default=None, description="Why it was promoted")
+    promoted_at: datetime | None = None
+
+
+class OutcomeStats(BaseModel):
+    skill: str
+    submitted: int
+    replied: int
+    interview: int
+    reply_rate: float | None
+    shown_to_agents: bool
+
+
+class MemoryOut(BaseModel):
+    preferences: list[Preference]
+    learning: list[Preference]
+    outcomes: list[OutcomeStats]
+    style_min_support: int
+    outcomes_min_samples: int

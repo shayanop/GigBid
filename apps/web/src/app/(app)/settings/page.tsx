@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
+import { MemoryPanel } from "@/components/MemoryPanel";
 import { button, input, Loading, Notice, PageHeader, Panel } from "@/components/ui";
 import {
   authMeOptions,
@@ -30,6 +31,7 @@ export default function Settings() {
         )}
         {me.data && <RatesForm settings={me.data.settings} />}
         <SavedSearches />
+        <MemoryPanel />
       </div>
     </>
   );

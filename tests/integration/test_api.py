@@ -221,18 +221,24 @@ async def test_client_messages_get_drafted_replies_and_move_the_pipeline(api, ha
     await signup(client)
     interview = next(t for t in harness.app.state.data["threads"].values()
                      if t["freelancer_id"] == "fr_ml" and t["_intent"] == "interview")
-    await client.post("/jobs", json={"job_id": interview["job_id"]})  # we bid on that job
+    # We bid on that job and submitted the proposal; the client's message answers it.
+    bid = (await client.post("/jobs", json={"job_id": interview["job_id"]})).json()["thread_id"]
+    await api.drain()
+    await client.post(f"/approvals/{bid}", json={"action": "approve"})
+    await api.drain()
     assert (await client.post("/messages/refresh")).status_code == 202
     await api.drain()
 
     conversations = (await client.get("/messages")).json()
-    assert len(conversations) == 4
+    assert len(conversations) >= 4  # the 4 seeded threads, plus any reply to our submission
     assert all(c["status"] == "awaiting_approval" for c in conversations)
     conv = next(c for c in conversations if c["conversation_id"] == interview["id"])
     detail = (await client.get(f"/messages/{conv['id']}")).json()
     assert detail["intent"] == "interview" and len(detail["slots"]) == 3
     assert detail["approval_request"]["preview"]["dry_run"] is True
     assert (await client.get("/jobs")).json()[0]["stage"] == "interview"
+    outcomes = (await client.get("/memory")).json()["outcomes"]
+    assert outcomes and all(o["submitted"] == 1 and o["interview"] == 1 for o in outcomes)
     assert (await client.get(f"/runs/{conv['id']}")).json()["trace"][0]["node"] == "read"
 
     assert (await client.post(f"/messages/{conv['id']}", json={"action": "approve"})).status_code == 202
@@ -240,3 +246,22 @@ async def test_client_messages_get_drafted_replies_and_move_the_pipeline(api, ha
     await api.drain()
     assert (await client.get(f"/messages/{conv['id']}")).json()["status"] == "sent"
     assert harness.app.state.data["threads"][interview["id"]]["messages"][-1]["sender"] == "freelancer"
+
+
+async def test_memory_shows_what_an_edit_taught_and_forgets_on_request(api, harness):
+    client = api.server.client
+    await signup(client)
+    thread_id = (await client.post("/jobs", json={"job_id": harness.job(scam=False)})).json()["thread_id"]
+    await api.drain()
+    letter = (await client.get(f"/jobs/{thread_id}")).json()["draft"]["cover_letter"]
+    await client.post(f"/approvals/{thread_id}", json={"action": "edit", "text": letter.split(". ", 1)[1]})
+    await api.drain()
+
+    memory = (await client.get("/memory")).json()
+    assert memory["preferences"] == [] and memory["style_min_support"] == 2
+    learning = {item["key"]: item for item in memory["learning"]}
+    assert learning["drop_opener"]["edits"] == 1
+    assert learning["drop_opener"]["sources"] == [f"proposal:{thread_id}"]
+
+    assert (await client.delete("/memory/preferences/drop_opener")).status_code == 204
+    assert "drop_opener" not in {i["key"] for i in (await client.get("/memory")).json()["learning"]}

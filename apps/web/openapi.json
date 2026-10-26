@@ -1122,6 +1122,48 @@
     "title": "MarketplaceStatus",
     "type": "object"
    },
+   "MemoryOut": {
+    "properties": {
+     "learning": {
+      "items": {
+       "$ref": "#/components/schemas/Preference"
+      },
+      "title": "Learning",
+      "type": "array"
+     },
+     "outcomes": {
+      "items": {
+       "$ref": "#/components/schemas/OutcomeStats"
+      },
+      "title": "Outcomes",
+      "type": "array"
+     },
+     "outcomes_min_samples": {
+      "title": "Outcomes Min Samples",
+      "type": "integer"
+     },
+     "preferences": {
+      "items": {
+       "$ref": "#/components/schemas/Preference"
+      },
+      "title": "Preferences",
+      "type": "array"
+     },
+     "style_min_support": {
+      "title": "Style Min Support",
+      "type": "integer"
+     }
+    },
+    "required": [
+     "preferences",
+     "learning",
+     "outcomes",
+     "style_min_support",
+     "outcomes_min_samples"
+    ],
+    "title": "MemoryOut",
+    "type": "object"
+   },
    "Message": {
     "properties": {
      "body": {
@@ -1246,6 +1288,115 @@
      "body"
     ],
     "title": "MessagePreview",
+    "type": "object"
+   },
+   "OutcomeStats": {
+    "properties": {
+     "interview": {
+      "title": "Interview",
+      "type": "integer"
+     },
+     "replied": {
+      "title": "Replied",
+      "type": "integer"
+     },
+     "reply_rate": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reply Rate"
+     },
+     "shown_to_agents": {
+      "title": "Shown To Agents",
+      "type": "boolean"
+     },
+     "skill": {
+      "title": "Skill",
+      "type": "string"
+     },
+     "submitted": {
+      "title": "Submitted",
+      "type": "integer"
+     }
+    },
+    "required": [
+     "skill",
+     "submitted",
+     "replied",
+     "interview",
+     "reply_rate",
+     "shown_to_agents"
+    ],
+    "title": "OutcomeStats",
+    "type": "object"
+   },
+   "Preference": {
+    "properties": {
+     "edits": {
+      "description": "Separate edits that showed this",
+      "title": "Edits",
+      "type": "integer"
+     },
+     "examples": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Examples",
+      "type": "array"
+     },
+     "key": {
+      "title": "Key",
+      "type": "string"
+     },
+     "promoted_at": {
+      "anyOf": [
+       {
+        "format": "date-time",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Promoted At"
+     },
+     "rule": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "Why it was promoted",
+      "title": "Rule"
+     },
+     "sources": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Sources",
+      "type": "array"
+     },
+     "statement": {
+      "title": "Statement",
+      "type": "string"
+     }
+    },
+    "required": [
+     "key",
+     "statement",
+     "edits",
+     "examples",
+     "sources"
+    ],
+    "title": "Preference",
     "type": "object"
    },
    "PriceQuote": {
@@ -2141,6 +2292,98 @@
     "summary": "Status",
     "tags": [
      "marketplace"
+    ]
+   }
+  },
+  "/memory": {
+   "get": {
+    "operationId": "memory_learned",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MemoryOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Learned",
+    "tags": [
+     "memory"
+    ]
+   }
+  },
+  "/memory/outcomes/{skill}": {
+   "delete": {
+    "operationId": "memory_forget_outcomes",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "skill",
+      "required": true,
+      "schema": {
+       "title": "Skill",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Forget Outcomes",
+    "tags": [
+     "memory"
+    ]
+   }
+  },
+  "/memory/preferences/{key}": {
+   "delete": {
+    "description": "Removes a preference or a candidate, with all its evidence.",
+    "operationId": "memory_forget_preference",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "key",
+      "required": true,
+      "schema": {
+       "title": "Key",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Forget Preference",
+    "tags": [
+     "memory"
     ]
    }
   },

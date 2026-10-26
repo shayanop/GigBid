@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { approvalsDecide, approvalsPending, approvalsReview, authLogin, authLogout, authMe, authSignup, authUpdateSettings, jobsAnalyze, jobsDetail, jobsInbox, marketplaceStatus, messagesConversation, messagesConversations, messagesDecide, messagesRefresh, type Options, runsTrace, searchesCreate, searchesDelete, searchesList } from '../sdk.gen';
-import type { ApprovalsDecideData, ApprovalsDecideError, ApprovalsDecideResponse, ApprovalsPendingData, ApprovalsPendingResponse, ApprovalsReviewData, ApprovalsReviewError, ApprovalsReviewResponse, AuthLoginData, AuthLoginError, AuthLoginResponse, AuthLogoutData, AuthLogoutResponse, AuthMeData, AuthMeResponse, AuthSignupData, AuthSignupError, AuthSignupResponse, AuthUpdateSettingsData, AuthUpdateSettingsError, AuthUpdateSettingsResponse, JobsAnalyzeData, JobsAnalyzeError, JobsAnalyzeResponse, JobsDetailData, JobsDetailError, JobsDetailResponse, JobsInboxData, JobsInboxError, JobsInboxResponse, MarketplaceStatusData, MarketplaceStatusResponse, MessagesConversationData, MessagesConversationError, MessagesConversationResponse, MessagesConversationsData, MessagesConversationsResponse, MessagesDecideData, MessagesDecideError, MessagesDecideResponse, MessagesRefreshData, MessagesRefreshResponse, RunsTraceData, RunsTraceError, RunsTraceResponse, SearchesCreateData, SearchesCreateError, SearchesCreateResponse, SearchesDeleteData, SearchesDeleteError, SearchesDeleteResponse, SearchesListData, SearchesListResponse } from '../types.gen';
+import { approvalsDecide, approvalsPending, approvalsReview, authLogin, authLogout, authMe, authSignup, authUpdateSettings, jobsAnalyze, jobsDetail, jobsInbox, marketplaceStatus, memoryForgetOutcomes, memoryForgetPreference, memoryLearned, messagesConversation, messagesConversations, messagesDecide, messagesRefresh, type Options, runsTrace, searchesCreate, searchesDelete, searchesList } from '../sdk.gen';
+import type { ApprovalsDecideData, ApprovalsDecideError, ApprovalsDecideResponse, ApprovalsPendingData, ApprovalsPendingResponse, ApprovalsReviewData, ApprovalsReviewError, ApprovalsReviewResponse, AuthLoginData, AuthLoginError, AuthLoginResponse, AuthLogoutData, AuthLogoutResponse, AuthMeData, AuthMeResponse, AuthSignupData, AuthSignupError, AuthSignupResponse, AuthUpdateSettingsData, AuthUpdateSettingsError, AuthUpdateSettingsResponse, JobsAnalyzeData, JobsAnalyzeError, JobsAnalyzeResponse, JobsDetailData, JobsDetailError, JobsDetailResponse, JobsInboxData, JobsInboxError, JobsInboxResponse, MarketplaceStatusData, MarketplaceStatusResponse, MemoryForgetOutcomesData, MemoryForgetOutcomesError, MemoryForgetOutcomesResponse, MemoryForgetPreferenceData, MemoryForgetPreferenceError, MemoryForgetPreferenceResponse, MemoryLearnedData, MemoryLearnedResponse, MessagesConversationData, MessagesConversationError, MessagesConversationResponse, MessagesConversationsData, MessagesConversationsResponse, MessagesDecideData, MessagesDecideError, MessagesDecideResponse, MessagesRefreshData, MessagesRefreshResponse, RunsTraceData, RunsTraceError, RunsTraceResponse, SearchesCreateData, SearchesCreateError, SearchesCreateResponse, SearchesDeleteData, SearchesDeleteError, SearchesDeleteResponse, SearchesListData, SearchesListResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -255,6 +255,60 @@ export const marketplaceStatusOptions = (options?: Options<MarketplaceStatusData
     },
     queryKey: marketplaceStatusQueryKey(options)
 });
+
+export const memoryLearnedQueryKey = (options?: Options<MemoryLearnedData>) => createQueryKey('memoryLearned', options);
+
+/**
+ * Learned
+ */
+export const memoryLearnedOptions = (options?: Options<MemoryLearnedData>) => queryOptions<MemoryLearnedResponse, DefaultError, MemoryLearnedResponse, ReturnType<typeof memoryLearnedQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await memoryLearned({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: memoryLearnedQueryKey(options)
+});
+
+/**
+ * Forget Outcomes
+ */
+export const memoryForgetOutcomesMutation = (options?: Partial<Options<MemoryForgetOutcomesData>>): UseMutationOptions<MemoryForgetOutcomesResponse, MemoryForgetOutcomesError, Options<MemoryForgetOutcomesData>> => {
+    const mutationOptions: UseMutationOptions<MemoryForgetOutcomesResponse, MemoryForgetOutcomesError, Options<MemoryForgetOutcomesData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await memoryForgetOutcomes({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Forget Preference
+ *
+ * Removes a preference or a candidate, with all its evidence.
+ */
+export const memoryForgetPreferenceMutation = (options?: Partial<Options<MemoryForgetPreferenceData>>): UseMutationOptions<MemoryForgetPreferenceResponse, MemoryForgetPreferenceError, Options<MemoryForgetPreferenceData>> => {
+    const mutationOptions: UseMutationOptions<MemoryForgetPreferenceResponse, MemoryForgetPreferenceError, Options<MemoryForgetPreferenceData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await memoryForgetPreference({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 export const messagesConversationsQueryKey = (options?: Options<MessagesConversationsData>) => createQueryKey('messagesConversations', options);
 

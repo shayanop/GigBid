@@ -34,6 +34,8 @@ from agent.config import load_config
 from agent.graphs import bid_graph, conversation_graph
 from agent.graphs.checkpoint import postgres_checkpointer
 from agent.mcp_client import Toolbox, ToolCallError
+from agent.memory.promotion_rules import record_outcome
+from agent.memory.store import postgres_store
 from agent.nodes.common import Context
 from apps.api import db, streaming
 
@@ -65,14 +67,15 @@ CONVERSATION = Kind(
 
 async def startup(ctx: dict) -> None:
     ctx["db"] = await db.open_pool()
-    ctx["saver"] = postgres_checkpointer()
-    saver = await ctx["saver"].__aenter__()
-    ctx["bid_graph"] = bid_graph.build(saver)
-    ctx["conversation_graph"] = conversation_graph.build(saver)
+    ctx["saver"], ctx["store_cm"] = postgres_checkpointer(), postgres_store()
+    saver, ctx["store"] = await ctx["saver"].__aenter__(), await ctx["store_cm"].__aenter__()
+    ctx["bid_graph"] = bid_graph.build(saver, ctx["store"])
+    ctx["conversation_graph"] = conversation_graph.build(saver, ctx["store"])
     ctx.setdefault("toolbox_for", Toolbox.for_user)
 
 
 async def shutdown(ctx: dict) -> None:
+    await ctx["store_cm"].__aexit__(None, None, None)
     await ctx["saver"].__aexit__(None, None, None)
     await ctx["db"].close()
 
@@ -95,9 +98,16 @@ async def run_conversation(ctx: dict, thread_id: str, trace_id: str | None = Non
     status = await _locked(ctx, CONVERSATION, thread_id, trace_id, replay)
     row = await db.fetchone(ctx["db"], "SELECT user_id, job_id, summary FROM conversations "
                                        "WHERE id = %s", thread_id)
-    if row and row["summary"].get("intent"):  # a client answered one of our bids
+    submitted = row and await db.fetchone(
+        ctx["db"], "SELECT 1 FROM bid_threads WHERE user_id = %s AND job_id = %s AND "
+                   "status = 'submitted'", row["user_id"], row["job_id"])
+    if submitted and row["summary"].get("intent"):  # a client answered one of our bids
         stage = "interview" if row["summary"]["intent"] == "interview" else "replied"
         await db.advance_stage(ctx["db"], row["user_id"], row["job_id"], stage)
+        values = (await ctx["conversation_graph"].aget_state(
+            {"configurable": {"thread_id": thread_id}})).values
+        await record_outcome(ctx["store"], row["user_id"], values["job"].skills, stage,
+                             row["job_id"])
     return status
 
 
@@ -139,7 +149,8 @@ async def _run(ctx: dict, kind: Kind, thread_id: str, trace_id: str | None,
         return "idle"  # finished, or waiting for a human
 
     if payload != "already applied":
-        context = Context(toolbox=ctx["toolbox_for"](row["account"], trace_id))
+        context = Context(toolbox=ctx["toolbox_for"](row["account"], trace_id),
+                          user_id=str(row["user_id"]))
         async for chunk in graph.astream(payload, cfg, context=context, stream_mode="updates"):
             for node, update in chunk.items():
                 status = update.get("status") if isinstance(update, dict) else None
@@ -150,6 +161,8 @@ async def _run(ctx: dict, kind: Kind, thread_id: str, trace_id: str | None,
     status = values.get("status")
     if kind is BID and status == "submitted":
         await db.advance_stage(pool, row["user_id"], row["job_id"], "submitted")
+        await record_outcome(ctx["store"], row["user_id"], values["job"].skills, "submitted",
+                             row["job_id"])
     await streaming.publish(redis, thread_id, {
         "event": "interrupt" if status == "awaiting_approval" else "done", "status": status})
 

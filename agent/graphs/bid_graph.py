@@ -25,6 +25,8 @@ from agent.config import load_config
 from agent.handoffs import Approval, BidDecision
 from agent.marketplace_port import Proposal
 from agent.mcp_client import ToolCallError
+from agent.memory.promotion_rules import observe_edit
+from agent.memory.store import outcome_notes
 from agent.nodes import (
     analyst,
     common,
@@ -58,6 +60,9 @@ async def decide(state: dict) -> dict:
                                     f"{rules['bid_min_fit']}")]
     else:
         action, reasons = "bid", [f"fit {fit.score:.2f}, risk {risk_.score:.2f}", *fit.reasons]
+    store, user = common.memory()
+    if store:  # what happened to your past proposals for these skills
+        reasons += await outcome_notes(store, user, state["job"].skills)
     status = {"bid": "drafting", "watch": "watching", "skip": "skipped"}[action]
     return {"decision": BidDecision(action=action, reasons=reasons), "status": status}
 
@@ -109,6 +114,9 @@ async def request_approval(state: dict) -> dict:
         return {**update, "status": "rejected", "rejection": decision.reason}
     if decision.action == "edit":
         before = state["draft"].cover_letter
+        store, user = common.memory()
+        if store:
+            await observe_edit(store, user, before, decision.text, f"proposal:{_thread_id()}")
         diff = "".join(difflib.unified_diff(before.splitlines(True),
                                             decision.text.splitlines(True), "draft", "edited"))
         return {**update, "status": "drafting",

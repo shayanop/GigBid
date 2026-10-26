@@ -19,8 +19,18 @@ from starlette.middleware.sessions import SessionMiddleware
 from agent.graphs import bid_graph, conversation_graph
 from agent.graphs.checkpoint import postgres_checkpointer
 from agent.mcp_client import Toolbox
+from agent.memory.store import postgres_store
 from apps.api import db
-from apps.api.routers import approvals, auth, jobs, marketplace, messages, runs, searches
+from apps.api.routers import (
+    approvals,
+    auth,
+    jobs,
+    marketplace,
+    memory,
+    messages,
+    runs,
+    searches,
+)
 
 load_dotenv()
 TRACE_ID = re.compile(r"[\w-]{8,64}")
@@ -34,9 +44,10 @@ async def lifespan(app: FastAPI):
     if not hasattr(app.state, "toolbox_for"):
         app.state.toolbox_for = Toolbox.for_user
     try:
-        async with postgres_checkpointer() as saver:
-            app.state.graph = bid_graph.build(saver)
-            app.state.conversation_graph = conversation_graph.build(saver)
+        async with postgres_checkpointer() as saver, postgres_store() as store:
+            app.state.store = store
+            app.state.graph = bid_graph.build(saver, store)
+            app.state.conversation_graph = conversation_graph.build(saver, store)
             yield
     finally:
         await app.state.queue.aclose()
@@ -68,7 +79,7 @@ def create_app() -> FastAPI:
         return {"status": "ok"}
 
     for router in (auth.router, jobs.router, approvals.router, runs.router, searches.router,
-                   marketplace.router, messages.router):
+                   marketplace.router, messages.router, memory.router):
         app.include_router(router)
     return app
 

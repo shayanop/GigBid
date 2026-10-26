@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, ServerSentEventsResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ApprovalsDecideData, ApprovalsDecideErrors, ApprovalsDecideResponses, ApprovalsPendingData, ApprovalsPendingResponses, ApprovalsReviewData, ApprovalsReviewErrors, ApprovalsReviewResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutResponses, AuthMeData, AuthMeResponses, AuthSignupData, AuthSignupErrors, AuthSignupResponses, AuthUpdateSettingsData, AuthUpdateSettingsErrors, AuthUpdateSettingsResponses, JobsAnalyzeData, JobsAnalyzeErrors, JobsAnalyzeResponses, JobsDetailData, JobsDetailErrors, JobsDetailResponses, JobsInboxData, JobsInboxErrors, JobsInboxResponses, MarketplaceStatusData, MarketplaceStatusResponses, MessagesConversationData, MessagesConversationErrors, MessagesConversationResponses, MessagesConversationsData, MessagesConversationsResponses, MessagesDecideData, MessagesDecideErrors, MessagesDecideResponses, MessagesRefreshData, MessagesRefreshResponses, RunsEventsData, RunsEventsErrors, RunsEventsResponses, RunsTraceData, RunsTraceErrors, RunsTraceResponses, SearchesCreateData, SearchesCreateErrors, SearchesCreateResponses, SearchesDeleteData, SearchesDeleteErrors, SearchesDeleteResponses, SearchesListData, SearchesListResponses } from './types.gen';
+import type { ApprovalsDecideData, ApprovalsDecideErrors, ApprovalsDecideResponses, ApprovalsPendingData, ApprovalsPendingResponses, ApprovalsReviewData, ApprovalsReviewErrors, ApprovalsReviewResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutResponses, AuthMeData, AuthMeResponses, AuthSignupData, AuthSignupErrors, AuthSignupResponses, AuthUpdateSettingsData, AuthUpdateSettingsErrors, AuthUpdateSettingsResponses, JobsAnalyzeData, JobsAnalyzeErrors, JobsAnalyzeResponses, JobsDetailData, JobsDetailErrors, JobsDetailResponses, JobsInboxData, JobsInboxErrors, JobsInboxResponses, MarketplaceStatusData, MarketplaceStatusResponses, MemoryForgetOutcomesData, MemoryForgetOutcomesErrors, MemoryForgetOutcomesResponses, MemoryForgetPreferenceData, MemoryForgetPreferenceErrors, MemoryForgetPreferenceResponses, MemoryLearnedData, MemoryLearnedResponses, MessagesConversationData, MessagesConversationErrors, MessagesConversationResponses, MessagesConversationsData, MessagesConversationsResponses, MessagesDecideData, MessagesDecideErrors, MessagesDecideResponses, MessagesRefreshData, MessagesRefreshResponses, RunsEventsData, RunsEventsErrors, RunsEventsResponses, RunsTraceData, RunsTraceErrors, RunsTraceResponses, SearchesCreateData, SearchesCreateErrors, SearchesCreateResponses, SearchesDeleteData, SearchesDeleteErrors, SearchesDeleteResponses, SearchesListData, SearchesListResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -119,6 +119,23 @@ export const jobsDetail = <ThrowOnError extends boolean = false>(options: Option
  * Status
  */
 export const marketplaceStatus = <ThrowOnError extends boolean = false>(options?: Options<MarketplaceStatusData, ThrowOnError>): RequestResult<MarketplaceStatusResponses, unknown, ThrowOnError> => (options?.client ?? client).get<MarketplaceStatusResponses, unknown, ThrowOnError>({ url: '/marketplace', ...options });
+
+/**
+ * Learned
+ */
+export const memoryLearned = <ThrowOnError extends boolean = false>(options?: Options<MemoryLearnedData, ThrowOnError>): RequestResult<MemoryLearnedResponses, unknown, ThrowOnError> => (options?.client ?? client).get<MemoryLearnedResponses, unknown, ThrowOnError>({ url: '/memory', ...options });
+
+/**
+ * Forget Outcomes
+ */
+export const memoryForgetOutcomes = <ThrowOnError extends boolean = false>(options: Options<MemoryForgetOutcomesData, ThrowOnError>): RequestResult<MemoryForgetOutcomesResponses, MemoryForgetOutcomesErrors, ThrowOnError> => (options.client ?? client).delete<MemoryForgetOutcomesResponses, MemoryForgetOutcomesErrors, ThrowOnError>({ url: '/memory/outcomes/{skill}', ...options });
+
+/**
+ * Forget Preference
+ *
+ * Removes a preference or a candidate, with all its evidence.
+ */
+export const memoryForgetPreference = <ThrowOnError extends boolean = false>(options: Options<MemoryForgetPreferenceData, ThrowOnError>): RequestResult<MemoryForgetPreferenceResponses, MemoryForgetPreferenceErrors, ThrowOnError> => (options.client ?? client).delete<MemoryForgetPreferenceResponses, MemoryForgetPreferenceErrors, ThrowOnError>({ url: '/memory/preferences/{key}', ...options });
 
 /**
  * Conversations

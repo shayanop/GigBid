@@ -12,6 +12,7 @@ from langgraph.types import interrupt
 from agent.config import load_config
 from agent.handoffs import Approval, ComplianceVerdict, LiaisonReply, MessageIntent
 from agent.marketplace_port import Job, Message, Thread
+from agent.memory.promotion_rules import observe_edit
 from agent.nodes import common
 from agent.nodes.compliance import policy_pack, scrub
 from agent.nodes.risk import HARD, RULES
@@ -78,6 +79,8 @@ async def draft(state: dict) -> dict:
             else f"{rules['fixed_bid_floor']} USD for the whole job"))
     if slots:
         context.append("Interview times will be listed under your reply automatically.")
+    if prefs := await common.style_block():
+        context.append(prefs)
     reply = await common.ask("liaison", LiaisonReply,
                              "\n".join(context) + f"\n\n{_conversation(state['messages'])}")
     if slots:  # the real free times, always in one canonical UTC format
@@ -116,6 +119,9 @@ async def request_approval(state: dict) -> dict:
     if decision.action == "reject":
         return {"approval": decision, "status": "rejected", "rejection": decision.reason}
     if decision.action == "edit":
+        store, user = common.memory()
+        if store:
+            await observe_edit(store, user, body, decision.text, f"message:{_thread_id()}")
         return {"approval": decision, "status": "drafting",
                 "reply": LiaisonReply(body=decision.text),
                 "edits": [{"before": body, "after": decision.text}]}

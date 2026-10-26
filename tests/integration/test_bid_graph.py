@@ -163,3 +163,42 @@ async def test_slow_parallel_branch_times_out_into_needs_attention(harness, monk
     snap = await run(harness, {"job_id": harness.job(scam=False)})
     assert snap.values["status"] == "needs_attention"
     assert snap.values["attention"].startswith("matcher failed: TimeoutError")
+
+
+async def test_two_edits_teach_the_writer_and_outcomes_reach_the_decision(harness, monkeypatch):
+    from langgraph.store.memory import InMemoryStore
+
+    from agent.memory.promotion_rules import record_outcome
+    store, prompts, fake = InMemoryStore(), [], harness.fake
+
+    async def spy(node, schema, user):
+        prompts.append((node, user))
+        return await fake(node, schema, user)
+    monkeypatch.setattr(common, "ask", spy)
+    jobs = [j["id"] for j in harness.app.state.data["jobs"].values()
+            if j["_truth"]["category"] == "ml" and not j["_truth"]["scam"]
+            and not j["_truth"]["injection"] and not j["_truth"]["duplicate_of"]][:3]
+
+    async def run_on(job_id: str, thread: str, edit: bool):
+        harness.cfg = {"configurable": {"thread_id": thread}}
+        graph = bid_graph.build(harness.saver, store)
+        await graph.ainvoke({"job_id": job_id}, harness.cfg, context=harness.ctx)
+        if edit:  # the freelancer deletes the opening sentence every time
+            letter = (await graph.aget_state(harness.cfg)).values["draft"].cover_letter
+            await graph.ainvoke(Command(resume={"action": "edit", "text": letter.split(". ", 1)[1]}),
+                                harness.cfg, context=harness.ctx)
+        return await graph.aget_state(harness.cfg)
+
+    def writer_prompts():
+        return [u for n, u in prompts if n == "writer"]
+
+    await run_on(jobs[0], "mem-1", edit=True)
+    assert not any("Writing preferences" in p for p in writer_prompts())  # one edit is not enough
+    await run_on(jobs[1], "mem-2", edit=True)
+    prompts.clear()
+    monkeypatch.setitem(load_config()["memory"], "outcomes_min_samples", 1)
+    job = harness.app.state.data["jobs"][jobs[2]]
+    await record_outcome(store, "local", job["skills"][:1], "submitted", "past-job")
+    snap = await run_on(jobs[2], "mem-3", edit=False)
+    assert "Open with the client's problem" in writer_prompts()[0]
+    assert any("0 of 1 proposals got a reply" in r for r in snap.values["decision"].reasons)

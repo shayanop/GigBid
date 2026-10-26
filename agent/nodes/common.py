@@ -26,10 +26,26 @@ class ModelOutputError(Exception):
 class Context:
     """Per-run dependencies passed as graph context (never checkpointed)."""
     toolbox: Any  # agent.mcp_client.Toolbox
+    user_id: str = "local"  # whose long-term memory this run reads and writes
 
 
 def toolbox():
     return get_runtime(Context).context.toolbox
+
+
+def memory():
+    """(store, user_id), or (None, user_id) when the graph was compiled without a store."""
+    runtime = get_runtime(Context)
+    return runtime.store, runtime.context.user_id
+
+
+async def style_block() -> str:
+    """Promoted writing preferences, ready to append to a drafting prompt."""
+    from agent.memory.store import style_preferences
+    store, user = memory()
+    prefs = await style_preferences(store, user) if store else []
+    return ("Writing preferences learned from the freelancer's own edits (follow them):\n"
+            + "\n".join(f"- {p}" for p in prefs)) if prefs else ""
 
 
 def record(event: dict) -> None:

@@ -16,6 +16,8 @@ async def write(state: dict) -> dict:
              f"Screening questions to answer: {spec.screening_questions or 'none'}\n"
              f"Bid: {price.amount:.0f} USD ({price.budget_type})"),
              "Evidence:\n" + common.evidence_block(evidence)]
+    if prefs := await common.style_block():
+        parts.append(prefs)
     critique = state.get("critique")
     revising = bool(critique and not critique.approve)
     if revising:

@@ -600,6 +600,32 @@ export type MarketplaceStatus = {
 };
 
 /**
+ * MemoryOut
+ */
+export type MemoryOut = {
+    /**
+     * Learning
+     */
+    learning: Array<Preference>;
+    /**
+     * Outcomes
+     */
+    outcomes: Array<OutcomeStats>;
+    /**
+     * Outcomes Min Samples
+     */
+    outcomes_min_samples: number;
+    /**
+     * Preferences
+     */
+    preferences: Array<Preference>;
+    /**
+     * Style Min Support
+     */
+    style_min_support: number;
+};
+
+/**
  * Message
  */
 export type Message = {
@@ -681,6 +707,74 @@ export type MessagePreview = {
      * Thread Id
      */
     thread_id: string;
+};
+
+/**
+ * OutcomeStats
+ */
+export type OutcomeStats = {
+    /**
+     * Interview
+     */
+    interview: number;
+    /**
+     * Replied
+     */
+    replied: number;
+    /**
+     * Reply Rate
+     */
+    reply_rate: number | null;
+    /**
+     * Shown To Agents
+     */
+    shown_to_agents: boolean;
+    /**
+     * Skill
+     */
+    skill: string;
+    /**
+     * Submitted
+     */
+    submitted: number;
+};
+
+/**
+ * Preference
+ */
+export type Preference = {
+    /**
+     * Edits
+     *
+     * Separate edits that showed this
+     */
+    edits: number;
+    /**
+     * Examples
+     */
+    examples: Array<string>;
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Promoted At
+     */
+    promoted_at?: string | null;
+    /**
+     * Rule
+     *
+     * Why it was promoted
+     */
+    rule?: string | null;
+    /**
+     * Sources
+     */
+    sources: Array<string>;
+    /**
+     * Statement
+     */
+    statement: string;
 };
 
 /**
@@ -1271,6 +1365,82 @@ export type MarketplaceStatusResponses = {
 };
 
 export type MarketplaceStatusResponse = MarketplaceStatusResponses[keyof MarketplaceStatusResponses];
+
+export type MemoryLearnedData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/memory';
+};
+
+export type MemoryLearnedResponses = {
+    /**
+     * Successful Response
+     */
+    200: MemoryOut;
+};
+
+export type MemoryLearnedResponse = MemoryLearnedResponses[keyof MemoryLearnedResponses];
+
+export type MemoryForgetOutcomesData = {
+    body?: never;
+    path: {
+        /**
+         * Skill
+         */
+        skill: string;
+    };
+    query?: never;
+    url: '/memory/outcomes/{skill}';
+};
+
+export type MemoryForgetOutcomesErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type MemoryForgetOutcomesError = MemoryForgetOutcomesErrors[keyof MemoryForgetOutcomesErrors];
+
+export type MemoryForgetOutcomesResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type MemoryForgetOutcomesResponse = MemoryForgetOutcomesResponses[keyof MemoryForgetOutcomesResponses];
+
+export type MemoryForgetPreferenceData = {
+    body?: never;
+    path: {
+        /**
+         * Key
+         */
+        key: string;
+    };
+    query?: never;
+    url: '/memory/preferences/{key}';
+};
+
+export type MemoryForgetPreferenceErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type MemoryForgetPreferenceError = MemoryForgetPreferenceErrors[keyof MemoryForgetPreferenceErrors];
+
+export type MemoryForgetPreferenceResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type MemoryForgetPreferenceResponse = MemoryForgetPreferenceResponses[keyof MemoryForgetPreferenceResponses];
 
 export type MessagesConversationsData = {
     body?: never;

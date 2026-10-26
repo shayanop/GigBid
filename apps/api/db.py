@@ -12,6 +12,8 @@ from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 from psycopg_pool import AsyncConnectionPool
 
+from agent.graphs.checkpoint import migration_lock
+
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS users (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -71,7 +73,7 @@ async def open_pool(url: str | None = None) -> AsyncConnectionPool:
     pool = AsyncConnectionPool(url or os.environ["DATABASE_URL"], open=False,
                                kwargs={"row_factory": dict_row, "autocommit": True})
     await pool.open()
-    async with pool.connection() as conn:
+    async with migration_lock(url), pool.connection() as conn:
         await conn.execute(SCHEMA)
     return pool
 
