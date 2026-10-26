@@ -59,18 +59,32 @@ def evidence_block(evidence) -> str:
 
 def job_block(job) -> str:
     """Trusted marketplace fields as plain text, free text fenced as untrusted."""
-    budget = (f"{job.budget_type}, {job.budget_min or '?'}-{job.budget_max or '?'} USD"
-              if job.budget_max else f"{job.budget_type}, not stated")
+    unit = " per hour" if job.budget_type == "hourly" else ""
+    if job.budget_min and job.budget_max:
+        budget = f"{job.budget_type}, {job.budget_min:.0f}-{job.budget_max:.0f} USD{unit}"
+    elif job.budget_max:
+        budget = f"{job.budget_type}, up to {job.budget_max:.0f} USD{unit}"
+    else:
+        budget = f"{job.budget_type}, not stated"
     questions = "\n".join(f"- {q}" for q in job.screening_questions) or "none"
     return (f"Job id: {job.id}\nBudget: {budget}\nListed skills: {', '.join(job.skills)}\n"
             + untrusted("job_post", f"{job.title}\n\n{job.description}\n\n"
                                     f"Screening questions:\n{questions}"))
 
 
+def _norm(text: str) -> str:
+    """Lowercase words only, citations removed: models rarely quote sentences exactly."""
+    return re.sub(r"\W+", " ", re.sub(r"\[[^\]]*\]", " ", text)).strip().lower()
+
+
 def drop_sentences(text: str, sentences) -> str:
-    for s in sentences:
-        text = text.replace(s, "")
-    return re.sub(r"[ \t]{2,}", " ", re.sub(r"\n{3,}", "\n\n", text)).strip()
+    """Removes every sentence of text that contains one of `sentences` (fuzzy match),
+    keeping paragraph breaks."""
+    targets = [t for t in map(_norm, sentences) if t]
+    paragraphs = [" ".join(s for s in re.split(r"(?<=[.!?])\s+", p.strip())
+                           if s and not any(t in _norm(s) for t in targets))
+                  for p in text.split("\n")]
+    return re.sub(r"\n{3,}", "\n\n", "\n".join(paragraphs)).strip()
 
 
 async def ask(node: str, schema, user: str):

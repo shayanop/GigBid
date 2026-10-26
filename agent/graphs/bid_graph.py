@@ -9,6 +9,7 @@ scout -> analyst | risk | matcher (parallel via Send) -> decide
 A node that still fails after retries goes to dead_letter (needs attention).
 """
 
+import asyncio
 import difflib
 import hashlib
 import json
@@ -127,6 +128,23 @@ def _retryable(e: Exception) -> bool:
     return not isinstance(e, PermissionError | ToolCallError | ValueError | TypeError | KeyError)
 
 
+def _contained(name: str, fn):
+    """Same retries as the graph default, but a final failure becomes needs_attention
+    instead of an exception. LangGraph 1.2 skips error_handler when another task runs in
+    the same step, so the parallel branches must catch their own failures."""
+    async def run(state: dict) -> dict:
+        delay = load_config()["budgets"]["retry_initial_seconds"]
+        for attempt in range(3):
+            try:
+                return await fn(state)
+            except Exception as e:  # noqa: BLE001 - any failure must end as needs_attention
+                if not _retryable(e) or attempt == 2:
+                    reason = f"{name} failed: {type(e).__name__}: {e}"
+                    return {"status": "needs_attention", "attention": reason[:500]}
+                await asyncio.sleep(delay * 2**attempt)
+    return run
+
+
 def _then(nxt: str):
     return lambda s: END if s.get("status") == "needs_attention" else nxt
 
@@ -165,7 +183,10 @@ def build(checkpointer=None, store=None):
                      ("verifier", verifier.verify), ("critic", critic.review),
                      ("compliance", compliance.check), ("approval", request_approval),
                      ("submit", submit)]:
-        g.add_node(name, fn)
+        if name in PARALLEL:
+            g.add_node(name, _contained(name, fn), retry_policy=RetryPolicy(max_attempts=1))
+        else:
+            g.add_node(name, fn)
     g.add_edge(START, "scout")
     g.add_conditional_edges("scout", _fan_out, [*PARALLEL, END])
     for name in PARALLEL:
@@ -183,15 +204,21 @@ def build(checkpointer=None, store=None):
 
 
 async def _demo(job_id: str) -> None:
-    """Dev smoke run with real models: in-process MCP servers, GigSim at GIGSIM_URL,
-    users from MARKETPLACE_LOCAL_USER / PORTFOLIO_LOCAL_USER. Stops at approval."""
+    """Dev smoke run with real models; GigSim and both MCP servers run in this process.
+    Users come from MARKETPLACE_LOCAL_USER / PORTFOLIO_LOCAL_USER. Stops at approval."""
+    import httpx
     from langgraph.checkpoint.memory import InMemorySaver
 
     from agent.graphs.checkpoint import serde
     from agent.mcp_client import Toolbox
+    from gigsim.app import create_app
     from mcp_servers.marketplace import server as marketplace
+    from mcp_servers.marketplace.adapters.gigsim import GigSimAdapter
     from mcp_servers.portfolio import server as portfolio
 
+    gigsim = create_app()
+    marketplace.adapter_for = lambda user: GigSimAdapter(
+        "http://gigsim", user, transport=httpx.ASGITransport(app=gigsim))
     cfg = {"configurable": {"thread_id": f"demo-{job_id}"}}
     graph = build(InMemorySaver(serde=serde()))
     toolbox = Toolbox({"marketplace": marketplace.mcp, "portfolio": portfolio.mcp})
@@ -212,4 +239,5 @@ if __name__ == "__main__":
     import asyncio
     import sys
 
+    sys.stdout.reconfigure(encoding="utf-8")  # model output has non-ASCII; Windows consoles
     asyncio.run(_demo(sys.argv[1]))

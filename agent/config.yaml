@@ -9,19 +9,15 @@ profile: open # override with GIGBID_PROFILE
 profiles:
   open: # deployed profile: open-weight models served by Groq
     default: groq:openai/gpt-oss-20b
-    default_fallback: groq:llama-3.1-8b-instant
+    default_fallback: groq:openai/gpt-oss-120b
     nodes:
       writer: groq:openai/gpt-oss-120b
       critic: groq:openai/gpt-oss-120b
       liaison: groq:openai/gpt-oss-120b
 
-  open_alt: # second open configuration for the model comparison
-    default: groq:llama-3.1-8b-instant
-    default_fallback: groq:openai/gpt-oss-20b
-    nodes:
-      writer: groq:llama-3.3-70b-versatile
-      critic: groq:llama-3.3-70b-versatile
-      liaison: groq:llama-3.3-70b-versatile
+  open_alt: # second open configuration for the model comparison: small model everywhere
+    default: groq:openai/gpt-oss-20b
+    default_fallback: groq:openai/gpt-oss-120b
 
   local: # small nodes on the compose Ollama service, heavy nodes on Groq
     default: ollama:qwen3:4b

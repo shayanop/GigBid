@@ -6,6 +6,8 @@ this is exact and sub-millisecond. Move to pgvector past ~100k chunks.
 
 import hashlib
 import json
+import os
+import threading
 from collections.abc import Callable
 from functools import cache
 from pathlib import Path
@@ -77,11 +79,14 @@ def build_index(persona_dir: Path, index_dir: Path, embedder: Embedder,
     old = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
     reusable: dict[str, list[tuple[Chunk, np.ndarray]]] = {}
     if old.get("embedder") == embedder.name and old.get("chunker") == chunker_key:
-        lines = (index_dir / "chunks.jsonl").read_text(encoding="utf-8").splitlines()
-        vectors = np.load(index_dir / "vectors.npy")
-        for line, vec in zip(lines, vectors, strict=True):
-            chunk = Chunk.model_validate_json(line)
-            reusable.setdefault(chunk.doc_id, []).append((chunk, vec))
+        try:
+            lines = (index_dir / "chunks.jsonl").read_text(encoding="utf-8").splitlines()
+            vectors = np.load(index_dir / "vectors.npy")
+            for line, vec in zip(lines, vectors, strict=True):
+                chunk = Chunk.model_validate_json(line)
+                reusable.setdefault(chunk.doc_id, []).append((chunk, vec))
+        except (OSError, ValueError):  # partial or corrupt index: re-embed everything
+            reusable = {}
 
     hashes, rows, fresh = {}, [], []
     for doc in docs:
@@ -98,10 +103,18 @@ def build_index(persona_dir: Path, index_dir: Path, embedder: Embedder,
     dim = rows[0][1].shape[0] if rows else 0
     vectors = np.stack([v for _, v in rows]) if rows else np.zeros((0, dim), np.float32)
     index_dir.mkdir(parents=True, exist_ok=True)
-    np.save(index_dir / "vectors.npy", vectors)
-    (index_dir / "chunks.jsonl").write_text(
-        "".join(c.model_dump_json() + "\n" for c in chunks), encoding="utf-8")
-    manifest_path.write_text(json.dumps(
+    _atomic(index_dir / "vectors.npy", lambda f: np.save(f, vectors))
+    _atomic(index_dir / "chunks.jsonl",
+            lambda f: f.write("".join(c.model_dump_json() + "\n" for c in chunks).encode()))
+    _atomic(manifest_path, lambda f: f.write(json.dumps(
         {"embedder": embedder.name, "chunker": chunker_key, "docs": hashes,
-         "embedded_chunks": len(fresh)}, indent=1))
+         "embedded_chunks": len(fresh)}, indent=1).encode()))
     return VectorIndex(chunks, vectors, embedder)
+
+
+def _atomic(path: Path, write) -> None:
+    """Readers see the old file or the new one, never a half-written one."""
+    tmp = path.with_name(f"{path.name}.{os.getpid()}.{threading.get_ident()}.tmp")
+    with tmp.open("wb") as f:
+        write(f)
+    os.replace(tmp, path)

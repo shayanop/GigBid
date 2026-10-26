@@ -38,7 +38,9 @@ def model_spec(node: str) -> tuple[str, str | None]:
 def _build(spec: str, schema):
     provider, model = spec.split(":", 1)
     llm = init_chat_model(model, model_provider=provider)
-    return llm.with_structured_output(schema, include_raw=True) if schema else llm
+    # json_schema = constrained decoding; tool calling truncated long outputs on Groq gpt-oss.
+    return llm.with_structured_output(schema, method="json_schema", include_raw=True) \
+        if schema else llm
 
 
 def get_model(node: str, schema=None):

@@ -30,6 +30,7 @@ from gigsim.app import create_app
 from mcp_servers.marketplace import server as marketplace
 from mcp_servers.marketplace.adapters.gigsim import GigSimAdapter
 from mcp_servers.portfolio import server as portfolio
+from rag import retriever
 
 FAKE_ID = "fr_ml-p99#0"  # not in the portfolio; the verifier must reject claims citing it
 FILLER = "I would start with a short call to confirm scope, data access and milestones. " * 6
@@ -208,6 +209,17 @@ async def test_marketplace_outage_dead_letters_the_thread(harness, monkeypatch):
     snap = await run(harness, {"job_id": harness.job(scam=False)})
     assert snap.values["status"] == "needs_attention"
     assert "ToolUnavailable" in snap.values["attention"]
+
+
+async def test_failure_in_a_parallel_branch_needs_attention_instead_of_crashing(
+        harness, monkeypatch):
+    def broken(persona, variant=None):
+        raise RuntimeError("index unreadable")
+    monkeypatch.setattr(retriever, "get_retriever", broken)
+    snap = await run(harness, {"job_id": harness.job(scam=False)})
+    assert snap.values["status"] == "needs_attention" and snap.next == ()
+    assert snap.values["attention"].startswith("matcher failed: ToolCallError")
+    assert "pricing" not in nodes(snap)
 
 
 async def test_crash_after_submit_retries_without_double_charge(harness, monkeypatch):

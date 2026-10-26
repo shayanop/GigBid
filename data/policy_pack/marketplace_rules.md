@@ -1,7 +1,8 @@
 # Marketplace policy pack (GigSim, mirrors common freelance platform rules)
 
 1. off_platform_contact: Do not share email, phone, messaging apps or social handles before a
-   contract starts, and do not ask the client to.
+   contract starts, and do not ask the client to. Offering a call, video meeting or interview
+   is allowed: the platform provides messaging and calls.
 2. off_platform_payment: All payment goes through the platform. No crypto, bank transfer or
    "pay me directly" offers.
 3. fabricated_experience: Do not claim skills, clients, results or years of experience you

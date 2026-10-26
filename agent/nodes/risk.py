@@ -17,6 +17,7 @@ RULES = {
                          r"|\bai (?:assistants?|agents?)\b|^\s*system\s*:|pre-approved"),
 }
 HARD = {"off_platform_contact", "off_platform_payment", "free_work", "sensitive_data"}
+FACT_FLAGS = {"unverified_client", "no_spend_history"}
 
 
 def rule_flags(text: str, client: Client) -> list[str]:
@@ -40,7 +41,9 @@ async def assess(state: dict) -> dict:
                f"{client.member_since:%Y-%m}.\nRule flags: {', '.join(flags) or 'none'}\n")
     report = await common.ask("risk", RiskReport, history + common.job_block(job))
     floor = 0.8 if HARD & set(flags) else 0.3 if "unverified_client" in flags else 0.0
+    # Facts from client history belong to the rules; the model has invented them before.
+    model_flags = {f for f in report.flags if f not in FACT_FLAGS}
     report = report.model_copy(update={
-        "score": max(report.score, floor), "flags": sorted({*report.flags, *flags}),
+        "score": max(report.score, floor), "flags": sorted(model_flags | set(flags)),
         "injection_detected": report.injection_detected or "prompt_injection" in flags})
     return {"risk": report, "client": client}

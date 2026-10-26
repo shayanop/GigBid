@@ -67,3 +67,11 @@ def test_retrieval_metrics():
     assert 0 < ndcg_at_k(["b", "a"], relevant, 10) < 1
     hits = [type("E", (), {"project": p})() for p in ["a", None, "a", "b"]]
     assert rank_projects(hits) == ["a", "b"]
+
+
+def test_drop_sentences_matches_loosely_and_keeps_paragraphs():
+    from agent.nodes.common import drop_sentences
+    text = ("I built a Celery queue [p1#0]. I have 15 years of Rust [p9#0].\n\n"
+            "Next step: a short call.")
+    out = drop_sentences(text, ["I have 15 years of Rust experience", "15 years of Rust"])
+    assert out == "I built a Celery queue [p1#0].\n\nNext step: a short call."

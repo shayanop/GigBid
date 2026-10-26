@@ -5,6 +5,7 @@ returning an object with search(query, k, where) -> list[Evidence].
 """
 
 import importlib
+import threading
 from functools import cache
 from pathlib import Path
 
@@ -26,6 +27,16 @@ def build_retriever(persona: str, variant: str | None = None, embedder=None):
     return importlib.import_module(f"rag.variants.{VARIANTS[name]}").build(persona, embedder)
 
 
-@cache
+_build_lock = threading.Lock()
+
+
 def get_retriever(persona: str, variant: str | None = None):
+    """Process-wide retriever per persona. The lock stops parallel first searches from
+    building (and writing) the same index at once."""
+    with _build_lock:
+        return _cached(persona, variant)
+
+
+@cache
+def _cached(persona: str, variant: str | None):
     return build_retriever(persona, variant)
