@@ -26,6 +26,17 @@ services:
     ports: ["8200:8200"]
     depends_on: [gigsim]
 
+  portfolio-mcp:
+    <<: *python
+    command: python -m mcp_servers.portfolio.server
+    environment:
+      HOST: 0.0.0.0
+      PORTFOLIO_MCP_URL: http://portfolio-mcp:8300/mcp
+      PORTFOLIO_MCP_TOKENS: ${PORTFOLIO_MCP_TOKENS}
+      FASTEMBED_CACHE_PATH: /models
+    volumes: [models:/models, index:/app/data/processed/index]
+    ports: ["8300:8300"]
+
   postgres: # relational data, LangGraph checkpoints/store, pgvector
     image: pgvector/pgvector:pg17
     environment:
@@ -54,5 +65,7 @@ services:
 
 volumes:
   audit:
+  index:
+  models:
   pgdata:
   ollama:

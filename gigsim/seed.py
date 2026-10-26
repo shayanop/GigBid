@@ -5,6 +5,7 @@ bands, hidden client preferences) and are never returned by the API.
 """
 
 import random
+import re
 from datetime import UTC, datetime, timedelta
 
 NOW = datetime(2026, 10, 1, tzinfo=UTC)
@@ -74,6 +75,11 @@ QUESTIONS = ["Describe a similar project you completed.", "What is your availabi
 COUNTRIES = ["US", "UK", "Germany", "Canada", "Australia", "UAE", "India", "Netherlands"]
 
 
+def mentioned_skills(text: str, vocab: list[str]) -> list[str]:
+    """Skills from vocab named in text, so titles never contradict the skill labels."""
+    return [s for s in vocab if re.search(rf"\b{re.escape(s.lower())}\b", text.lower())]
+
+
 def _client(rng: random.Random, i: int, scammy: bool) -> dict:
     cid = f"cl_{i:04d}"
     if scammy:
@@ -101,7 +107,9 @@ def _client(rng: random.Random, i: int, scammy: bool) -> dict:
 def _job(rng: random.Random, i: int, client: dict, scam: bool, injection: bool) -> dict:
     cat = rng.choices(list(CATEGORIES), weights=[3, 3, 3, 1])[0]
     spec = CATEGORIES[cat]
+    title = rng.choice(spec["titles"])
     skills = rng.sample(spec["skills"], k=min(len(spec["skills"]), rng.randint(2, 5)))
+    skills += [s for s in mentioned_skills(title, spec["skills"]) if s not in skills]
     weeks = rng.randint(1, 12)
     lo, hi = spec["rate"]
     hourly = rng.random() < 0.4
@@ -112,7 +120,7 @@ def _job(rng: random.Random, i: int, client: dict, scam: bool, injection: bool) 
         est = weeks * rng.randint(10, 30) * (lo + hi) / 2
         bmin, bmax = None, round(est * rng.uniform(0.5, 1.2), -1)
         fair = [round(est * 0.7, -1), round(est * 1.3, -1)]
-    parts = [f"{rng.choice(INTROS)}. We need: {rng.choice(spec['titles']).lower()}.",
+    parts = [f"{rng.choice(INTROS)}. We need: {title.lower()}.",
              f"Must have experience with {', '.join(skills)}.",
              rng.choice(IMPLICIT), f"Expected timeline: {weeks} weeks."]
     if scam:
@@ -122,7 +130,7 @@ def _job(rng: random.Random, i: int, client: dict, scam: bool, injection: bool) 
     budget = bmax or 0
     return {
         "id": f"job_{i:05d}",
-        "title": rng.choice(spec["titles"]),
+        "title": title,
         "description": " ".join(p for p in parts if p),
         "skills": skills,
         "budget_type": "hourly" if hourly else "fixed",

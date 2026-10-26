@@ -34,6 +34,12 @@ profiles:
 marketplace:
   adapter: gigsim # gigsim | upwork
 
+rag: # deployed retrieval pipeline; change only from evals/results evidence (R6)
+  variant: v0
+  embedding_model: BAAI/bge-small-en-v1.5
+  chunk_size: 800 # characters, V0 fixed-size chunking
+  chunk_overlap: 100
+
 # Initial values; retune from evals/results.
 decision:
   bid_min_fit: 0.70
@@ -42,10 +48,22 @@ decision:
 
 critic:
   max_revisions: 2
+  min_words: 60
+  max_words: 250
+
+pricing:
+  hourly_rate_floor: 40 # USD; per-user settings override this later
+  fixed_bid_floor: 300
+  assumed_hours: 40 # to value hourly jobs
+  win_rate_at_full_fit: 0.25
+
+policy_pack: data/policy_pack
 
 budgets: # per graph thread; exhaustion -> needs_attention
   max_steps: 40
   max_tokens: 60000
+  node_timeout_seconds: 120
+  retry_initial_seconds: 1.0 # node retries back off from here (3 attempts)
 
 targets: # declared latency/cost budgets (R8, E5)
   p95_analyze_seconds: 20

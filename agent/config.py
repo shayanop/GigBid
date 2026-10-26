@@ -38,11 +38,13 @@ def model_spec(node: str) -> tuple[str, str | None]:
 def _build(spec: str, schema):
     provider, model = spec.split(":", 1)
     llm = init_chat_model(model, model_provider=provider)
-    return llm.with_structured_output(schema) if schema else llm
+    return llm.with_structured_output(schema, include_raw=True) if schema else llm
 
 
 def get_model(node: str, schema=None):
-    """Chat model for `node`, optionally bound to a Pydantic output schema."""
+    """Chat model for `node`. With a Pydantic schema it returns
+    {"raw": AIMessage, "parsed": schema | None, "parsing_error": ...} so callers keep
+    token usage."""
     primary, fallback = model_spec(node)
     llm = _build(primary, schema)
     return llm.with_fallbacks([_build(fallback, schema)]) if fallback else llm

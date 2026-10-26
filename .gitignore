@@ -5,3 +5,4 @@ __pycache__/
 .ruff_cache/
 node_modules/
 data/processed/
+GiGBid_Project_Specifications.md

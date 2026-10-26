@@ -1,0 +1,852 @@
+{
+ "fr_ml-p01": {
+  "persona": "fr_ml",
+  "skills": [
+   "scikit-learn",
+   "MLOps",
+   "Python",
+   "LangGraph"
+  ],
+  "named": [
+   "scikit-learn",
+   "Python"
+  ]
+ },
+ "fr_ml-p02": {
+  "persona": "fr_ml",
+  "skills": [
+   "scikit-learn",
+   "PyTorch",
+   "LangGraph",
+   "MLOps",
+   "RAG"
+  ],
+  "named": [
+   "RAG",
+   "MLOps",
+   "scikit-learn"
+  ]
+ },
+ "fr_ml-p03": {
+  "persona": "fr_ml",
+  "skills": [
+   "Docker",
+   "scikit-learn",
+   "Python",
+   "LangGraph",
+   "OpenAI API",
+   "RAG"
+  ],
+  "named": [
+   "OpenAI API",
+   "scikit-learn",
+   "Python",
+   "RAG"
+  ]
+ },
+ "fr_ml-p04": {
+  "persona": "fr_ml",
+  "skills": [
+   "PyTorch",
+   "Docker",
+   "MLOps",
+   "FastAPI"
+  ],
+  "named": [
+   "Docker",
+   "FastAPI"
+  ]
+ },
+ "fr_ml-p05": {
+  "persona": "fr_ml",
+  "skills": [
+   "MLOps",
+   "FastAPI",
+   "scikit-learn",
+   "Hugging Face"
+  ],
+  "named": [
+   "Hugging Face",
+   "scikit-learn"
+  ]
+ },
+ "fr_ml-p06": {
+  "persona": "fr_ml",
+  "skills": [
+   "PyTorch",
+   "Docker",
+   "RAG",
+   "FastAPI"
+  ],
+  "named": [
+   "FastAPI",
+   "Docker"
+  ]
+ },
+ "fr_ml-p07": {
+  "persona": "fr_ml",
+  "skills": [
+   "LangChain",
+   "Pinecone",
+   "scikit-learn",
+   "Python"
+  ],
+  "named": [
+   "LangChain",
+   "scikit-learn"
+  ]
+ },
+ "fr_ml-p08": {
+  "persona": "fr_ml",
+  "skills": [
+   "Docker",
+   "Pinecone",
+   "PyTorch",
+   "OpenAI API"
+  ],
+  "named": [
+   "PyTorch",
+   "Pinecone"
+  ]
+ },
+ "fr_ml-p09": {
+  "persona": "fr_ml",
+  "skills": [
+   "RAG",
+   "scikit-learn",
+   "Hugging Face",
+   "Python",
+   "FastAPI"
+  ],
+  "named": [
+   "Python",
+   "Hugging Face",
+   "RAG"
+  ]
+ },
+ "fr_ml-p10": {
+  "persona": "fr_ml",
+  "skills": [
+   "OpenAI API",
+   "LangGraph",
+   "scikit-learn"
+  ],
+  "named": [
+   "LangGraph",
+   "scikit-learn"
+  ]
+ },
+ "fr_ml-p11": {
+  "persona": "fr_ml",
+  "skills": [
+   "FastAPI",
+   "RAG",
+   "scikit-learn",
+   "Hugging Face"
+  ],
+  "named": [
+   "Hugging Face",
+   "FastAPI"
+  ]
+ },
+ "fr_ml-p12": {
+  "persona": "fr_ml",
+  "skills": [
+   "Pinecone",
+   "Docker",
+   "LangChain"
+  ],
+  "named": [
+   "Docker",
+   "LangChain"
+  ]
+ },
+ "fr_ml-p13": {
+  "persona": "fr_ml",
+  "skills": [
+   "LangChain",
+   "FastAPI",
+   "Docker",
+   "Python"
+  ],
+  "named": [
+   "Python",
+   "Docker"
+  ]
+ },
+ "fr_ml-p14": {
+  "persona": "fr_ml",
+  "skills": [
+   "scikit-learn",
+   "Python",
+   "LangGraph",
+   "PyTorch",
+   "Docker"
+  ],
+  "named": [
+   "PyTorch",
+   "Python",
+   "scikit-learn"
+  ]
+ },
+ "fr_ml-p15": {
+  "persona": "fr_ml",
+  "skills": [
+   "PyTorch",
+   "Hugging Face",
+   "Docker",
+   "Python",
+   "OpenAI API"
+  ],
+  "named": [
+   "Hugging Face",
+   "Python",
+   "PyTorch"
+  ]
+ },
+ "fr_ml-p16": {
+  "persona": "fr_ml",
+  "skills": [
+   "Pinecone",
+   "OpenAI API",
+   "RAG",
+   "PyTorch"
+  ],
+  "named": [
+   "OpenAI API",
+   "Pinecone"
+  ]
+ },
+ "fr_ml-p17": {
+  "persona": "fr_ml",
+  "skills": [
+   "Python",
+   "LangGraph",
+   "FastAPI",
+   "Hugging Face",
+   "LangChain"
+  ],
+  "named": [
+   "LangChain",
+   "Python",
+   "FastAPI"
+  ]
+ },
+ "fr_ml-p18": {
+  "persona": "fr_ml",
+  "skills": [
+   "LangChain",
+   "Hugging Face",
+   "LangGraph",
+   "FastAPI"
+  ],
+  "named": [
+   "LangGraph",
+   "FastAPI"
+  ]
+ },
+ "fr_ml-p19": {
+  "persona": "fr_ml",
+  "skills": [
+   "LangGraph",
+   "FastAPI",
+   "Pinecone"
+  ],
+  "named": [
+   "FastAPI",
+   "LangGraph"
+  ]
+ },
+ "fr_ml-p20": {
+  "persona": "fr_ml",
+  "skills": [
+   "Hugging Face",
+   "Pinecone",
+   "OpenAI API",
+   "Docker",
+   "PyTorch",
+   "FastAPI"
+  ],
+  "named": [
+   "Pinecone",
+   "Hugging Face",
+   "FastAPI",
+   "Docker"
+  ]
+ },
+ "fr_fs-p01": {
+  "persona": "fr_fs",
+  "skills": [
+   "TypeScript",
+   "Stripe",
+   "Django",
+   "PostgreSQL",
+   "Celery"
+  ],
+  "named": [
+   "Django",
+   "Stripe",
+   "Celery"
+  ]
+ },
+ "fr_fs-p02": {
+  "persona": "fr_fs",
+  "skills": [
+   "Redis",
+   "Node.js",
+   "Stripe",
+   "Next.js"
+  ],
+  "named": [
+   "Next.js",
+   "Node.js"
+  ]
+ },
+ "fr_fs-p03": {
+  "persona": "fr_fs",
+  "skills": [
+   "Redis",
+   "FastAPI",
+   "Django",
+   "Next.js",
+   "Stripe"
+  ],
+  "named": [
+   "FastAPI",
+   "Django",
+   "Redis"
+  ]
+ },
+ "fr_fs-p04": {
+  "persona": "fr_fs",
+  "skills": [
+   "Tailwind CSS",
+   "Next.js",
+   "FastAPI",
+   "Redis",
+   "Stripe"
+  ],
+  "named": [
+   "Redis",
+   "Next.js",
+   "Tailwind CSS"
+  ]
+ },
+ "fr_fs-p05": {
+  "persona": "fr_fs",
+  "skills": [
+   "Tailwind CSS",
+   "Stripe",
+   "Node.js",
+   "Django"
+  ],
+  "named": [
+   "Tailwind CSS",
+   "Django"
+  ]
+ },
+ "fr_fs-p06": {
+  "persona": "fr_fs",
+  "skills": [
+   "Next.js",
+   "React",
+   "FastAPI",
+   "AWS"
+  ],
+  "named": [
+   "Next.js",
+   "AWS"
+  ]
+ },
+ "fr_fs-p07": {
+  "persona": "fr_fs",
+  "skills": [
+   "Tailwind CSS",
+   "Stripe",
+   "TypeScript",
+   "Next.js",
+   "React"
+  ],
+  "named": [
+   "Next.js",
+   "TypeScript",
+   "Tailwind CSS"
+  ]
+ },
+ "fr_fs-p08": {
+  "persona": "fr_fs",
+  "skills": [
+   "PostgreSQL",
+   "TypeScript",
+   "AWS",
+   "React"
+  ],
+  "named": [
+   "PostgreSQL",
+   "AWS"
+  ]
+ },
+ "fr_fs-p09": {
+  "persona": "fr_fs",
+  "skills": [
+   "Celery",
+   "TypeScript",
+   "Django",
+   "Redis",
+   "FastAPI",
+   "React"
+  ],
+  "named": [
+   "Django",
+   "Celery",
+   "React",
+   "Redis"
+  ]
+ },
+ "fr_fs-p10": {
+  "persona": "fr_fs",
+  "skills": [
+   "Tailwind CSS",
+   "Node.js",
+   "React",
+   "Celery"
+  ],
+  "named": [
+   "React",
+   "Node.js"
+  ]
+ },
+ "fr_fs-p11": {
+  "persona": "fr_fs",
+  "skills": [
+   "FastAPI",
+   "React",
+   "TypeScript"
+  ],
+  "named": [
+   "FastAPI",
+   "React"
+  ]
+ },
+ "fr_fs-p12": {
+  "persona": "fr_fs",
+  "skills": [
+   "Redis",
+   "Node.js",
+   "Celery",
+   "Stripe"
+  ],
+  "named": [
+   "Node.js",
+   "Stripe"
+  ]
+ },
+ "fr_fs-p13": {
+  "persona": "fr_fs",
+  "skills": [
+   "FastAPI",
+   "TypeScript",
+   "Django"
+  ],
+  "named": [
+   "TypeScript",
+   "FastAPI"
+  ]
+ },
+ "fr_fs-p14": {
+  "persona": "fr_fs",
+  "skills": [
+   "Celery",
+   "PostgreSQL",
+   "Stripe",
+   "Next.js"
+  ],
+  "named": [
+   "Next.js",
+   "PostgreSQL"
+  ]
+ },
+ "fr_fs-p15": {
+  "persona": "fr_fs",
+  "skills": [
+   "PostgreSQL",
+   "FastAPI",
+   "TypeScript"
+  ],
+  "named": [
+   "PostgreSQL",
+   "TypeScript"
+  ]
+ },
+ "fr_fs-p16": {
+  "persona": "fr_fs",
+  "skills": [
+   "Celery",
+   "Tailwind CSS",
+   "FastAPI",
+   "React"
+  ],
+  "named": [
+   "FastAPI",
+   "React"
+  ]
+ },
+ "fr_fs-p17": {
+  "persona": "fr_fs",
+  "skills": [
+   "Next.js",
+   "React",
+   "PostgreSQL",
+   "Stripe"
+  ],
+  "named": [
+   "PostgreSQL",
+   "Next.js"
+  ]
+ },
+ "fr_fs-p18": {
+  "persona": "fr_fs",
+  "skills": [
+   "Redis",
+   "AWS",
+   "Celery",
+   "Next.js",
+   "Tailwind CSS",
+   "Django"
+  ],
+  "named": [
+   "AWS",
+   "Next.js",
+   "Celery",
+   "Tailwind CSS"
+  ]
+ },
+ "fr_fs-p19": {
+  "persona": "fr_fs",
+  "skills": [
+   "FastAPI",
+   "TypeScript",
+   "PostgreSQL",
+   "Node.js",
+   "Stripe",
+   "Django"
+  ],
+  "named": [
+   "PostgreSQL",
+   "Stripe",
+   "Django",
+   "Node.js"
+  ]
+ },
+ "fr_fs-p20": {
+  "persona": "fr_fs",
+  "skills": [
+   "Django",
+   "React",
+   "Tailwind CSS",
+   "Celery",
+   "Stripe"
+  ],
+  "named": [
+   "React",
+   "Celery",
+   "Stripe"
+  ]
+ },
+ "fr_da-p01": {
+  "persona": "fr_da",
+  "skills": [
+   "Looker",
+   "Airflow",
+   "BigQuery",
+   "Power BI"
+  ],
+  "named": [
+   "Airflow",
+   "Looker"
+  ]
+ },
+ "fr_da-p02": {
+  "persona": "fr_da",
+  "skills": [
+   "SQL",
+   "Tableau",
+   "dbt",
+   "Airflow",
+   "BigQuery"
+  ],
+  "named": [
+   "SQL",
+   "dbt",
+   "Tableau"
+  ]
+ },
+ "fr_da-p03": {
+  "persona": "fr_da",
+  "skills": [
+   "Looker",
+   "Power BI",
+   "Python",
+   "pandas",
+   "Airflow",
+   "Excel"
+  ],
+  "named": [
+   "Looker",
+   "Power BI",
+   "Python",
+   "pandas"
+  ]
+ },
+ "fr_da-p04": {
+  "persona": "fr_da",
+  "skills": [
+   "dbt",
+   "BigQuery",
+   "Python",
+   "Power BI",
+   "Airflow",
+   "Excel"
+  ],
+  "named": [
+   "Power BI",
+   "BigQuery",
+   "Airflow",
+   "dbt"
+  ]
+ },
+ "fr_da-p05": {
+  "persona": "fr_da",
+  "skills": [
+   "Power BI",
+   "BigQuery",
+   "SQL",
+   "dbt",
+   "Looker"
+  ],
+  "named": [
+   "Looker",
+   "dbt",
+   "BigQuery"
+  ]
+ },
+ "fr_da-p06": {
+  "persona": "fr_da",
+  "skills": [
+   "Power BI",
+   "Statistics",
+   "dbt"
+  ],
+  "named": [
+   "Statistics",
+   "Power BI"
+  ]
+ },
+ "fr_da-p07": {
+  "persona": "fr_da",
+  "skills": [
+   "pandas",
+   "Snowflake",
+   "Excel",
+   "Tableau",
+   "Python"
+  ],
+  "named": [
+   "Python",
+   "Tableau",
+   "Excel"
+  ]
+ },
+ "fr_da-p08": {
+  "persona": "fr_da",
+  "skills": [
+   "Statistics",
+   "Power BI",
+   "dbt",
+   "BigQuery",
+   "Snowflake"
+  ],
+  "named": [
+   "Snowflake",
+   "Power BI",
+   "dbt"
+  ]
+ },
+ "fr_da-p09": {
+  "persona": "fr_da",
+  "skills": [
+   "Snowflake",
+   "SQL",
+   "dbt",
+   "Power BI"
+  ],
+  "named": [
+   "dbt",
+   "SQL"
+  ]
+ },
+ "fr_da-p10": {
+  "persona": "fr_da",
+  "skills": [
+   "BigQuery",
+   "Excel",
+   "Tableau",
+   "Statistics",
+   "dbt",
+   "Snowflake"
+  ],
+  "named": [
+   "Statistics",
+   "dbt",
+   "Tableau",
+   "Snowflake"
+  ]
+ },
+ "fr_da-p11": {
+  "persona": "fr_da",
+  "skills": [
+   "dbt",
+   "pandas",
+   "BigQuery"
+  ],
+  "named": [
+   "BigQuery",
+   "dbt"
+  ]
+ },
+ "fr_da-p12": {
+  "persona": "fr_da",
+  "skills": [
+   "pandas",
+   "Tableau",
+   "Statistics",
+   "Python",
+   "Airflow",
+   "Power BI"
+  ],
+  "named": [
+   "Power BI",
+   "Python",
+   "Tableau",
+   "pandas"
+  ]
+ },
+ "fr_da-p13": {
+  "persona": "fr_da",
+  "skills": [
+   "Snowflake",
+   "Airflow",
+   "Python",
+   "Power BI"
+  ],
+  "named": [
+   "Python",
+   "Power BI"
+  ]
+ },
+ "fr_da-p14": {
+  "persona": "fr_da",
+  "skills": [
+   "BigQuery",
+   "Excel",
+   "Statistics",
+   "Power BI",
+   "Looker"
+  ],
+  "named": [
+   "Statistics",
+   "Power BI",
+   "Excel"
+  ]
+ },
+ "fr_da-p15": {
+  "persona": "fr_da",
+  "skills": [
+   "Airflow",
+   "dbt",
+   "Statistics",
+   "Snowflake",
+   "Looker"
+  ],
+  "named": [
+   "Statistics",
+   "Snowflake",
+   "dbt"
+  ]
+ },
+ "fr_da-p16": {
+  "persona": "fr_da",
+  "skills": [
+   "dbt",
+   "BigQuery",
+   "SQL",
+   "pandas",
+   "Python",
+   "Snowflake"
+  ],
+  "named": [
+   "Snowflake",
+   "SQL",
+   "dbt",
+   "Python"
+  ]
+ },
+ "fr_da-p17": {
+  "persona": "fr_da",
+  "skills": [
+   "BigQuery",
+   "SQL",
+   "Looker",
+   "dbt",
+   "Snowflake"
+  ],
+  "named": [
+   "Looker",
+   "dbt",
+   "Snowflake"
+  ]
+ },
+ "fr_da-p18": {
+  "persona": "fr_da",
+  "skills": [
+   "dbt",
+   "Statistics",
+   "Looker",
+   "Power BI"
+  ],
+  "named": [
+   "dbt",
+   "Looker"
+  ]
+ },
+ "fr_da-p19": {
+  "persona": "fr_da",
+  "skills": [
+   "SQL",
+   "dbt",
+   "Tableau",
+   "pandas",
+   "Power BI"
+  ],
+  "named": [
+   "dbt",
+   "SQL",
+   "Tableau"
+  ]
+ },
+ "fr_da-p20": {
+  "persona": "fr_da",
+  "skills": [
+   "pandas",
+   "Excel",
+   "Snowflake",
+   "Statistics",
+   "Looker"
+  ],
+  "named": [
+   "Statistics",
+   "Excel",
+   "pandas"
+  ]
+ }
+}

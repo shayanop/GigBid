@@ -38,4 +38,5 @@ class Echo(BaseModel):
 @pytest.mark.skipif(not os.getenv("GROQ_API_KEY"), reason="GROQ_API_KEY not set")
 def test_groq_structured_output():
     out = get_model("analyst", Echo).invoke("Return the word 'gigbid' in the `word` field.")
-    assert out.word.lower() == "gigbid"
+    assert out["parsed"].word.lower() == "gigbid"
+    assert out["raw"].usage_metadata["total_tokens"] > 0

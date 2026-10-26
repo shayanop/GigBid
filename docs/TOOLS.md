@@ -19,6 +19,26 @@ Transport: Streamable HTTP at `/mcp`. Auth: bearer token mapped to a user (`MARK
 
 Write tools are only called after human approval in GigBid (LangGraph interrupt). The server itself does not decide approval.
 
+## Portfolio MCP (`mcp_servers/portfolio`, owned by GigBid)
+
+Read-only. Transport: Streamable HTTP at `/mcp` (bearer token mapped to a persona folder via `PORTFOLIO_MCP_TOKENS`) or stdio for external hosts (`--stdio`, persona from `PORTFOLIO_LOCAL_USER`). Retrieval variant comes from `rag.variant` in `agent/config.yaml`.
+
+| Name | Kind | Permission | Annotations | Notes |
+| --- | --- | --- | --- | --- |
+| `search_evidence` | tool | read | readOnly, idempotent, closedWorld | `requirement`, `k` ≤ 20, `filters` (types, projects, outcomes, after); returns evidence with id, type, source, date, outcome, score |
+| `get_case_study` | tool | read | readOnly, idempotent, closedWorld | full case study by project id |
+| `list_skills` | tool | read | readOnly, idempotent, closedWorld | skills named in the portfolio with document counts and projects |
+| `portfolio://case/{case_id}` | resource | read | | case study Markdown |
+| `portfolio://proposal/{proposal_id}` | resource | read | | past proposal with outcome |
+| `answer_screening_question` | prompt | | | answer a screening question from cited evidence only |
+
+Claude Desktop config example:
+
+```json
+{"mcpServers": {"gigbid-portfolio": {"command": "uv", "args": ["--directory", "<repo>", "run",
+  "python", "-m", "mcp_servers.portfolio.server", "--stdio"], "env": {"PORTFOLIO_LOCAL_USER": "fr_ml"}}}}
+```
+
 ## Third-party servers
 
 Added with Phase 11 (official Upwork MCP, GitHub MCP), each with a trust rationale.

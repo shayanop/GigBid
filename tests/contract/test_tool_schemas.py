@@ -1,5 +1,5 @@
-"""Fails when an MCP tool's name, schema or annotations change without updating the
-snapshot. Regenerate deliberately with: UPDATE_SNAPSHOTS=1 uv run pytest tests/contract"""
+"""Fails when an MCP server's tools, resource templates or prompts change without
+updating the snapshot. Regenerate deliberately: UPDATE_SNAPSHOTS=1 uv run pytest tests/contract"""
 
 import json
 import os
@@ -9,15 +9,23 @@ import pytest
 from mcp import Client
 
 from mcp_servers.marketplace import server as marketplace
+from mcp_servers.portfolio import server as portfolio
 
 SNAPSHOTS = Path(__file__).with_name("snapshots")
 
 
-@pytest.mark.parametrize("name,mcp_server", [("marketplace", marketplace.mcp)])
-async def test_tool_schemas_match_snapshot(name, mcp_server):
+def _dump(items) -> dict:
+    return {i.name: i.model_dump(mode="json", by_alias=True, exclude_none=True) for i in items}
+
+
+@pytest.mark.parametrize("name,mcp_server", [("marketplace", marketplace.mcp),
+                                             ("portfolio", portfolio.mcp)])
+async def test_mcp_interface_matches_snapshot(name, mcp_server):
     async with Client(mcp_server) as client:
-        tools = (await client.list_tools()).tools
-    current = {t.name: t.model_dump(mode="json", by_alias=True, exclude_none=True) for t in tools}
+        current = {"tools": _dump((await client.list_tools()).tools),
+                   "resource_templates": _dump(
+                       (await client.list_resource_templates()).resource_templates),
+                   "prompts": _dump((await client.list_prompts()).prompts)}
     path = SNAPSHOTS / f"{name}.json"
     if os.getenv("UPDATE_SNAPSHOTS"):
         path.parent.mkdir(exist_ok=True)

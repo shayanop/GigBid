@@ -17,9 +17,6 @@ from pathlib import Path
 from typing import Annotated
 
 from mcp.server import MCPServer
-from mcp.server.auth.middleware.auth_context import get_access_token
-from mcp.server.auth.provider import AccessToken
-from mcp.server.auth.settings import AuthSettings
 from mcp.server.mcpserver import Context
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp.types import ToolAnnotations
@@ -39,6 +36,7 @@ from agent.marketplace_port import (
     Thread,
 )
 from agent.redact import redact
+from mcp_servers.auth import current_user, static_auth
 from mcp_servers.marketplace.adapters.gigsim import GigSimAdapter
 
 READ = ToolAnnotations(read_only_hint=True, open_world_hint=True)
@@ -79,26 +77,12 @@ class MessageResult(BaseModel):
     message: Message | None = None
 
 
-class StaticTokens:
-    """Bearer token -> user id, from MARKETPLACE_MCP_TOKENS ({"token": "user_id"})."""
-
-    # ponytail: static map; swap for the API's user/session store once it exists.
-    def __init__(self, tokens: dict[str, str]):
-        self.tokens = tokens
-
-    async def verify_token(self, token: str) -> AccessToken | None:
-        user = self.tokens.get(token)
-        return AccessToken(token=token, client_id=user, scopes=[]) if user else None
-
-
 URL = os.getenv("MARKETPLACE_MCP_URL", "http://localhost:8200/mcp")
 mcp = MCPServer(
     "gigbid-marketplace",
     instructions="Marketplace jobs, clients, Connects, proposals and messages. Writes need "
                  "explicit human approval upstream; use dry_run to preview.",
-    token_verifier=StaticTokens(json.loads(os.getenv("MARKETPLACE_MCP_TOKENS", "{}"))),
-    auth=AuthSettings(issuer_url=URL.removesuffix("/mcp"), resource_server_url=URL,
-                      validate_token_resource=False),  # static tokens carry no audience
+    **static_auth("MARKETPLACE", URL),
 )
 
 _calls: dict[str, deque] = defaultdict(deque)
@@ -112,16 +96,6 @@ def adapter_for(user: str) -> MarketplacePort:
     raise ToolError(f"marketplace adapter {name!r} is not available yet")
 
 
-def _user() -> str:
-    token = get_access_token()
-    if token:
-        return token.client_id
-    # In-process and stdio transports carry no bearer token; HTTP always does.
-    if user := os.getenv("MARKETPLACE_LOCAL_USER"):
-        return user
-    raise ToolError("unauthenticated")
-
-
 def _audit(user: str, tool: str, args: dict, result, trace_id: str) -> None:
     # ponytail: append-only JSONL file; move to a Postgres table without UPDATE/DELETE grants.
     path = Path(os.getenv("MARKETPLACE_AUDIT_LOG", "data/processed/audit/marketplace.jsonl"))
@@ -133,7 +107,7 @@ def _audit(user: str, tool: str, args: dict, result, trace_id: str) -> None:
 
 
 async def _run(ctx: Context, tool: str, args: dict, call):
-    user = _user()
+    user = current_user("MARKETPLACE")
     trace_id = (ctx.headers or {}).get("x-trace-id") or uuid.uuid4().hex
     window, now = _calls[user], time.monotonic()
     while window and now - window[0] > 60:

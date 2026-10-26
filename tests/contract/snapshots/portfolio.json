@@ -1,0 +1,459 @@
+{
+  "prompts": {
+    "answer_screening_question": {
+      "arguments": [
+        {
+          "name": "question",
+          "required": true
+        }
+      ],
+      "description": "Answer a client's screening question from my portfolio only.",
+      "name": "answer_screening_question"
+    }
+  },
+  "resource_templates": {
+    "case_resource": {
+      "description": "Full case study document.",
+      "mimeType": "text/markdown",
+      "name": "case_resource",
+      "uriTemplate": "portfolio://case/{case_id}"
+    },
+    "proposal_resource": {
+      "description": "A past proposal with its outcome (won, replied or ignored).",
+      "mimeType": "text/plain",
+      "name": "proposal_resource",
+      "uriTemplate": "portfolio://proposal/{proposal_id}"
+    }
+  },
+  "tools": {
+    "get_case_study": {
+      "annotations": {
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "Get the full text and metadata of one case study (its id is its project id).",
+      "inputSchema": {
+        "properties": {
+          "case_id": {
+            "pattern": "^[\\w-]{1,64}$",
+            "title": "Case Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "get_case_studyArguments",
+        "type": "object"
+      },
+      "name": "get_case_study",
+      "outputSchema": {
+        "properties": {
+          "client_industry": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Client Industry"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Date"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "enum": [
+                  "won",
+                  "replied",
+                  "ignored"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Outcome"
+          },
+          "persona": {
+            "title": "Persona",
+            "type": "string"
+          },
+          "project": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Project"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "cv",
+              "case_study",
+              "repo_readme",
+              "code",
+              "review",
+              "proposal"
+            ],
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "persona",
+          "type",
+          "source",
+          "text"
+        ],
+        "title": "Document",
+        "type": "object"
+      }
+    },
+    "list_skills": {
+      "annotations": {
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "List skills named anywhere in the portfolio, with how many documents and which\n    projects mention each. Skills only implied by the work are not listed.",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_skillsArguments",
+        "type": "object"
+      },
+      "name": "list_skills",
+      "outputSchema": {
+        "$defs": {
+          "SkillEvidence": {
+            "properties": {
+              "documents": {
+                "title": "Documents",
+                "type": "integer"
+              },
+              "projects": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Projects",
+                "type": "array"
+              },
+              "skill": {
+                "title": "Skill",
+                "type": "string"
+              }
+            },
+            "required": [
+              "skill",
+              "documents",
+              "projects"
+            ],
+            "title": "SkillEvidence",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "result": {
+            "items": {
+              "$ref": "#/$defs/SkillEvidence"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_skillsOutput",
+        "type": "object"
+      }
+    },
+    "search_evidence": {
+      "annotations": {
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "Find portfolio evidence for a job requirement: case studies, code, reviews and past\n    proposals (with outcomes), best match first. Each result has an id to cite.",
+      "inputSchema": {
+        "$defs": {
+          "EvidenceFilters": {
+            "additionalProperties": false,
+            "properties": {
+              "after": {
+                "anyOf": [
+                  {
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "After"
+              },
+              "outcomes": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "enum": [
+                        "won",
+                        "replied",
+                        "ignored"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Outcomes"
+              },
+              "projects": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "pattern": "^[\\w-]{1,64}$",
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Projects"
+              },
+              "types": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "enum": [
+                        "cv",
+                        "case_study",
+                        "repo_readme",
+                        "code",
+                        "review",
+                        "proposal"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Types"
+              }
+            },
+            "title": "EvidenceFilters",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "filters": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/EvidenceFilters"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "k": {
+            "default": 5,
+            "maximum": 20,
+            "minimum": 1,
+            "title": "K",
+            "type": "integer"
+          },
+          "requirement": {
+            "description": "One job requirement or the job text, e.g. 'background jobs with Celery'",
+            "maxLength": 2000,
+            "minLength": 3,
+            "title": "Requirement",
+            "type": "string"
+          }
+        },
+        "required": [
+          "requirement"
+        ],
+        "title": "search_evidenceArguments",
+        "type": "object"
+      },
+      "name": "search_evidence",
+      "outputSchema": {
+        "$defs": {
+          "Evidence": {
+            "properties": {
+              "client_industry": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Client Industry"
+              },
+              "date": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Date"
+              },
+              "doc_id": {
+                "title": "Doc Id",
+                "type": "string"
+              },
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "outcome": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "won",
+                      "replied",
+                      "ignored"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Outcome"
+              },
+              "persona": {
+                "title": "Persona",
+                "type": "string"
+              },
+              "project": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Project"
+              },
+              "score": {
+                "title": "Score",
+                "type": "number"
+              },
+              "skills": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Skills",
+                "type": "array"
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "text": {
+                "title": "Text",
+                "type": "string"
+              },
+              "type": {
+                "enum": [
+                  "cv",
+                  "case_study",
+                  "repo_readme",
+                  "code",
+                  "review",
+                  "proposal"
+                ],
+                "title": "Type",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "persona",
+              "type",
+              "source",
+              "text",
+              "doc_id",
+              "skills",
+              "score"
+            ],
+            "title": "Evidence",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "result": {
+            "items": {
+              "$ref": "#/$defs/Evidence"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "search_evidenceOutput",
+        "type": "object"
+      }
+    }
+  }
+}
