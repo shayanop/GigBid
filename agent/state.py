@@ -15,11 +15,13 @@ from agent.handoffs import (
     Critique,
     FitReport,
     JobSpec,
+    LiaisonReply,
+    MessageIntent,
     PriceQuote,
     ProposalDraft,
     RiskReport,
 )
-from agent.marketplace_port import Client, Job, Proposal
+from agent.marketplace_port import Client, Job, Message, Proposal
 from rag.schema import Evidence
 
 Status = Literal["analyzing", "skipped", "watching", "drafting", "awaiting_approval",
@@ -68,3 +70,26 @@ class BidState(TypedDict, total=False):
     attention: Annotated[str, latest]  # why a human must look (block, budget, failure)
     trace: Annotated[list[TraceEvent], operator.add]
     usage: Annotated[dict, add_usage]  # {"steps": n, "tokens": n}
+
+
+class ConversationState(TypedDict, total=False):
+    """One thread per marketplace conversation; each new client message is a new run."""
+    conversation_id: str
+    message_id: str  # the client message this run answers
+    job: Job | None
+    messages: list[Message]
+    intent: MessageIntent
+    slots: list[dict]  # interview times offered in the reply
+    reply: LiaisonReply
+    compliance: ComplianceVerdict
+    preview: dict
+    approval: Approval | None
+    edits: Annotated[list[dict], operator.add]
+    rejection: str | None
+    sent: Message | None
+    holds: list[dict]
+    status: Annotated[str, latest]
+    attention: Annotated[str | None, latest]
+    trace: Annotated[list[TraceEvent], operator.add]
+    usage: Annotated[dict, add_usage]
+    budget_base: dict  # usage when this run started; budgets apply per run

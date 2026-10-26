@@ -39,6 +39,18 @@ Claude Desktop config example (stdio; for HTTP, mint a token with `uv run python
   "python", "-m", "mcp_servers.portfolio.server", "--stdio"], "env": {"PORTFOLIO_LOCAL_USER": "fr_ml"}}}}
 ```
 
+## Workspace MCP (`mcp_servers/workspace`, owned by GigBid)
+
+Calendar and email drafts for the freelancer, backed by a local mock calendar per account (`WORKSPACE_DIR`); Google Calendar and Gmail can replace it behind the same tools. Times are UTC. Auth as above; in-process/stdio use `WORKSPACE_LOCAL_USER`.
+
+| Tool | Permission | Annotations | Notes |
+| --- | --- | --- | --- |
+| `find_free_slots` | read | readOnly, idempotent, closedWorld | weekday slots, at most one per day; duration, days ahead, working hours, limit |
+| `hold_slot` | write | idempotent, non-destructive, closedWorld | tentative event; needs `idempotency_key`; refuses times that are no longer free |
+| `create_email_draft` | write | idempotent, non-destructive, closedWorld | saved for the freelancer to send; needs `idempotency_key` |
+
+The Client Liaison offers `find_free_slots` results to clients and calls `hold_slot` only after the reply is approved and sent.
+
 ## Third-party servers
 
 Added with Phase 11 (official Upwork MCP, GitHub MCP), each with a trust rationale.

@@ -7,16 +7,16 @@ import { Loading, Notice, PageHeader } from "@/components/ui";
 import { jobsInboxOptions } from "@/lib/api/@tanstack/react-query.gen";
 import { errorMessage, usd } from "@/lib/labels";
 
-// Proposal stages. Viewed, replied, interview, hired and lost come from client activity
-// on the marketplace and fill in once conversations are connected.
-const STAGES: { name: string; statuses: string[] }[] = [
-  { name: "Drafted", statuses: ["awaiting_approval", "processing"] },
-  { name: "Submitted", statuses: ["submitted"] },
-  { name: "Viewed", statuses: ["viewed"] },
-  { name: "Replied", statuses: ["replied"] },
-  { name: "Interview", statuses: ["interview"] },
-  { name: "Hired", statuses: ["hired"] },
-  { name: "Lost", statuses: ["lost"] },
+// Proposal stages, moved forward by submissions and client conversations. Viewed, hired
+// and lost need marketplace contract data and stay empty in GigSim for now.
+const STAGES: { name: string; stage: string }[] = [
+  { name: "Drafted", stage: "drafted" },
+  { name: "Submitted", stage: "submitted" },
+  { name: "Viewed", stage: "viewed" },
+  { name: "Replied", stage: "replied" },
+  { name: "Interview", stage: "interview" },
+  { name: "Hired", stage: "hired" },
+  { name: "Lost", stage: "lost" },
 ];
 
 export default function Pipeline() {
@@ -29,7 +29,9 @@ export default function Pipeline() {
       <PageHeader title="Pipeline" />
       <div className="-mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-4">
         {STAGES.map((stage) => {
-          const items = jobs.data.filter((j) => stage.statuses.includes(j.status));
+          // Drafted means a proposal exists: skipped and watched jobs never reach the pipeline.
+          const items = jobs.data.filter((j) => j.stage === stage.stage &&
+            (stage.stage !== "drafted" || ["awaiting_approval", "processing"].includes(j.status)));
           return (
             <section key={stage.name} aria-label={stage.name}
                      className="w-64 shrink-0 snap-start border-t-2 border-ink pt-2">

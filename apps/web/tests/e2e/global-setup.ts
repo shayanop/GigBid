@@ -1,8 +1,10 @@
 import { spawn } from "node:child_process";
+import { rmSync } from "node:fs";
 
 // The Arq worker serves no HTTP, so it cannot be a Playwright webServer; start it here
 // with the same environment and stop it after the run.
 export default async function globalSetup() {
+  rmSync("../../data/processed/e2e/workspace", { recursive: true, force: true }); // fresh calendar
   const worker = spawn("uv run python -m worker.main", {
     cwd: "../..",
     env: JSON.parse(process.env.E2E_ENV ?? "{}"),

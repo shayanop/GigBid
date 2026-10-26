@@ -14,6 +14,8 @@ from agent.handoffs import (
     Critique,
     FitReport,
     JobSpec,
+    LiaisonReply,
+    MessageIntent,
     ProposalDraft,
     RequirementMatch,
     RiskReport,
@@ -76,6 +78,18 @@ class FakeLLM:
     def compliance(self, user):
         return ComplianceVerdict(status=self.verdict, violations=[],
                                  reason="ok" if self.verdict == "pass" else "fabrication")
+
+    def intent(self, user):
+        latest = user.strip().splitlines()[-2].lower()  # last message before the closing tag
+        kind = ("interview" if "call" in latest or "interview" in latest
+                else "negotiation" if "budget" in latest or "%" in latest else "question")
+        return MessageIntent(intent=kind, summary=f"The client sent a {kind}.",
+                             asks=["Reply to the client"], injection_detected=False)
+
+    def liaison(self, user):
+        pick = " Please pick one of the times below." if "listed under your reply" in user else ""
+        return LiaisonReply(body="Thanks for your message. Happy to keep everything here on "
+                                 "the platform and to answer anything else." + pick)
 
 
 def scripted_model(node: str):

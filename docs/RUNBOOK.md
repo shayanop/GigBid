@@ -7,7 +7,7 @@ docker compose -f infra/docker-compose.yml --env-file .env up -d --build
 docker compose -f infra/docker-compose.yml --env-file .env exec api python -m apps.api.seed
 ```
 
-Web app on :3000, API on :8000 (OpenAPI at `/docs`), GigSim :8100, Marketplace MCP :8200, Portfolio MCP :8300. The demo account is `DEMO_EMAIL` / `DEMO_PASSWORD` from `.env`.
+Web app on :3000, API on :8000 (OpenAPI at `/docs`), GigSim :8100, Marketplace MCP :8200, Portfolio MCP :8300, Workspace MCP :8400. The demo account is `DEMO_EMAIL` / `DEMO_PASSWORD` from `.env`.
 
 Local processes instead of containers (Postgres and Redis still from compose): `make gigsim`, `make marketplace-mcp`, `make portfolio-mcp`, `make api`, `make worker`, `make web`. Set `GIGBID_PROFILE=fake` to run every agent on the scripted model (no API key, no cost).
 
@@ -29,6 +29,7 @@ The TypeScript client in `apps/web/src/lib/api` is generated; after any API chan
 | Jobs taken per later run | `scouting.per_run_limit` | 10, only jobs posted since the last run |
 | Concurrent graph runs | `worker.max_jobs` | 2 (Groq free tier rate-limits beyond this) |
 | Marketplace calls per user | `MARKETPLACE_RATE_PER_MIN` | 60 per minute |
+| Inbox check | every scheduler tick, or **Check for new messages** (at most once a minute per user) | one `list_messages` call per user |
 
 Live Upwork mode uses the same limits; never lower the interval to approximate scraping.
 

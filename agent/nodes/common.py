@@ -101,14 +101,16 @@ async def ask(node: str, schema, user: str):
     return out["parsed"]
 
 
-def node(name: str):
-    """Wraps a node: enforces the thread's step/token budget and appends a trace event."""
+def node(name: str, starts_run: bool = False):
+    """Wraps a node: enforces the step/token budget and appends a trace event. A node that
+    starts a run (and resets budget_base) is exempt from the previous run's budget."""
     def wrap(fn):
         @wraps(fn)
         async def run(state: dict) -> dict:
             budget, used = config.load_config()["budgets"], state.get("usage") or {}
-            if (used.get("steps", 0) >= budget["max_steps"]
-                    or used.get("tokens", 0) >= budget["max_tokens"]):
+            base = state.get("budget_base") or {}  # long-lived threads budget per run
+            if not starts_run and (used.get("steps", 0) - base.get("steps", 0) >= budget["max_steps"]
+                    or used.get("tokens", 0) - base.get("tokens", 0) >= budget["max_tokens"]):
                 return {"status": "needs_attention",
                         "attention": f"budget exhausted before {name}: {used}"}
             calls: list[dict] = []

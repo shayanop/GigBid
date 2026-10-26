@@ -13,11 +13,13 @@ router = APIRouter(prefix="/runs", tags=["runs"])
 
 
 async def _state(request: Request, user: dict, thread_id: UUID):
-    row = await db.owned_thread(request.app.state.db, user["id"], thread_id)
-    if not row:
-        raise HTTPException(404, "run not found")
-    snap = await request.app.state.graph.aget_state({"configurable": {"thread_id": str(thread_id)}})
-    return row, snap.values
+    """A run is a bid thread or a conversation; both live in the same checkpointer."""
+    state = request.app.state
+    for table, graph in (("bid_threads", state.graph), ("conversations", state.conversation_graph)):
+        if row := await db.owned(state.db, table, user["id"], thread_id):
+            snap = await graph.aget_state({"configurable": {"thread_id": str(thread_id)}})
+            return row, snap.values
+    raise HTTPException(404, "run not found")
 
 
 @router.get("/{thread_id}", response_model=TraceOut)

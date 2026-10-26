@@ -16,11 +16,11 @@ from fastapi import FastAPI, Request
 from redis.asyncio import Redis
 from starlette.middleware.sessions import SessionMiddleware
 
-from agent.graphs import bid_graph
+from agent.graphs import bid_graph, conversation_graph
 from agent.graphs.checkpoint import postgres_checkpointer
 from agent.mcp_client import Toolbox
 from apps.api import db
-from apps.api.routers import approvals, auth, jobs, marketplace, runs, searches
+from apps.api.routers import approvals, auth, jobs, marketplace, messages, runs, searches
 
 load_dotenv()
 TRACE_ID = re.compile(r"[\w-]{8,64}")
@@ -36,6 +36,7 @@ async def lifespan(app: FastAPI):
     try:
         async with postgres_checkpointer() as saver:
             app.state.graph = bid_graph.build(saver)
+            app.state.conversation_graph = conversation_graph.build(saver)
             yield
     finally:
         await app.state.queue.aclose()
@@ -67,7 +68,7 @@ def create_app() -> FastAPI:
         return {"status": "ok"}
 
     for router in (auth.router, jobs.router, approvals.router, runs.router, searches.router,
-                   marketplace.router):
+                   marketplace.router, messages.router):
         app.include_router(router)
     return app
 

@@ -14,7 +14,7 @@ SUMMARY_FIELDS = ("decision", "fit", "risk", "flags", "price", "connects_cost", 
 def to_summary(row: dict) -> dict:
     s = row["summary"]
     return {"thread_id": row["id"], "job_id": row["job_id"], "title": row["title"],
-            "status": row["status"], "updated_at": row["updated_at"],
+            "status": row["status"], "stage": row["stage"], "updated_at": row["updated_at"],
             **{k: s[k] for k in SUMMARY_FIELDS if s.get(k) is not None}}
 
 

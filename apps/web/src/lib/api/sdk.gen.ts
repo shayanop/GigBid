@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, ServerSentEventsResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ApprovalsDecideData, ApprovalsDecideErrors, ApprovalsDecideResponses, ApprovalsPendingData, ApprovalsPendingResponses, ApprovalsReviewData, ApprovalsReviewErrors, ApprovalsReviewResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutResponses, AuthMeData, AuthMeResponses, AuthSignupData, AuthSignupErrors, AuthSignupResponses, AuthUpdateSettingsData, AuthUpdateSettingsErrors, AuthUpdateSettingsResponses, JobsAnalyzeData, JobsAnalyzeErrors, JobsAnalyzeResponses, JobsDetailData, JobsDetailErrors, JobsDetailResponses, JobsInboxData, JobsInboxErrors, JobsInboxResponses, MarketplaceStatusData, MarketplaceStatusResponses, RunsEventsData, RunsEventsErrors, RunsEventsResponses, RunsTraceData, RunsTraceErrors, RunsTraceResponses, SearchesCreateData, SearchesCreateErrors, SearchesCreateResponses, SearchesDeleteData, SearchesDeleteErrors, SearchesDeleteResponses, SearchesListData, SearchesListResponses } from './types.gen';
+import type { ApprovalsDecideData, ApprovalsDecideErrors, ApprovalsDecideResponses, ApprovalsPendingData, ApprovalsPendingResponses, ApprovalsReviewData, ApprovalsReviewErrors, ApprovalsReviewResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutResponses, AuthMeData, AuthMeResponses, AuthSignupData, AuthSignupErrors, AuthSignupResponses, AuthUpdateSettingsData, AuthUpdateSettingsErrors, AuthUpdateSettingsResponses, JobsAnalyzeData, JobsAnalyzeErrors, JobsAnalyzeResponses, JobsDetailData, JobsDetailErrors, JobsDetailResponses, JobsInboxData, JobsInboxErrors, JobsInboxResponses, MarketplaceStatusData, MarketplaceStatusResponses, MessagesConversationData, MessagesConversationErrors, MessagesConversationResponses, MessagesConversationsData, MessagesConversationsResponses, MessagesDecideData, MessagesDecideErrors, MessagesDecideResponses, MessagesRefreshData, MessagesRefreshResponses, RunsEventsData, RunsEventsErrors, RunsEventsResponses, RunsTraceData, RunsTraceErrors, RunsTraceResponses, SearchesCreateData, SearchesCreateErrors, SearchesCreateResponses, SearchesDeleteData, SearchesDeleteErrors, SearchesDeleteResponses, SearchesListData, SearchesListResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -119,6 +119,37 @@ export const jobsDetail = <ThrowOnError extends boolean = false>(options: Option
  * Status
  */
 export const marketplaceStatus = <ThrowOnError extends boolean = false>(options?: Options<MarketplaceStatusData, ThrowOnError>): RequestResult<MarketplaceStatusResponses, unknown, ThrowOnError> => (options?.client ?? client).get<MarketplaceStatusResponses, unknown, ThrowOnError>({ url: '/marketplace', ...options });
+
+/**
+ * Conversations
+ *
+ * Conversations waiting for you first, then the most recent.
+ */
+export const messagesConversations = <ThrowOnError extends boolean = false>(options?: Options<MessagesConversationsData, ThrowOnError>): RequestResult<MessagesConversationsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<MessagesConversationsResponses, unknown, ThrowOnError>({ url: '/messages', ...options });
+
+/**
+ * Refresh
+ *
+ * Check the marketplace for new client messages now instead of at the next tick.
+ */
+export const messagesRefresh = <ThrowOnError extends boolean = false>(options?: Options<MessagesRefreshData, ThrowOnError>): RequestResult<MessagesRefreshResponses, unknown, ThrowOnError> => (options?.client ?? client).post<MessagesRefreshResponses, unknown, ThrowOnError>({ url: '/messages/refresh', ...options });
+
+/**
+ * Conversation
+ */
+export const messagesConversation = <ThrowOnError extends boolean = false>(options: Options<MessagesConversationData, ThrowOnError>): RequestResult<MessagesConversationResponses, MessagesConversationErrors, ThrowOnError> => (options.client ?? client).get<MessagesConversationResponses, MessagesConversationErrors, ThrowOnError>({ url: '/messages/{conversation_id}', ...options });
+
+/**
+ * Decide
+ */
+export const messagesDecide = <ThrowOnError extends boolean = false>(options: Options<MessagesDecideData, ThrowOnError>): RequestResult<MessagesDecideResponses, MessagesDecideErrors, ThrowOnError> => (options.client ?? client).post<MessagesDecideResponses, MessagesDecideErrors, ThrowOnError>({
+    url: '/messages/{conversation_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Trace

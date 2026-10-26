@@ -19,6 +19,7 @@ from gigsim.app import create_app
 from mcp_servers.marketplace import server as marketplace
 from mcp_servers.marketplace.adapters.gigsim import GigSimAdapter
 from mcp_servers.portfolio import server as portfolio
+from mcp_servers.workspace import server as workspace
 
 if sys.platform == "win32":  # psycopg's async driver cannot use the Proactor event loop
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
@@ -28,7 +29,8 @@ def harness(monkeypatch, offline_rag, tmp_path):
     app = create_app()
     for var, value in {"MARKETPLACE_LOCAL_USER": "fr_ml", "PORTFOLIO_LOCAL_USER": "fr_ml",
                        "MARKETPLACE_AUDIT_LOG": str(tmp_path / "audit.jsonl"),
-                       "MARKETPLACE_RATE_PER_MIN": "1000"}.items():
+                       "MARKETPLACE_RATE_PER_MIN": "1000", "WORKSPACE_LOCAL_USER": "fr_ml",
+                       "WORKSPACE_DIR": str(tmp_path / "workspace")}.items():
         monkeypatch.setenv(var, value)
     marketplace._calls.clear()
     monkeypatch.setattr(marketplace, "adapter_for", lambda user: GigSimAdapter(
@@ -36,7 +38,8 @@ def harness(monkeypatch, offline_rag, tmp_path):
     monkeypatch.setitem(load_config()["budgets"], "retry_initial_seconds", 0.01)
     fake = FakeLLM()
     monkeypatch.setattr(common, "ask", fake)
-    toolbox = Toolbox({"marketplace": marketplace.mcp, "portfolio": portfolio.mcp}, backoff=0)
+    toolbox = Toolbox({"marketplace": marketplace.mcp, "portfolio": portfolio.mcp,
+                       "workspace": workspace.mcp}, backoff=0)
 
     def job(scam: bool) -> str:
         return next(j["id"] for j in app.state.data["jobs"].values()

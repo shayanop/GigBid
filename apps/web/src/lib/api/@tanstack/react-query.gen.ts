@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { approvalsDecide, approvalsPending, approvalsReview, authLogin, authLogout, authMe, authSignup, authUpdateSettings, jobsAnalyze, jobsDetail, jobsInbox, marketplaceStatus, type Options, runsTrace, searchesCreate, searchesDelete, searchesList } from '../sdk.gen';
-import type { ApprovalsDecideData, ApprovalsDecideError, ApprovalsDecideResponse, ApprovalsPendingData, ApprovalsPendingResponse, ApprovalsReviewData, ApprovalsReviewError, ApprovalsReviewResponse, AuthLoginData, AuthLoginError, AuthLoginResponse, AuthLogoutData, AuthLogoutResponse, AuthMeData, AuthMeResponse, AuthSignupData, AuthSignupError, AuthSignupResponse, AuthUpdateSettingsData, AuthUpdateSettingsError, AuthUpdateSettingsResponse, JobsAnalyzeData, JobsAnalyzeError, JobsAnalyzeResponse, JobsDetailData, JobsDetailError, JobsDetailResponse, JobsInboxData, JobsInboxError, JobsInboxResponse, MarketplaceStatusData, MarketplaceStatusResponse, RunsTraceData, RunsTraceError, RunsTraceResponse, SearchesCreateData, SearchesCreateError, SearchesCreateResponse, SearchesDeleteData, SearchesDeleteError, SearchesDeleteResponse, SearchesListData, SearchesListResponse } from '../types.gen';
+import { approvalsDecide, approvalsPending, approvalsReview, authLogin, authLogout, authMe, authSignup, authUpdateSettings, jobsAnalyze, jobsDetail, jobsInbox, marketplaceStatus, messagesConversation, messagesConversations, messagesDecide, messagesRefresh, type Options, runsTrace, searchesCreate, searchesDelete, searchesList } from '../sdk.gen';
+import type { ApprovalsDecideData, ApprovalsDecideError, ApprovalsDecideResponse, ApprovalsPendingData, ApprovalsPendingResponse, ApprovalsReviewData, ApprovalsReviewError, ApprovalsReviewResponse, AuthLoginData, AuthLoginError, AuthLoginResponse, AuthLogoutData, AuthLogoutResponse, AuthMeData, AuthMeResponse, AuthSignupData, AuthSignupError, AuthSignupResponse, AuthUpdateSettingsData, AuthUpdateSettingsError, AuthUpdateSettingsResponse, JobsAnalyzeData, JobsAnalyzeError, JobsAnalyzeResponse, JobsDetailData, JobsDetailError, JobsDetailResponse, JobsInboxData, JobsInboxError, JobsInboxResponse, MarketplaceStatusData, MarketplaceStatusResponse, MessagesConversationData, MessagesConversationError, MessagesConversationResponse, MessagesConversationsData, MessagesConversationsResponse, MessagesDecideData, MessagesDecideError, MessagesDecideResponse, MessagesRefreshData, MessagesRefreshResponse, RunsTraceData, RunsTraceError, RunsTraceResponse, SearchesCreateData, SearchesCreateError, SearchesCreateResponse, SearchesDeleteData, SearchesDeleteError, SearchesDeleteResponse, SearchesListData, SearchesListResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -255,6 +255,80 @@ export const marketplaceStatusOptions = (options?: Options<MarketplaceStatusData
     },
     queryKey: marketplaceStatusQueryKey(options)
 });
+
+export const messagesConversationsQueryKey = (options?: Options<MessagesConversationsData>) => createQueryKey('messagesConversations', options);
+
+/**
+ * Conversations
+ *
+ * Conversations waiting for you first, then the most recent.
+ */
+export const messagesConversationsOptions = (options?: Options<MessagesConversationsData>) => queryOptions<MessagesConversationsResponse, DefaultError, MessagesConversationsResponse, ReturnType<typeof messagesConversationsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await messagesConversations({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: messagesConversationsQueryKey(options)
+});
+
+/**
+ * Refresh
+ *
+ * Check the marketplace for new client messages now instead of at the next tick.
+ */
+export const messagesRefreshMutation = (options?: Partial<Options<MessagesRefreshData>>): UseMutationOptions<MessagesRefreshResponse, DefaultError, Options<MessagesRefreshData>> => {
+    const mutationOptions: UseMutationOptions<MessagesRefreshResponse, DefaultError, Options<MessagesRefreshData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await messagesRefresh({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const messagesConversationQueryKey = (options: Options<MessagesConversationData>) => createQueryKey('messagesConversation', options);
+
+/**
+ * Conversation
+ */
+export const messagesConversationOptions = (options: Options<MessagesConversationData>) => queryOptions<MessagesConversationResponse, MessagesConversationError, MessagesConversationResponse, ReturnType<typeof messagesConversationQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await messagesConversation({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: messagesConversationQueryKey(options)
+});
+
+/**
+ * Decide
+ */
+export const messagesDecideMutation = (options?: Partial<Options<MessagesDecideData>>): UseMutationOptions<MessagesDecideResponse, MessagesDecideError, Options<MessagesDecideData>> => {
+    const mutationOptions: UseMutationOptions<MessagesDecideResponse, MessagesDecideError, Options<MessagesDecideData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await messagesDecide({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 export const runsTraceQueryKey = (options: Options<RunsTraceData>) => createQueryKey('runsTrace', options);
 

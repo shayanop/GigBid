@@ -1,0 +1,36 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__(<p>__start__</p>)
+	read(read)
+	classify(classify)
+	slots(slots)
+	liaison(liaison)
+	check(check)
+	approval(approval)
+	send(send)
+	__default_error_handler__(<p>__default_error_handler__</p>)
+	__end__(<p>__end__</p>)
+	__start__ --> read;
+	approval -.-> __end__;
+	approval -.-> check;
+	approval -.-> send;
+	check -.-> __end__;
+	check -.-> approval;
+	classify -.-> __end__;
+	classify -.-> liaison;
+	classify -.-> slots;
+	liaison -.-> __end__;
+	liaison -.-> check;
+	read -.-> __end__;
+	read -.-> classify;
+	slots -.-> __end__;
+	slots -.-> liaison;
+	send --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
+

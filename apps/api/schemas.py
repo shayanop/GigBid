@@ -14,10 +14,12 @@ from agent.handoffs import (
     Critique,
     FitReport,
     JobSpec,
+    MessageIntent,
     PriceQuote,
     ProposalDraft,
     RiskReport,
 )
+from agent.marketplace_port import Message
 
 Account = Annotated[str, Field(pattern=r"^[\w-]{1,64}$")]
 JobId = Annotated[str, Field(pattern=r"^[\w-]{1,64}$")]
@@ -65,6 +67,8 @@ class JobSummary(BaseModel):
     job_id: str
     title: str
     status: str
+    stage: str = Field(description="Pipeline stage: drafted, submitted, viewed, replied, "
+                       "interview, hired or lost")
     decision: str | None = None
     fit: float | None = None
     risk: float | None = None
@@ -147,3 +151,42 @@ class TraceOut(BaseModel):
 class MarketplaceStatus(BaseModel):
     available: bool
     connects: int | None
+
+
+class TimeSlot(BaseModel):
+    start: datetime
+    end: datetime
+
+
+class ConversationSummary(BaseModel):
+    id: UUID
+    conversation_id: str
+    job_id: str
+    status: str
+    title: str | None = None
+    last_message: str | None = None
+    intent: str | None = None
+    intent_summary: str | None = None
+    attention: str | None = None
+    updated_at: datetime
+
+
+class MessagePreview(BaseModel):
+    dry_run: bool
+    thread_id: str
+    body: str
+
+
+class MessageApprovalPayload(BaseModel):
+    reply: str
+    slots: list[TimeSlot]
+    compliance: ComplianceVerdict
+    preview: MessagePreview
+
+
+class ConversationDetail(ConversationSummary):
+    messages: list[Message] = []
+    intent_detail: MessageIntent | None = None
+    reply: str | None = None
+    slots: list[TimeSlot] = []
+    approval_request: MessageApprovalPayload | None = None

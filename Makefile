@@ -1,4 +1,4 @@
-.PHONY: dev gigsim marketplace-mcp portfolio-mcp data seed api worker diagram run-job eval models test test-live lint e2e web
+.PHONY: dev gigsim marketplace-mcp portfolio-mcp workspace-mcp data seed api worker diagram run-job eval models test test-live lint e2e web
 
 COMPOSE = docker compose -f infra/docker-compose.yml --env-file .env
 
@@ -14,6 +14,9 @@ marketplace-mcp:
 portfolio-mcp:
 	uv run python -m mcp_servers.portfolio.server
 
+workspace-mcp:
+	uv run python -m mcp_servers.workspace.server
+
 data: # regenerate the synthetic personas and dev labels
 	uv run python -m data.personas.generate
 
@@ -28,6 +31,7 @@ worker:
 
 diagram:
 	uv run python -c "from agent.graphs.bid_graph import build; print(build().get_graph().draw_mermaid())" > docs/images/bid_graph.mmd
+	uv run python -c "from agent.graphs.conversation_graph import build; print(build().get_graph().draw_mermaid())" > docs/images/conversation_graph.mmd
 
 run-job: # make run-job JOB=job_00012 (needs GROQ_API_KEY and make gigsim running)
 	uv run python -m agent.graphs.bid_graph $(JOB)

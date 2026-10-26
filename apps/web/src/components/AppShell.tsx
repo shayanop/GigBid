@@ -8,6 +8,7 @@ import { authLogoutMutation, authMeOptions, marketplaceStatusOptions } from "@/l
 
 const NAV = [
   { href: "/inbox", label: "Inbox" },
+  { href: "/messages", label: "Messages" },
   { href: "/pipeline", label: "Pipeline" },
   { href: "/settings", label: "Settings" },
 ];

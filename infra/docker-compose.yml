@@ -14,6 +14,7 @@ x-app-env: &app-env
   MCP_SIGNING_SECRET: ${MCP_SIGNING_SECRET}
   MARKETPLACE_MCP_URL: http://marketplace-mcp:8200/mcp
   PORTFOLIO_MCP_URL: http://portfolio-mcp:8300/mcp
+  WORKSPACE_MCP_URL: http://workspace-mcp:8400/mcp
   GROQ_API_KEY: ${GROQ_API_KEY}
   GIGBID_PROFILE: ${GIGBID_PROFILE:-open}
   OLLAMA_HOST: http://ollama:11434
@@ -47,6 +48,7 @@ services:
       redis: {condition: service_started}
       marketplace-mcp: {condition: service_started}
       portfolio-mcp: {condition: service_started}
+      workspace-mcp: {condition: service_started}
 
   gigsim: # marketplace simulator
     <<: *python
@@ -77,6 +79,17 @@ services:
     volumes: [models:/models, index:/app/data/processed/index]
     ports: ["8300:8300"]
 
+  workspace-mcp: # calendar slots, tentative holds, email drafts (local mock)
+    <<: *python
+    command: python -m mcp_servers.workspace.server
+    environment:
+      HOST: 0.0.0.0
+      WORKSPACE_MCP_URL: http://workspace-mcp:8400/mcp
+      MCP_SIGNING_SECRET: ${MCP_SIGNING_SECRET}
+      WORKSPACE_DIR: /workspace
+    volumes: [workspace:/workspace]
+    ports: ["8400:8400"]
+
   postgres: # relational data, LangGraph checkpoints/store, pgvector
     image: pgvector/pgvector:pg17
     environment:
@@ -105,6 +118,7 @@ services:
 
 volumes:
   audit:
+  workspace:
   index:
   models:
   pgdata:

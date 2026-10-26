@@ -10,6 +10,7 @@ from mcp import Client
 
 from mcp_servers.marketplace import server as marketplace
 from mcp_servers.portfolio import server as portfolio
+from mcp_servers.workspace import server as workspace
 
 SNAPSHOTS = Path(__file__).with_name("snapshots")
 
@@ -19,7 +20,8 @@ def _dump(items) -> dict:
 
 
 @pytest.mark.parametrize("name,mcp_server", [("marketplace", marketplace.mcp),
-                                             ("portfolio", portfolio.mcp)])
+                                             ("portfolio", portfolio.mcp),
+                                             ("workspace", workspace.mcp)])
 async def test_mcp_interface_matches_snapshot(name, mcp_server):
     async with Client(mcp_server) as client:
         current = {"tools": _dump((await client.list_tools()).tools),

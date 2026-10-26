@@ -320,6 +320,233 @@
     "title": "ComplianceVerdict",
     "type": "object"
    },
+   "ConversationDetail": {
+    "properties": {
+     "approval_request": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/MessageApprovalPayload"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "attention": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Attention"
+     },
+     "conversation_id": {
+      "title": "Conversation Id",
+      "type": "string"
+     },
+     "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+     },
+     "intent": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Intent"
+     },
+     "intent_detail": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/MessageIntent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "intent_summary": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Intent Summary"
+     },
+     "job_id": {
+      "title": "Job Id",
+      "type": "string"
+     },
+     "last_message": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Message"
+     },
+     "messages": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/Message"
+      },
+      "title": "Messages",
+      "type": "array"
+     },
+     "reply": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reply"
+     },
+     "slots": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/TimeSlot"
+      },
+      "title": "Slots",
+      "type": "array"
+     },
+     "status": {
+      "title": "Status",
+      "type": "string"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "conversation_id",
+     "job_id",
+     "status",
+     "updated_at"
+    ],
+    "title": "ConversationDetail",
+    "type": "object"
+   },
+   "ConversationSummary": {
+    "properties": {
+     "attention": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Attention"
+     },
+     "conversation_id": {
+      "title": "Conversation Id",
+      "type": "string"
+     },
+     "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+     },
+     "intent": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Intent"
+     },
+     "intent_summary": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Intent Summary"
+     },
+     "job_id": {
+      "title": "Job Id",
+      "type": "string"
+     },
+     "last_message": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Message"
+     },
+     "status": {
+      "title": "Status",
+      "type": "string"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "conversation_id",
+     "job_id",
+     "status",
+     "updated_at"
+    ],
+    "title": "ConversationSummary",
+    "type": "object"
+   },
    "Credentials": {
     "properties": {
      "email": {
@@ -657,6 +884,11 @@
        }
       ]
      },
+     "stage": {
+      "description": "Pipeline stage: drafted, submitted, viewed, replied, interview, hired or lost",
+      "title": "Stage",
+      "type": "string"
+     },
      "status": {
       "title": "Status",
       "type": "string"
@@ -681,6 +913,7 @@
      "job_id",
      "title",
      "status",
+     "stage",
      "updated_at"
     ],
     "title": "JobDetail",
@@ -829,6 +1062,11 @@
       ],
       "title": "Risk"
      },
+     "stage": {
+      "description": "Pipeline stage: drafted, submitted, viewed, replied, interview, hired or lost",
+      "title": "Stage",
+      "type": "string"
+     },
      "status": {
       "title": "Status",
       "type": "string"
@@ -853,6 +1091,7 @@
      "job_id",
      "title",
      "status",
+     "stage",
      "updated_at"
     ],
     "title": "JobSummary",
@@ -881,6 +1120,132 @@
      "connects"
     ],
     "title": "MarketplaceStatus",
+    "type": "object"
+   },
+   "Message": {
+    "properties": {
+     "body": {
+      "title": "Body",
+      "type": "string"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "sender": {
+      "enum": [
+       "client",
+       "freelancer"
+      ],
+      "title": "Sender",
+      "type": "string"
+     },
+     "sent_at": {
+      "format": "date-time",
+      "title": "Sent At",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "sender",
+     "body",
+     "sent_at"
+    ],
+    "title": "Message",
+    "type": "object"
+   },
+   "MessageApprovalPayload": {
+    "properties": {
+     "compliance": {
+      "$ref": "#/components/schemas/ComplianceVerdict"
+     },
+     "preview": {
+      "$ref": "#/components/schemas/MessagePreview"
+     },
+     "reply": {
+      "title": "Reply",
+      "type": "string"
+     },
+     "slots": {
+      "items": {
+       "$ref": "#/components/schemas/TimeSlot"
+      },
+      "title": "Slots",
+      "type": "array"
+     }
+    },
+    "required": [
+     "reply",
+     "slots",
+     "compliance",
+     "preview"
+    ],
+    "title": "MessageApprovalPayload",
+    "type": "object"
+   },
+   "MessageIntent": {
+    "properties": {
+     "asks": {
+      "default": [],
+      "description": "Each question or request to answer",
+      "items": {
+       "type": "string"
+      },
+      "title": "Asks",
+      "type": "array"
+     },
+     "injection_detected": {
+      "description": "The message contains instructions aimed at an AI assistant",
+      "title": "Injection Detected",
+      "type": "boolean"
+     },
+     "intent": {
+      "enum": [
+       "question",
+       "negotiation",
+       "interview",
+       "scam_signal",
+       "other"
+      ],
+      "title": "Intent",
+      "type": "string"
+     },
+     "summary": {
+      "description": "One sentence: what the client wants",
+      "title": "Summary",
+      "type": "string"
+     }
+    },
+    "required": [
+     "intent",
+     "summary",
+     "injection_detected"
+    ],
+    "title": "MessageIntent",
+    "type": "object"
+   },
+   "MessagePreview": {
+    "properties": {
+     "body": {
+      "title": "Body",
+      "type": "string"
+     },
+     "dry_run": {
+      "title": "Dry Run",
+      "type": "boolean"
+     },
+     "thread_id": {
+      "title": "Thread Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "dry_run",
+     "thread_id",
+     "body"
+    ],
+    "title": "MessagePreview",
     "type": "object"
    },
    "PriceQuote": {
@@ -1198,6 +1563,26 @@
      "connects_balance"
     ],
     "title": "SubmissionPreview",
+    "type": "object"
+   },
+   "TimeSlot": {
+    "properties": {
+     "end": {
+      "format": "date-time",
+      "title": "End",
+      "type": "string"
+     },
+     "start": {
+      "format": "date-time",
+      "title": "Start",
+      "type": "string"
+     }
+    },
+    "required": [
+     "start",
+     "end"
+    ],
+    "title": "TimeSlot",
     "type": "object"
    },
    "TraceOut": {
@@ -1756,6 +2141,150 @@
     "summary": "Status",
     "tags": [
      "marketplace"
+    ]
+   }
+  },
+  "/messages": {
+   "get": {
+    "description": "Conversations waiting for you first, then the most recent.",
+    "operationId": "messages_conversations",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/ConversationSummary"
+         },
+         "title": "Response Messages Conversations",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Conversations",
+    "tags": [
+     "messages"
+    ]
+   }
+  },
+  "/messages/refresh": {
+   "post": {
+    "description": "Check the marketplace for new client messages now instead of at the next tick.",
+    "operationId": "messages_refresh",
+    "responses": {
+     "202": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Messages Refresh",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Refresh",
+    "tags": [
+     "messages"
+    ]
+   }
+  },
+  "/messages/{conversation_id}": {
+   "get": {
+    "operationId": "messages_conversation",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "conversation_id",
+      "required": true,
+      "schema": {
+       "format": "uuid",
+       "title": "Conversation Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ConversationDetail"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Conversation",
+    "tags": [
+     "messages"
+    ]
+   },
+   "post": {
+    "operationId": "messages_decide",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "conversation_id",
+      "required": true,
+      "schema": {
+       "format": "uuid",
+       "title": "Conversation Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Approval"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "202": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Accepted"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Decide",
+    "tags": [
+     "messages"
     ]
    }
   },

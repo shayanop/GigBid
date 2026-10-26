@@ -11,11 +11,29 @@ export const STATUS: Record<string, { label: string; tone: Tone }> = {
   submitted: { label: "Submitted", tone: "evidence" },
   rejected: { label: "Rejected by you", tone: "muted" },
   needs_attention: { label: "Needs attention", tone: "risk" },
+  sent: { label: "Sent", tone: "evidence" },
+  idle: { label: "Nothing to answer", tone: "muted" },
+};
+
+export const INTENT: Record<string, string> = {
+  question: "Question",
+  negotiation: "Negotiation",
+  interview: "Interview request",
+  scam_signal: "Possible scam",
+  other: "Other",
 };
 
 export type Tone = "quiet" | "action" | "caution" | "muted" | "evidence" | "risk";
 
 export const LIVE_STATUSES = new Set(["queued", "analyzing", "drafting", "processing"]);
+
+const DATE_TIME = { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" } as const;
+
+/** In the viewer's time zone. */
+export const when = (iso: string) => new Date(iso).toLocaleString("en-GB", DATE_TIME);
+
+/** In UTC, matching the times written into replies to clients. */
+export const whenUtc = (iso: string) => new Date(iso).toLocaleString("en-GB", { ...DATE_TIME, timeZone: "UTC" });
 
 const FLAGS: Record<string, string> = {
   off_platform_contact: "Off-platform contact",
@@ -42,6 +60,12 @@ export const NODE: Record<string, string> = {
   compliance: "Compliance Guard",
   approval: "Your approval",
   submit: "Submit to marketplace",
+  read: "Read the conversation",
+  classify: "Classify the message",
+  slots: "Find interview times",
+  liaison: "Client Liaison",
+  check: "Compliance Guard",
+  send: "Send and hold times",
 };
 
 export const SUPPORT: Record<string, string> = {

@@ -3,7 +3,6 @@
 from uuid import UUID, uuid4
 
 from fastapi import APIRouter, HTTPException, Request
-from psycopg.types.json import Jsonb
 
 from agent.handoffs import Approval
 from apps.api import db
@@ -49,14 +48,7 @@ async def decide(thread_id: UUID, body: Approval, user: User, request: Request):
         if spent["n"] + cost > budget:
             raise HTTPException(409, f"weekly Connects budget: {spent['n']} of {budget} used, "
                                      f"this bid needs {cost}")
-    # Atomic claim: a double click or a second tab cannot resume the graph twice. The
-    # decision is stored before queueing, so a lost queue entry cannot lose it.
-    claimed = await db.fetchone(pool, "UPDATE bid_threads SET status = 'processing', "
-                                      "pending_resume = %s, updated_at = now() WHERE id = %s "
-                                      "AND user_id = %s AND status = 'awaiting_approval' "
-                                      "RETURNING id",
-                                Jsonb(body.model_dump()), thread_id, user["id"])
-    if not claimed:
+    if not await db.claim_decision(pool, "bid_threads", user["id"], thread_id, body.model_dump()):
         raise HTTPException(409, "not awaiting approval")
     await enqueue_run(request, str(thread_id), _job_id=f"resume:{thread_id}:{uuid4().hex}")
     return {"thread_id": thread_id, "status": "processing"}

@@ -24,6 +24,10 @@ ALLOWLIST: dict[str, set[tuple[str, str]]] = {
     "critic": {("portfolio", "search_evidence")},
     "approval": {("marketplace", "create_proposal_draft")},  # dry_run previews only
     "submit": {("marketplace", "create_proposal_draft"), ("marketplace", "submit_proposal")},
+    "liaison": {("marketplace", "list_messages"), ("marketplace", "get_job"),
+                ("workspace", "find_free_slots")},
+    "liaison_approval": {("marketplace", "send_message")},  # dry_run previews only
+    "liaison_send": {("marketplace", "send_message"), ("workspace", "hold_slot")},
 }
 
 
@@ -46,7 +50,8 @@ class Toolbox:
     def for_user(cls, account: str, trace_id: str | None = None) -> "Toolbox":
         """Deployed MCP servers over HTTP with a one-hour token for this account."""
         targets = {"marketplace": os.environ["MARKETPLACE_MCP_URL"],
-                   "portfolio": os.environ["PORTFOLIO_MCP_URL"]}
+                   "portfolio": os.environ["PORTFOLIO_MCP_URL"],
+                   "workspace": os.environ["WORKSPACE_MCP_URL"]}
         token = mint(account)
         return cls(targets, {server: token for server in targets}, trace_id)
 

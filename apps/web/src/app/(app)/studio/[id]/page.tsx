@@ -140,7 +140,8 @@ export default function Studio() {
           </Panel>
         </aside>
       </div>
-      <ApprovalPanel threadId={id} letter={draft.cover_letter} connectsCost={preview.connects_cost}
+      <ApprovalPanel kind="proposal" threadId={id} text={draft.cover_letter}
+                     approveLabel={`Approve and submit (${preview.connects_cost} Connects)`}
                      onEditing={setEditing} />
     </article>
   );

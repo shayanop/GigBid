@@ -33,7 +33,8 @@ async def api(harness, infra):
         await server.lifespan.__aexit__(None, None, None)
 
     async def drain():
-        worker = Worker(functions=[worker_main.run_bid], burst=True, handle_signals=False,
+        worker = Worker(functions=[worker_main.run_bid, worker_main.run_conversation,
+                                   worker_main.check_inbox], burst=True, handle_signals=False,
                         redis_settings=RedisSettings.from_dsn(os.environ["REDIS_URL"]),
                         on_startup=worker_main.startup, on_shutdown=worker_main.shutdown,
                         ctx={"toolbox_for": toolbox_for}, poll_delay=0.05, max_tries=1)
@@ -141,8 +142,10 @@ async def test_saved_search_queues_new_jobs_once_and_skips_reposts(api, harness)
         await worker_main.shutdown(worker.ctx)
     titles = [j["title"] for j in (await client.get("/jobs?limit=200")).json()]
     assert first == len(titles) > 0 and again == 0
-    queued = await api.server.app.state.queue.queued_jobs()
-    assert len({j.job_id for j in queued}) == first
+    queued = {j.job_id for j in await api.server.app.state.queue.queued_jobs()}
+    assert len({j for j in queued if j.startswith("bid:")}) == first
+    # The same tick checked the inbox: one run per seeded client conversation, once.
+    assert len({j for j in queued if j.startswith("conv:")}) == 4
 
 
 async def test_progress_streams_over_sse(api, harness):
@@ -211,3 +214,29 @@ async def test_decision_applied_before_a_crash_is_not_applied_twice(api, harness
     await api.drain()
     assert (await client.get(f"/jobs/{thread_id}")).json()["status"] == "submitted"
     assert harness.balance() == before - cost
+
+
+async def test_client_messages_get_drafted_replies_and_move_the_pipeline(api, harness):
+    client = api.server.client
+    await signup(client)
+    interview = next(t for t in harness.app.state.data["threads"].values()
+                     if t["freelancer_id"] == "fr_ml" and t["_intent"] == "interview")
+    await client.post("/jobs", json={"job_id": interview["job_id"]})  # we bid on that job
+    assert (await client.post("/messages/refresh")).status_code == 202
+    await api.drain()
+
+    conversations = (await client.get("/messages")).json()
+    assert len(conversations) == 4
+    assert all(c["status"] == "awaiting_approval" for c in conversations)
+    conv = next(c for c in conversations if c["conversation_id"] == interview["id"])
+    detail = (await client.get(f"/messages/{conv['id']}")).json()
+    assert detail["intent"] == "interview" and len(detail["slots"]) == 3
+    assert detail["approval_request"]["preview"]["dry_run"] is True
+    assert (await client.get("/jobs")).json()[0]["stage"] == "interview"
+    assert (await client.get(f"/runs/{conv['id']}")).json()["trace"][0]["node"] == "read"
+
+    assert (await client.post(f"/messages/{conv['id']}", json={"action": "approve"})).status_code == 202
+    assert (await client.post(f"/messages/{conv['id']}", json={"action": "approve"})).status_code == 409
+    await api.drain()
+    assert (await client.get(f"/messages/{conv['id']}")).json()["status"] == "sent"
+    assert harness.app.state.data["threads"][interview["id"]]["messages"][-1]["sender"] == "freelancer"

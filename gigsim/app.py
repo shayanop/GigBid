@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 import random
+import re
 import time
 from collections import defaultdict, deque
 from datetime import UTC, datetime
@@ -46,6 +47,46 @@ def _get(table: dict, key: str) -> dict:
     if key not in table:
         raise HTTPException(404, f"{key} not found")
     return table[key]
+
+
+GENERIC_OPENING = re.compile(r"dear sir|i am an expert|best fit for|i can do this job"
+                             r"|check my profile", re.IGNORECASE)
+CLIENT_LINES = {
+    "interview": "Your proposal stood out. Could we do a 30-minute call this week to talk it "
+                 "through?",
+    "question": "Thanks for applying. How would you structure the first milestone, and what "
+                "do you need from us to start?",
+    "scam": "Thanks for applying. Let's continue on WhatsApp, my number is +1 555 0100. "
+            "I'll pay you directly so we both save the fees.",
+}
+
+
+def simulate_client(state: dict, me: dict, proposal: dict) -> None:
+    """The client's reaction to a submitted proposal, decided from their hidden
+    preferences: budget ceiling and dislike of generic openings. Deterministic per job
+    and freelancer. ponytail: rule-based; an LLM client comes with the outcome evals."""
+    job = state["jobs"][proposal["job_id"]]
+    client = state["clients"][job["client_id"]]
+    prefs = client["_prefs"]
+    if prefs is None:
+        intent = "scam"
+    else:
+        rng = random.Random(f"{job['id']}:{me['id']}")
+        score = 0.45 + rng.uniform(-0.15, 0.15)
+        ceiling = (job["budget_max"] or proposal["bid_amount"]) * prefs["budget_ceiling_pct"]
+        score += 0.25 if proposal["bid_amount"] <= ceiling else -0.25
+        if prefs["dislikes_generic_opening"] and GENERIC_OPENING.search(proposal["cover_letter"][:200]):
+            score -= 0.3
+        if score < 0.4:
+            return  # ignored, as most proposals are
+        intent = "interview" if score >= 0.6 else "question"
+    tid = f"th_{len(state['threads']) + 1:04d}"
+    state["threads"][tid] = {
+        "id": tid, "freelancer_id": me["id"], "job_id": job["id"], "client_id": client["id"],
+        "messages": [{"id": f"{tid}_m1", "sender": "client", "body": CLIENT_LINES[intent],
+                      "sent_at": _now()}],
+        "_intent": intent,
+    }
 
 
 def create_app(n_jobs: int = 1500, rate_per_min: int | None = None,
@@ -165,6 +206,7 @@ def create_app(n_jobs: int = 1500, rate_per_min: int | None = None,
                 raise HTTPException(402, "insufficient connects")
             me["connects"] -= p["connects_cost"]
             p.update(status="submitted", submitted_at=_now())
+            simulate_client(state, me, p)
             return p
         return once(me, idempotency_key, {"op": "submit", "id": proposal_id}, write)
 

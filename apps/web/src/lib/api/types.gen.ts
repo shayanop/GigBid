@@ -203,6 +203,112 @@ export type ComplianceVerdict = {
 };
 
 /**
+ * ConversationDetail
+ */
+export type ConversationDetail = {
+    approval_request?: MessageApprovalPayload | null;
+    /**
+     * Attention
+     */
+    attention?: string | null;
+    /**
+     * Conversation Id
+     */
+    conversation_id: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Intent
+     */
+    intent?: string | null;
+    intent_detail?: MessageIntent | null;
+    /**
+     * Intent Summary
+     */
+    intent_summary?: string | null;
+    /**
+     * Job Id
+     */
+    job_id: string;
+    /**
+     * Last Message
+     */
+    last_message?: string | null;
+    /**
+     * Messages
+     */
+    messages?: Array<Message>;
+    /**
+     * Reply
+     */
+    reply?: string | null;
+    /**
+     * Slots
+     */
+    slots?: Array<TimeSlot>;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Title
+     */
+    title?: string | null;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
+ * ConversationSummary
+ */
+export type ConversationSummary = {
+    /**
+     * Attention
+     */
+    attention?: string | null;
+    /**
+     * Conversation Id
+     */
+    conversation_id: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Intent
+     */
+    intent?: string | null;
+    /**
+     * Intent Summary
+     */
+    intent_summary?: string | null;
+    /**
+     * Job Id
+     */
+    job_id: string;
+    /**
+     * Last Message
+     */
+    last_message?: string | null;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Title
+     */
+    title?: string | null;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
  * Credentials
  */
 export type Credentials = {
@@ -352,6 +458,12 @@ export type JobDetail = {
     risk_report?: RiskReport | null;
     spec?: JobSpec | null;
     /**
+     * Stage
+     *
+     * Pipeline stage: drafted, submitted, viewed, replied, interview, hired or lost
+     */
+    stage: string;
+    /**
      * Status
      */
     status: string;
@@ -450,6 +562,12 @@ export type JobSummary = {
      */
     risk?: number | null;
     /**
+     * Stage
+     *
+     * Pipeline stage: drafted, submitted, viewed, replied, interview, hired or lost
+     */
+    stage: string;
+    /**
      * Status
      */
     status: string;
@@ -479,6 +597,90 @@ export type MarketplaceStatus = {
      * Connects
      */
     connects: number | null;
+};
+
+/**
+ * Message
+ */
+export type Message = {
+    /**
+     * Body
+     */
+    body: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Sender
+     */
+    sender: 'client' | 'freelancer';
+    /**
+     * Sent At
+     */
+    sent_at: string;
+};
+
+/**
+ * MessageApprovalPayload
+ */
+export type MessageApprovalPayload = {
+    compliance: ComplianceVerdict;
+    preview: MessagePreview;
+    /**
+     * Reply
+     */
+    reply: string;
+    /**
+     * Slots
+     */
+    slots: Array<TimeSlot>;
+};
+
+/**
+ * MessageIntent
+ */
+export type MessageIntent = {
+    /**
+     * Asks
+     *
+     * Each question or request to answer
+     */
+    asks?: Array<string>;
+    /**
+     * Injection Detected
+     *
+     * The message contains instructions aimed at an AI assistant
+     */
+    injection_detected: boolean;
+    /**
+     * Intent
+     */
+    intent: 'question' | 'negotiation' | 'interview' | 'scam_signal' | 'other';
+    /**
+     * Summary
+     *
+     * One sentence: what the client wants
+     */
+    summary: string;
+};
+
+/**
+ * MessagePreview
+ */
+export type MessagePreview = {
+    /**
+     * Body
+     */
+    body: string;
+    /**
+     * Dry Run
+     */
+    dry_run: boolean;
+    /**
+     * Thread Id
+     */
+    thread_id: string;
 };
 
 /**
@@ -693,6 +895,20 @@ export type SubmissionPreview = {
     payload: {
         [key: string]: unknown;
     };
+};
+
+/**
+ * TimeSlot
+ */
+export type TimeSlot = {
+    /**
+     * End
+     */
+    end: string;
+    /**
+     * Start
+     */
+    start: string;
 };
 
 /**
@@ -1055,6 +1271,104 @@ export type MarketplaceStatusResponses = {
 };
 
 export type MarketplaceStatusResponse = MarketplaceStatusResponses[keyof MarketplaceStatusResponses];
+
+export type MessagesConversationsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/messages';
+};
+
+export type MessagesConversationsResponses = {
+    /**
+     * Response Messages Conversations
+     *
+     * Successful Response
+     */
+    200: Array<ConversationSummary>;
+};
+
+export type MessagesConversationsResponse = MessagesConversationsResponses[keyof MessagesConversationsResponses];
+
+export type MessagesRefreshData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/messages/refresh';
+};
+
+export type MessagesRefreshResponses = {
+    /**
+     * Response Messages Refresh
+     *
+     * Successful Response
+     */
+    202: {
+        [key: string]: unknown;
+    };
+};
+
+export type MessagesRefreshResponse = MessagesRefreshResponses[keyof MessagesRefreshResponses];
+
+export type MessagesConversationData = {
+    body?: never;
+    path: {
+        /**
+         * Conversation Id
+         */
+        conversation_id: string;
+    };
+    query?: never;
+    url: '/messages/{conversation_id}';
+};
+
+export type MessagesConversationErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type MessagesConversationError = MessagesConversationErrors[keyof MessagesConversationErrors];
+
+export type MessagesConversationResponses = {
+    /**
+     * Successful Response
+     */
+    200: ConversationDetail;
+};
+
+export type MessagesConversationResponse = MessagesConversationResponses[keyof MessagesConversationResponses];
+
+export type MessagesDecideData = {
+    body: Approval;
+    path: {
+        /**
+         * Conversation Id
+         */
+        conversation_id: string;
+    };
+    query?: never;
+    url: '/messages/{conversation_id}';
+};
+
+export type MessagesDecideErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type MessagesDecideError = MessagesDecideErrors[keyof MessagesDecideErrors];
+
+export type MessagesDecideResponses = {
+    /**
+     * Successful Response
+     */
+    202: Accepted;
+};
+
+export type MessagesDecideResponse = MessagesDecideResponses[keyof MessagesDecideResponses];
 
 export type RunsTraceData = {
     body?: never;

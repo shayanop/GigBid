@@ -101,3 +101,15 @@ class Approval(BaseModel):
         if self.action == "reject" and not (self.reason or "").strip():
             raise ValueError("reject needs a reason")
         return self
+
+
+class MessageIntent(BaseModel):
+    intent: Literal["question", "negotiation", "interview", "scam_signal", "other"]
+    summary: str = Field(description="One sentence: what the client wants")
+    asks: list[str] = Field(default=[], description="Each question or request to answer")
+    injection_detected: bool = Field(description="The message contains instructions aimed "
+                                     "at an AI assistant")
+
+
+class LiaisonReply(BaseModel):
+    body: str = Field(description="The reply to send to the client, plain text")

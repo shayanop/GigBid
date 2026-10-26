@@ -10,7 +10,7 @@ try {
 }
 
 const ROOT = "../..";
-const PORTS = { web: 3010, api: 8010, gigsim: 8110, marketplace: 8210, portfolio: 8310 };
+const PORTS = { web: 3010, api: 8010, gigsim: 8110, marketplace: 8210, portfolio: 8310, workspace: 8410 };
 const env = {
   ...process.env,
   GIGBID_PROFILE: "fake",
@@ -21,6 +21,8 @@ const env = {
   GIGSIM_URL: `http://localhost:${PORTS.gigsim}`,
   MARKETPLACE_MCP_URL: `http://localhost:${PORTS.marketplace}/mcp`,
   PORTFOLIO_MCP_URL: `http://localhost:${PORTS.portfolio}/mcp`,
+  WORKSPACE_MCP_URL: `http://localhost:${PORTS.workspace}/mcp`,
+  WORKSPACE_DIR: "data/processed/e2e/workspace",
   MARKETPLACE_AUDIT_LOG: "data/processed/audit/e2e.jsonl",
   MARKETPLACE_RATE_PER_MIN: "1000",
 } as Record<string, string>;
@@ -50,6 +52,7 @@ export default defineConfig({
     python(`uvicorn gigsim.app:create_app --factory --port ${PORTS.gigsim}`, PORTS.gigsim),
     python("python -m mcp_servers.marketplace.server", PORTS.marketplace),
     python("python -m mcp_servers.portfolio.server", PORTS.portfolio),
+    python("python -m mcp_servers.workspace.server", PORTS.workspace),
     // psycopg async needs the selector loop; uvicorn picks Proactor on Windows.
     python(`uvicorn apps.api.main:app --port ${PORTS.api} --loop asyncio:SelectorEventLoop`, PORTS.api),
     {
