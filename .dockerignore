@@ -1,0 +1,6 @@
+.env
+.venv
+.git
+**/__pycache__
+**/node_modules
+data/processed

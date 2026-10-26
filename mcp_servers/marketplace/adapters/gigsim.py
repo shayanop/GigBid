@@ -5,8 +5,17 @@ from datetime import datetime
 
 import httpx
 
-from agent.marketplace_port import (Client, Job, JobPage, MarketplaceError,
-                                    MarketplaceUnavailable, Message, Proposal, ProposalIn, Thread)
+from agent.marketplace_port import (
+    Client,
+    Job,
+    JobPage,
+    MarketplaceError,
+    MarketplaceUnavailable,
+    Message,
+    Proposal,
+    ProposalIn,
+    Thread,
+)
 
 RETRY_STATUS = {429, 500, 502, 503, 504}
 
@@ -14,8 +23,8 @@ RETRY_STATUS = {429, 500, 502, 503, 504}
 class GigSimAdapter:
     def __init__(self, base_url: str, token: str, transport: httpx.AsyncBaseTransport | None = None,
                  attempts: int = 4, backoff: float = 0.5, timeout: float = 10.0):
-        self._http = dict(base_url=base_url, transport=transport, timeout=timeout,
-                          headers={"Authorization": f"Bearer {token}"})
+        self._http = {"base_url": base_url, "transport": transport, "timeout": timeout,
+                      "headers": {"Authorization": f"Bearer {token}"}}
         self.attempts, self.backoff = attempts, backoff
 
     async def _call(self, method: str, path: str, idempotency_key: str | None = None, **kw):
@@ -59,6 +68,9 @@ class GigSimAdapter:
 
     async def list_threads(self) -> list[Thread]:
         return [Thread.model_validate(t) for t in await self._call("GET", "/threads")]
+
+    async def get_proposal(self, proposal_id: str) -> Proposal:
+        return Proposal.model_validate(await self._call("GET", f"/proposals/{proposal_id}"))
 
     async def create_proposal_draft(self, draft: ProposalIn, idempotency_key: str) -> Proposal:
         data = await self._call("POST", "/proposals", idempotency_key, json=draft.model_dump())

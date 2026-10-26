@@ -1,8 +1,31 @@
-# Local stack. App services (api, worker, web, MCP servers, GigSim) are added
+# Local stack. App services (api, worker, web, other MCP servers) are added
 # as they are built.
 name: gigbid
 
+x-python: &python
+  build:
+    context: ..
+    dockerfile: infra/docker/python.Dockerfile
+
 services:
+  gigsim: # marketplace simulator
+    <<: *python
+    command: uvicorn gigsim.app:create_app --factory --host 0.0.0.0 --port 8100
+    ports: ["8100:8100"]
+
+  marketplace-mcp:
+    <<: *python
+    command: python -m mcp_servers.marketplace.server
+    environment:
+      HOST: 0.0.0.0
+      GIGSIM_URL: http://gigsim:8100
+      MARKETPLACE_MCP_URL: http://marketplace-mcp:8200/mcp
+      MARKETPLACE_MCP_TOKENS: ${MARKETPLACE_MCP_TOKENS}
+      MARKETPLACE_AUDIT_LOG: /audit/marketplace.jsonl
+    volumes: [audit:/audit]
+    ports: ["8200:8200"]
+    depends_on: [gigsim]
+
   postgres: # relational data, LangGraph checkpoints/store, pgvector
     image: pgvector/pgvector:pg17
     environment:
@@ -30,5 +53,6 @@ services:
     ports: ["6006:6006", "4317:4317"]
 
 volumes:
+  audit:
   pgdata:
   ollama:

@@ -13,7 +13,7 @@ import os
 import random
 import time
 from collections import defaultdict, deque
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
@@ -39,7 +39,7 @@ def public(record: dict) -> dict:
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _get(table: dict, key: str) -> dict:
@@ -114,7 +114,7 @@ def create_app(n_jobs: int = 1500, rate_per_min: int | None = None,
         words = q.lower().split()
         wanted = {s.strip().lower() for s in skills.split(",") if s.strip()}
         if posted_after and posted_after.tzinfo is None:
-            posted_after = posted_after.replace(tzinfo=timezone.utc)
+            posted_after = posted_after.replace(tzinfo=UTC)
         found = [
             j for j in sorted(state["jobs"].values(), key=lambda j: j["posted_at"], reverse=True)
             if all(w in f"{j['title']} {j['description']}".lower() for w in words)
@@ -139,9 +139,9 @@ def create_app(n_jobs: int = 1500, rate_per_min: int | None = None,
     def threads(me: Me):
         return [public(t) for t in state["threads"].values() if t["freelancer_id"] == me["id"]]
 
-    @app.get("/proposals")
-    def proposals(me: Me):
-        return [p for p in state["proposals"].values() if p["freelancer_id"] == me["id"]]
+    @app.get("/proposals/{proposal_id}")
+    def get_proposal(proposal_id: str, me: Me):
+        return my_proposal(me, proposal_id)
 
     @app.post("/proposals", status_code=201)
     def create_proposal(body: ProposalIn, me: Me, idempotency_key: IdemKey = ""):

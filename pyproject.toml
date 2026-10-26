@@ -29,9 +29,14 @@ package = false
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
-testpaths = ["tests"]
+testpaths = ["tests", "mcp_servers"]
+asyncio_mode = "auto"
 markers = ["live: calls a real model API (needs GROQ_API_KEY)"]
 
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+
+[tool.ruff.lint.per-file-ignores]
+# MCP tool params are validated by pydantic, which copies list defaults per call.
+"mcp_servers/*/server.py" = ["B006"]
