@@ -12,7 +12,7 @@ router = APIRouter(prefix="/searches", tags=["searches"])
 COLUMNS = "id, query, skills, every_minutes, enabled, last_run_at"
 
 
-@router.get("", response_model=list[SearchOut])
+@router.get("", response_model=list[SearchOut], operation_id="searches_list")
 async def list_searches(user: User, request: Request):
     return await db.fetch(request.app.state.db, f"SELECT {COLUMNS} FROM saved_searches "
                           "WHERE user_id = %s ORDER BY created_at", user["id"])

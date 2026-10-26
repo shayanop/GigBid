@@ -19,6 +19,9 @@ profiles:
     default: groq:openai/gpt-oss-20b
     default_fallback: groq:openai/gpt-oss-120b
 
+  fake: # scripted, deterministic: UI end-to-end tests and demos without an API key
+    default: fake:scripted
+
   local: # small nodes on the compose Ollama service, heavy nodes on Groq
     default: ollama:qwen3:4b
     default_fallback: groq:openai/gpt-oss-20b

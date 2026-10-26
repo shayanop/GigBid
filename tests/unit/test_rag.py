@@ -74,3 +74,10 @@ def test_drop_sentences_matches_loosely_and_keeps_paragraphs():
             "Next step: a short call.")
     out = drop_sentences(text, ["I have 15 years of Rust experience", "15 years of Rust"])
     assert out == "I built a Celery queue [p1#0].\n\nNext step: a short call."
+
+
+def test_citations_never_reach_the_client():
+    from agent.graphs.bid_graph import client_text
+    letter = ("I built it [fr_ml-p09#0]. Async endpoints ([fr_ml-p11/app.py#0], "
+              "[fr_ml-p12/app.py#0]) and LangGraph [fr_ml-prop001#0], done.")
+    assert client_text(letter) == "I built it. Async endpoints and LangGraph, done."

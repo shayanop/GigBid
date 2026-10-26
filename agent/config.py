@@ -35,8 +35,11 @@ def model_spec(node: str) -> tuple[str, str | None]:
     return profile["default"], profile.get("default_fallback")
 
 
-def _build(spec: str, schema):
+def _build(spec: str, schema, node: str):
     provider, model = spec.split(":", 1)
+    if provider == "fake":
+        from agent.fake_llm import scripted_model
+        return scripted_model(node)
     llm = init_chat_model(model, model_provider=provider)
     # json_schema = constrained decoding; tool calling truncated long outputs on Groq gpt-oss.
     return llm.with_structured_output(schema, method="json_schema", include_raw=True) \
@@ -48,5 +51,5 @@ def get_model(node: str, schema=None):
     {"raw": AIMessage, "parsed": schema | None, "parsing_error": ...} so callers keep
     token usage."""
     primary, fallback = model_spec(node)
-    llm = _build(primary, schema)
-    return llm.with_fallbacks([_build(fallback, schema)]) if fallback else llm
+    llm = _build(primary, schema, node)
+    return llm.with_fallbacks([_build(fallback, schema, node)]) if fallback else llm

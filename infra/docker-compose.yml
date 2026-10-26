@@ -1,5 +1,5 @@
 # Local stack: docker compose -f infra/docker-compose.yml --env-file .env up
-# The web app is added with Phase 6.
+# Web app on http://localhost:3000
 name: gigbid
 
 x-python: &python
@@ -21,6 +21,14 @@ x-app-env: &app-env
   DEMO_PASSWORD: ${DEMO_PASSWORD}
 
 services:
+  web:
+    build:
+      context: ..
+      dockerfile: infra/docker/web.Dockerfile
+      args: {API_URL: "http://api:8000"}
+    ports: ["3000:3000"]
+    depends_on: [api]
+
   api:
     <<: *python
     command: uvicorn apps.api.main:app --host 0.0.0.0 --port 8000

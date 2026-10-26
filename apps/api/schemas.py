@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 
 from agent.handoffs import (
     BidDecision,
+    ClaimCheck,
     ClaimReport,
     ComplianceVerdict,
     Critique,
@@ -97,11 +98,39 @@ class JobDetail(JobSummary):
     compliance: ComplianceVerdict | None = None
 
 
+class ClaimEvidence(BaseModel):
+    id: str
+    type: str
+    source: str
+    text: str
+
+
+class ClaimOut(ClaimCheck):
+    evidence: list[ClaimEvidence]
+
+
+class SubmissionPreview(BaseModel):
+    """Dry run of the marketplace write: exactly what would be sent, and its cost."""
+    dry_run: bool
+    payload: dict
+    connects_cost: int
+    connects_balance: int
+
+
+class ApprovalPayload(BaseModel):
+    draft: ProposalDraft
+    claims: list[ClaimOut]
+    risk: RiskReport
+    price: PriceQuote
+    compliance: ComplianceVerdict
+    preview: SubmissionPreview
+
+
 class ApprovalRequest(BaseModel):
     """What the human sees before anything is sent: the interrupt payload."""
     thread_id: UUID
     title: str
-    request: dict
+    request: ApprovalPayload
 
 
 class Accepted(BaseModel):
@@ -113,3 +142,8 @@ class TraceOut(BaseModel):
     status: str | None
     usage: dict
     trace: list[dict]
+
+
+class MarketplaceStatus(BaseModel):
+    available: bool
+    connects: int | None

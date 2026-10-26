@@ -15,7 +15,8 @@ from agent.nodes.common import record
 from mcp_servers.auth import mint
 
 ALLOWLIST: dict[str, set[tuple[str, str]]] = {
-    "scout": {("marketplace", "get_job"), ("marketplace", "search_jobs")},
+    "scout": {("marketplace", "get_job"), ("marketplace", "search_jobs"),
+              ("marketplace", "get_connects_balance")},
     "risk": {("marketplace", "get_client_history")},
     "matcher": {("portfolio", "search_evidence")},
     "pricing": {("marketplace", "search_jobs")},

@@ -4,3 +4,6 @@
 **/__pycache__
 **/node_modules
 data/processed
+apps/web/.next*
+apps/web/playwright-report
+apps/web/test-results

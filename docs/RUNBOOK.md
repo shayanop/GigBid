@@ -7,9 +7,17 @@ docker compose -f infra/docker-compose.yml --env-file .env up -d --build
 docker compose -f infra/docker-compose.yml --env-file .env exec api python -m apps.api.seed
 ```
 
-API on :8000 (OpenAPI at `/docs`), GigSim :8100, Marketplace MCP :8200, Portfolio MCP :8300. The demo account is `DEMO_EMAIL` / `DEMO_PASSWORD` from `.env`.
+Web app on :3000, API on :8000 (OpenAPI at `/docs`), GigSim :8100, Marketplace MCP :8200, Portfolio MCP :8300. The demo account is `DEMO_EMAIL` / `DEMO_PASSWORD` from `.env`.
 
-Local processes instead of containers (Postgres and Redis still from compose): `make gigsim`, `make marketplace-mcp`, `make portfolio-mcp`, `make api`, `make worker`.
+Local processes instead of containers (Postgres and Redis still from compose): `make gigsim`, `make marketplace-mcp`, `make portfolio-mcp`, `make api`, `make worker`, `make web`. Set `GIGBID_PROFILE=fake` to run every agent on the scripted model (no API key, no cost).
+
+GigSim keeps its state in memory: restarting it (or rebuilding the shared Python image) resets Connects balances and proposals.
+
+## Web client and end-to-end tests
+
+The TypeScript client in `apps/web/src/lib/api` is generated; after any API change run `npm --prefix apps/web run gen:api` and commit the result (CI fails when it is stale).
+
+`make e2e` starts its own GigSim, MCP servers, API, worker and a production web build on ports 3010–8310 against `TEST_DATABASE_URL` with the `fake` profile, so it can run next to the dev stack. The HTML report lands in `apps/web/playwright-report`.
 
 ## Polling policy (conservative by design)
 

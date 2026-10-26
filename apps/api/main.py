@@ -20,7 +20,7 @@ from agent.graphs import bid_graph
 from agent.graphs.checkpoint import postgres_checkpointer
 from agent.mcp_client import Toolbox
 from apps.api import db
-from apps.api.routers import approvals, auth, jobs, runs, searches
+from apps.api.routers import approvals, auth, jobs, marketplace, runs, searches
 
 load_dotenv()
 TRACE_ID = re.compile(r"[\w-]{8,64}")
@@ -44,7 +44,9 @@ async def lifespan(app: FastAPI):
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="GigBid API", version="0.1.0", lifespan=lifespan)
+    app = FastAPI(title="GigBid API", version="0.1.0", lifespan=lifespan,
+                  # Readable names in the generated TypeScript client, e.g. jobsInbox.
+                  generate_unique_id_function=lambda route: f"{route.tags[0]}_{route.name}")
     app.add_middleware(SessionMiddleware, secret_key=os.environ["SESSION_SECRET"],
                        same_site="lax", https_only=os.getenv("COOKIE_SECURE") == "1",
                        max_age=14 * 86400)
@@ -58,13 +60,14 @@ def create_app() -> FastAPI:
         response.headers["X-Trace-Id"] = request.state.trace_id
         return response
 
-    @app.get("/health", tags=["health"])
+    @app.get("/health", tags=["health"], include_in_schema=False)
     async def health(request: Request) -> dict:
         await db.fetchone(request.app.state.db, "SELECT 1")
         await request.app.state.redis.ping()
         return {"status": "ok"}
 
-    for router in (auth.router, jobs.router, approvals.router, runs.router, searches.router):
+    for router in (auth.router, jobs.router, approvals.router, runs.router, searches.router,
+                   marketplace.router):
         app.include_router(router)
     return app
 

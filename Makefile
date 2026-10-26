@@ -1,4 +1,4 @@
-.PHONY: dev gigsim marketplace-mcp portfolio-mcp data seed api worker diagram run-job eval models test test-live lint
+.PHONY: dev gigsim marketplace-mcp portfolio-mcp data seed api worker diagram run-job eval models test test-live lint e2e web
 
 COMPOSE = docker compose -f infra/docker-compose.yml --env-file .env
 
@@ -20,8 +20,8 @@ data: # regenerate the synthetic personas and dev labels
 seed: # demo account and saved search
 	uv run python -m apps.api.seed
 
-api:
-	uv run uvicorn apps.api.main:app --port 8000
+api: # selector loop: psycopg async cannot run on Windows' default Proactor loop
+	uv run uvicorn apps.api.main:app --port 8000 --loop asyncio:SelectorEventLoop
 
 worker:
 	uv run python -m worker.main
@@ -46,3 +46,10 @@ test-live:
 
 lint:
 	uv run ruff check .
+	npm --prefix apps/web run lint
+
+e2e: # needs Postgres and Redis running
+	npm --prefix apps/web run test:e2e
+
+web:
+	npm --prefix apps/web run dev

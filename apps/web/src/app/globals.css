@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+/* GigBid tokens. Color encodes meaning only: support level, risk, and actions. */
+@theme {
+  --color-paper: #edf0f3;
+  --color-surface: #fafbfc;
+  --color-ink: #18222d;
+  --color-slate: #5a6675;
+  --color-line: #d3d9e0;
+  --color-action: #2f44c9;
+  --color-action-strong: #23349e;
+  --color-evidence: #12715f;
+  --color-evidence-soft: #dcefe9;
+  --color-caution: #a86a12;
+  --color-caution-soft: #f6ead6;
+  --color-risk: #b42318;
+  --color-risk-soft: #f8e1df;
+
+  --font-sans: var(--font-atkinson), system-ui, sans-serif;
+  --font-serif: var(--font-source-serif), Georgia, serif;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-action);
+  outline-offset: 2px;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The proposal manuscript: claims carry their support level as an underline. */
+.claim {
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  cursor: help;
+  border-radius: 2px;
+}
+.claim[data-label="supported"] { text-decoration-color: var(--color-evidence); }
+.claim[data-label="partly_supported"] {
+  text-decoration-color: var(--color-caution);
+  text-decoration-style: dashed;
+}
+.claim[data-active="true"] { background: var(--color-evidence-soft); }
+.claim[data-label="partly_supported"][data-active="true"] { background: var(--color-caution-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

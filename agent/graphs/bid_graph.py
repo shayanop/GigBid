@@ -13,6 +13,7 @@ import asyncio
 import difflib
 import hashlib
 import json
+import re
 from datetime import UTC, datetime
 
 from langgraph.config import get_config
@@ -65,11 +66,21 @@ def _thread_id() -> str:
     return get_config()["configurable"]["thread_id"]
 
 
+# Evidence citations like "[fr_ml-p09#0]" or "([a#0], [b#1])" are for the freelancer's
+# review only; the client never sees them.
+CITATION = re.compile(r"\s*\(?\[[\w./-]+#\d+\](?:\s*,\s*\[[\w./-]+#\d+\])*\)?")
+
+
+def client_text(text: str) -> str:
+    return re.sub(r"[ \t]+([.,;:!?])", r"\1", CITATION.sub("", text)).strip()
+
+
 def _proposal_args(state: dict) -> dict:
     draft = state["draft"]
-    return {"job_id": state["job"].id, "cover_letter": draft.cover_letter,
+    return {"job_id": state["job"].id, "cover_letter": client_text(draft.cover_letter),
             "bid_amount": state["price"].amount,
-            "screening_answers": [f"{a.question}\n{a.answer}" for a in draft.screening_answers]}
+            "screening_answers": [f"{a.question}\n{client_text(a.answer)}"
+                                  for a in draft.screening_answers]}
 
 
 def _key(kind: str, args: dict) -> str:
@@ -88,7 +99,7 @@ async def request_approval(state: dict) -> dict:
     claims = [{**c.model_dump(), "evidence": [
                   by_id[i].model_dump(mode="json", include={"id", "type", "source", "text"})
                   for i in c.evidence_ids if i in by_id]}
-              for c in state["claims"].claims if c.label != "unsupported"]
+              for c in state["claims"].claims]  # incl. removed ones, so the UI can say so
     decision = Approval.model_validate(interrupt({
         "kind": "proposal_approval", "draft": state["draft"].model_dump(), "claims": claims,
         "risk": state["risk"].model_dump(), "price": state["price"].model_dump(),

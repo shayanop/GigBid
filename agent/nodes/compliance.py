@@ -38,8 +38,15 @@ async def check(state: dict) -> dict:
                for a in draft.screening_answers]
     draft = draft.model_copy(update={"cover_letter": letter, "screening_answers": answers})
     body = "\n".join([letter, *(f"Q: {a.question}\nA: {a.answer}" for a in answers)])
+    # The Claim Verifier already checked claims against the portfolio; without this the
+    # guard sees only the letter and blocks true, specific results as "unverifiable".
+    claims = state.get("claims")
+    verified = "\n".join(f"- {c.claim} ({c.label.replace('_', ' ')})"
+                         for c in (claims.claims if claims else []) if c.label != "unsupported")
     verdict = await common.ask("compliance", ComplianceVerdict,
-                               f"Policy pack:\n{policy_pack()}\n\nProposal:\n{body}")
+                               f"Policy pack:\n{policy_pack()}\n\nClaims verified against the "
+                               f"freelancer's portfolio evidence:\n{verified or '- none'}\n\n"
+                               f"Proposal:\n{body}")
     verdict = verdict.model_copy(update={
         "violations": [*verdict.violations, *(f"removed {r}" for r in removed)]})
     if verdict.status == "block":
