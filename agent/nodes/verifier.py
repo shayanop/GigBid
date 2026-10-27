@@ -1,22 +1,27 @@
 """Claim Verifier (B3): labels each claim against the evidence and removes unsupported
 ones before the Critic sees the draft. A claim citing no real evidence id is unsupported."""
 
-from agent.handoffs import ClaimReport
+from agent.handoffs import ClaimReport, ProposalDraft
 from agent.nodes import common
 
 
-@common.node("verifier")
-async def verify(state: dict) -> dict:
-    draft, evidence = state["draft"], state["evidence"]
+async def check_claims(draft: ProposalDraft, evidence: list) -> ClaimReport:
+    """Labels every claim in the draft; also used on its own by evals/runners/claims_eval."""
     known = {e.id for e in evidence}
     answers = "\n".join(f"Q: {a.question}\nA: {a.answer}" for a in draft.screening_answers)
     report = await common.ask("verifier", ClaimReport,
                               f"Proposal:\n{draft.cover_letter}\n\nScreening answers:\n"
                               f"{answers or 'none'}\n\nEvidence:\n"
                               + common.evidence_block(evidence))
-    claims = [c if c.label == "unsupported" or (c.evidence_ids and set(c.evidence_ids) <= known)
-              else c.model_copy(update={"label": "unsupported"}) for c in report.claims]
-    report = ClaimReport(claims=claims)
+    return ClaimReport(claims=[
+        c if c.label == "unsupported" or (c.evidence_ids and set(c.evidence_ids) <= known)
+        else c.model_copy(update={"label": "unsupported"}) for c in report.claims])
+
+
+@common.node("verifier")
+async def verify(state: dict) -> dict:
+    draft = state["draft"]
+    report = await check_claims(draft, state["evidence"])
     drop = [c.sentence for c in report.unsupported]
     cleaned = draft.model_copy(update={
         "cover_letter": common.drop_sentences(draft.cover_letter, drop),

@@ -14,6 +14,7 @@ profiles:
       writer: groq:openai/gpt-oss-120b
       critic: groq:openai/gpt-oss-120b
       liaison: groq:openai/gpt-oss-120b
+      judge: groq:openai/gpt-oss-120b
 
   open_alt: # second open configuration for the model comparison: small model everywhere
     default: groq:openai/gpt-oss-20b
@@ -29,12 +30,16 @@ profiles:
       writer: groq:openai/gpt-oss-120b
       critic: groq:openai/gpt-oss-120b
       liaison: groq:openai/gpt-oss-120b
+      judge: groq:openai/gpt-oss-120b
 
 marketplace:
   adapter: gigsim # gigsim | upwork
 
 rag: # deployed retrieval pipeline; change only from evals/results evidence (R6)
-  variant: v0
+  variant: v0 # v0, v1..v8, selected (uses components below), or custom:hybrid+rerank
+  components: {} # the deployed combination when variant is "selected"
+  reranker: Xenova/ms-marco-MiniLM-L-6-v2 # cross-encoder for rerank and corrective grading
+  grade_threshold: 0.0 # corrective retrieval drops evidence the grader scores below this
   embedding_model: BAAI/bge-small-en-v1.5
   chunk_size: 800 # characters, V0 fixed-size chunking
   chunk_overlap: 100

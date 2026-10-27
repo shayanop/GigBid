@@ -11,7 +11,7 @@ from langchain.chat_models import init_chat_model
 CONFIG_PATH = Path(__file__).with_name("config.yaml")
 
 LLM_NODES = {"analyst", "risk", "matcher", "pricing", "writer", "verifier", "critic",
-             "compliance", "intent", "liaison"}
+             "compliance", "intent", "liaison", "judge"}
 
 
 @cache

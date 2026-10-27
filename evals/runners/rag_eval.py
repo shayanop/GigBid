@@ -5,7 +5,8 @@ first occurrence sets the project's rank (CV chunks have no project and are
 skipped). Labels and graded gains come from evals/datasets/dev_retrieval.jsonl.
 Recall@k is capped: hits / min(k, |relevant|), so 1.0 is reachable.
 
-Run: uv run python -m evals.runners.rag_eval --variant v0 [--limit 50]
+Run: uv run python -m evals.runners.rag_eval --variant v0 v1 v2 v3 v4 v8 --table rag_comparison.md
+     (--limit 20 for a smoke run)
 """
 
 import argparse
@@ -18,7 +19,7 @@ from collections import defaultdict
 from datetime import UTC, datetime
 from pathlib import Path
 
-from rag.retriever import build_retriever, rag_config
+from rag.retriever import build_retriever, components_for, rag_config
 from rag.schema import Evidence
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -67,33 +68,59 @@ def evaluate(variant: str, limit: int | None = None, embedder=None) -> dict:
             ranked = rank_projects(index.search(q["query"], k=100))[:10]
             scored[persona].append({
                 "job_id": q["job_id"], "latency_ms": (time.perf_counter() - start) * 1000,
+                "skills": len(q["skills"]),
                 "recall@5": recall_at_k(ranked, q["relevant"], 5),
                 "mrr": mrr(ranked, q["relevant"]),
                 "ndcg@10": ndcg_at_k(ranked, q["relevant"], 10)})
+    every = [r for rows in scored.values() for r in rows]
     return {
         "variant": variant,
+        "components": components_for(variant).on(),
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "dataset": {"path": DATASET.relative_to(ROOT).as_posix(),
                     "sha256": hashlib.sha256(DATASET.read_bytes()).hexdigest()[:16]},
         "config": rag_config(),
-        "overall": _summary([r for rows in scored.values() for r in rows]),
+        "overall": _summary(every),
         "per_persona": {p: _summary(rows) for p, rows in scored.items()},
+        # The hypothesis is about jobs with several distinct requirements.
+        "per_job_type": {"4+ skills": _summary([r for r in every if r["skills"] >= 4]),
+                         "under 4 skills": _summary([r for r in every if r["skills"] < 4])},
         "per_query": dict(scored),
     }
 
 
+def comparison_table(results: list[dict], baseline: str = "v0") -> str:
+    """Markdown table of variants against the baseline (B5)."""
+    base = next((r for r in results if r["variant"] == baseline), results[0])["overall"]
+    lines = [("| Variant | Components | Recall@5 | MRR | nDCG@10 | Recall@5, 4+ skills | "
+              "p95 latency (ms) |"), "| --- | --- | --- | --- | --- | --- | --- |"]
+    for r in results:
+        o, hard = r["overall"], r["per_job_type"]["4+ skills"]
+        delta = o["recall@5"] - base["recall@5"]
+        lines.append(f"| {r['variant']} | {', '.join(r['components']) or 'dense only'} | "
+                     f"{o['recall@5']:.3f} ({delta:+.3f}) | {o['mrr']:.3f} | {o['ndcg@10']:.3f} | "
+                     f"{hard['recall@5']:.3f} | {o['p95_latency_ms']:.0f} |")
+    return "\n".join(lines) + "\n"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--variant", default=rag_config()["variant"])
+    parser.add_argument("--variant", nargs="+", default=[rag_config()["variant"]],
+                        help="one or more: v0 v1 v2 v3 v4 v8 selected custom:hybrid+rerank")
     parser.add_argument("--limit", type=int, help="queries per persona (smoke runs)")
+    parser.add_argument("--table", help="also write a markdown comparison to this results file")
     args = parser.parse_args()
-    result = evaluate(args.variant, args.limit)
     RESULTS.mkdir(parents=True, exist_ok=True)
-    out = RESULTS / f"rag_{args.variant}.json"
-    out.write_text(json.dumps(result, indent=1), encoding="utf-8")
-    print(json.dumps({"overall": result["overall"], "per_persona": result["per_persona"]},
-                     indent=1))
-    print(f"wrote {out.relative_to(ROOT)}")
+    results = []
+    for variant in args.variant:
+        result = evaluate(variant, args.limit)
+        name = variant.replace(":", "_").replace("+", "_")
+        (RESULTS / f"rag_{name}.json").write_text(json.dumps(result, indent=1), encoding="utf-8")
+        print(variant, json.dumps(result["overall"]))
+        results.append(result)
+    if args.table:
+        (RESULTS / args.table).write_text(comparison_table(results), encoding="utf-8")
+        print(comparison_table(results))
 
 
 if __name__ == "__main__":

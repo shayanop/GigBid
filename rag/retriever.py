@@ -1,7 +1,9 @@
 """Retriever factory: picks the variant named in agent/config.yaml (rag.variant).
 
-Every variant module in rag/variants exposes build(persona, embedder=None)
-returning an object with search(query, k, where) -> list[Evidence].
+Every variant shares the V0 index. "v0" is plain dense search; v1 to v8 are presets in
+rag/variants; "selected" uses rag.components from the config (the deployed pipeline);
+"custom:hybrid+rerank" names any combination, for ablations. All return an object with
+search(query, k, where) -> list[Evidence].
 """
 
 import importlib
@@ -14,17 +16,37 @@ from agent.config import load_config
 ROOT = Path(__file__).resolve().parents[1]
 PERSONAS_DIR = ROOT / "data" / "personas"
 INDEX_DIR = ROOT / "data" / "processed" / "index"
-VARIANTS = {"v0": "v0_naive"}
+VARIANTS = {"v1": "v1_decompose", "v2": "v2_hybrid", "v3": "v3_rerank", "v4": "v4_outcome",
+            "v8": "v8_corrective"}
 
 
 def rag_config() -> dict:
     return load_config()["rag"]
 
 
-def build_retriever(persona: str, variant: str | None = None, embedder=None):
+def components_for(name: str):
+    from rag.pipeline import Components
+    if name == "v0":
+        return Components()
+    if name == "selected":
+        return Components(**rag_config()["components"])
+    if name.startswith("custom:"):
+        return Components(**{flag: True for flag in name.removeprefix("custom:").split("+") if flag})
+    return importlib.import_module(f"rag.variants.{VARIANTS[name]}").COMPONENTS
+
+
+def build_retriever(persona: str, variant: str | None = None, embedder=None, grader=None):
     """Builds (incrementally) and returns the retriever; call again after uploads."""
-    name = variant or rag_config()["variant"]
-    return importlib.import_module(f"rag.variants.{VARIANTS[name]}").build(persona, embedder)
+    from rag.pipeline import Pipeline, cross_encoder
+    from rag.variants import v0_naive
+    cfg = rag_config()
+    components = components_for(variant or cfg["variant"])
+    index = v0_naive.build(persona, embedder)
+    if not components.on():
+        return index
+    if grader is None and (components.rerank or components.corrective):
+        grader = cross_encoder(cfg["reranker"])
+    return Pipeline(index, components, grader, cfg["grade_threshold"])
 
 
 _build_lock = threading.Lock()

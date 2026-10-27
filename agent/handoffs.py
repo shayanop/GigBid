@@ -113,3 +113,8 @@ class MessageIntent(BaseModel):
 
 class LiaisonReply(BaseModel):
     body: str = Field(description="The reply to send to the client, plain text")
+
+
+class JudgeScore(BaseModel):
+    score: int = Field(ge=1, le=5, description="1 = would not send, 5 = excellent")
+    reasons: str = Field(description="One or two sentences on what decided the score")
