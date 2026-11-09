@@ -4,7 +4,8 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-DocType = Literal["cv", "case_study", "repo_readme", "code", "review", "proposal"]
+DocType = Literal["cv", "case_study", "repo_readme", "code", "review", "proposal",
+                  "verified_case_study"]
 
 
 class Document(BaseModel):

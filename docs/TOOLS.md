@@ -53,4 +53,19 @@ The Client Liaison offers `find_free_slots` results to clients and calls `hold_s
 
 ## Third-party servers
 
-Added with Phase 11 (official Upwork MCP, GitHub MCP), each with a trust rationale.
+### GitHub MCP (GitHub's official server, not owned by GigBid)
+
+Used by the portfolio builder (signature extension X3, [EXTENSION.md](EXTENSION.md)) to read the freelancer's repositories. It is not used inside the bid or conversation graphs. Endpoint: GitHub's hosted server, `https://api.githubcopilot.com/mcp/` (`portfolio_builder.github_mcp_url`), over Streamable HTTP. Auth: a GitHub personal access token in `GITHUB_TOKEN`, sent as a bearer token to that host only and never logged.
+
+| Tool | Permission | Annotations | Notes |
+| --- | --- | --- | --- |
+| `get_file_contents` | read | readOnly (GitHub's) | `owner`, `repo`, `path`, `ref`. A folder returns a JSON listing; a file returns a status line plus the file as an embedded resource. The only GitHub tool on the allowlist (`portfolio_builder` in `agent/mcp_client.py`). |
+
+**Trust rationale.**
+- **Who maintains it.** GitHub maintains the server (`github/github-mcp-server`, open source), and it sits in front of GitHub's own API. No community proxy sits between GigBid and the data.
+- **Least privilege.** Create a fine-grained token with read-only *Contents* access to the portfolio repositories only. The allowlist exposes one read tool, so nothing can write to GitHub even if the token could.
+- **Untrusted content.** Repository text is treated as untrusted data. Code is only scanned with regular expressions and never executed or imported. The README reaches the model fenced as untrusted, and the prompt says to ignore instructions in it.
+- **Verified output.** Every skill in a generated case study must match a line of code; summary sentences naming any other skill are dropped before indexing.
+- **Failure isolation.** The builder runs as an offline batch job. If GitHub is down or rate-limited, the existing index is untouched and agents keep working.
+
+The official Upwork MCP server (live marketplace mode) is not integrated yet.

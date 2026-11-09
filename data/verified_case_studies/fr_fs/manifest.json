@@ -1,0 +1,464 @@
+{
+ "fr_fs-p03": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_fs/repos/fr_fs-p03",
+  "detected": {
+   "Python": "app.py: from fastapi import FastAPI",
+   "FastAPI": "app.py: from fastapi import FastAPI",
+   "Django": "models.py: from django.db import models",
+   "Redis": "tasks.py: import redis",
+   "Stripe": "billing.py: import stripe",
+   "Next.js": "page.tsx: import Link from 'next/link';",
+   "TypeScript": "page.tsx: import Link from 'next/link';"
+  },
+  "model_skills": [
+   "Python",
+   "FastAPI",
+   "Django",
+   "Redis",
+   "Stripe",
+   "Next.js",
+   "TypeScript"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Django",
+   "FastAPI",
+   "Next.js",
+   "Redis",
+   "Stripe",
+   "TypeScript"
+  ],
+  "mentioned_after": [
+   "Django",
+   "FastAPI",
+   "Next.js",
+   "Redis",
+   "Stripe",
+   "TypeScript"
+  ]
+ },
+ "fr_fs-p04": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_fs/repos/fr_fs-p04",
+  "detected": {
+   "Python": "app.py: from fastapi import FastAPI",
+   "FastAPI": "app.py: from fastapi import FastAPI",
+   "Redis": "tasks.py: import redis",
+   "Stripe": "billing.py: import stripe",
+   "Next.js": "page.tsx: import Link from 'next/link';",
+   "TypeScript": "App.tsx: <div className=\"flex gap-4 p-6\">",
+   "Tailwind CSS": "App.tsx: <div className=\"flex gap-4 p-6\">"
+  },
+  "model_skills": [
+   "Python (app.py: from fastapi import FastAPI)",
+   "FastAPI (app.py: from fastapi import FastAPI)",
+   "Redis (tasks.py: import redis)",
+   "Stripe (billing.py: import stripe)",
+   "Next.js (page.tsx: import Link from 'next/link';)",
+   "TypeScript (App.tsx: <div className=\"flex gap-4 p-6\">)",
+   "Tailwind CSS (App.tsx: <div className=\"flex gap-4 p-6\">)"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "FastAPI",
+   "Next.js",
+   "Python",
+   "Redis",
+   "Stripe",
+   "Tailwind CSS",
+   "TypeScript"
+  ],
+  "mentioned_after": [
+   "FastAPI",
+   "Next.js",
+   "Python",
+   "Redis",
+   "Stripe",
+   "Tailwind CSS",
+   "TypeScript"
+  ]
+ },
+ "fr_fs-p05": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_fs/repos/fr_fs-p05",
+  "detected": {
+   "Python": "billing.py: import stripe",
+   "Django": "models.py: from django.db import models",
+   "Stripe": "billing.py: import stripe",
+   "TypeScript": "App.tsx: <div className=\"flex gap-4 p-6\">",
+   "Node.js": "server.ts: import express from 'express';",
+   "Tailwind CSS": "App.tsx: <div className=\"flex gap-4 p-6\">"
+  },
+  "model_skills": [
+   "Python",
+   "Django",
+   "Stripe",
+   "TypeScript",
+   "Node.js",
+   "Tailwind CSS"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Django",
+   "Node.js",
+   "Python",
+   "Stripe",
+   "Tailwind CSS",
+   "TypeScript"
+  ],
+  "mentioned_after": [
+   "Django",
+   "Node.js",
+   "Python",
+   "Stripe",
+   "Tailwind CSS",
+   "TypeScript"
+  ]
+ },
+ "fr_fs-p06": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_fs/repos/fr_fs-p06",
+  "detected": {
+   "Python": "app.py: from fastapi import FastAPI",
+   "FastAPI": "app.py: from fastapi import FastAPI",
+   "AWS": "deploy.py: import boto3",
+   "React": "App.tsx: import { useState } from 'react';",
+   "Next.js": "page.tsx: import Link from 'next/link';",
+   "TypeScript": "App.tsx: import { useState } from 'react';"
+  },
+  "model_skills": [
+   "Python",
+   "FastAPI",
+   "AWS",
+   "React",
+   "Next.js",
+   "TypeScript"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "AWS",
+   "FastAPI",
+   "Next.js",
+   "Python",
+   "React",
+   "TypeScript"
+  ],
+  "mentioned_after": [
+   "AWS",
+   "FastAPI",
+   "Next.js",
+   "Python",
+   "React",
+   "TypeScript"
+  ]
+ },
+ "fr_fs-p07": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_fs/repos/fr_fs-p07",
+  "detected": {
+   "Python": "billing.py: import stripe",
+   "Stripe": "billing.py: import stripe",
+   "React": "App.tsx: import { useState } from 'react';",
+   "Next.js": "page.tsx: import Link from 'next/link';",
+   "TypeScript": "App.tsx: <div className=\"flex gap-4 p-6\">",
+   "Tailwind CSS": "App.tsx: <div className=\"flex gap-4 p-6\">"
+  },
+  "model_skills": [
+   "Python",
+   "Stripe",
+   "React",
+   "Next.js",
+   "TypeScript",
+   "Tailwind CSS"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Next.js",
+   "Python",
+   "React",
+   "Stripe",
+   "Tailwind CSS",
+   "TypeScript"
+  ],
+  "mentioned_after": [
+   "Next.js",
+   "Python",
+   "React",
+   "Stripe",
+   "Tailwind CSS",
+   "TypeScript"
+  ]
+ },
+ "fr_fs-p10": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_fs/repos/fr_fs-p10",
+  "detected": {
+   "Python": "tasks.py: from celery import Celery",
+   "Celery": "tasks.py: from celery import Celery",
+   "React": "App.tsx: import { useState } from 'react';",
+   "TypeScript": "App.tsx: <div className=\"flex gap-4 p-6\">",
+   "Node.js": "server.ts: import express from 'express';",
+   "Tailwind CSS": "App.tsx: <div className=\"flex gap-4 p-6\">"
+  },
+  "model_skills": [
+   "Python",
+   "Celery",
+   "React",
+   "TypeScript",
+   "Node.js",
+   "Tailwind CSS"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Celery",
+   "Node.js",
+   "Python",
+   "React",
+   "Tailwind CSS",
+   "TypeScript"
+  ],
+  "mentioned_after": [
+   "Celery",
+   "Node.js",
+   "Python",
+   "React",
+   "Tailwind CSS",
+   "TypeScript"
+  ]
+ },
+ "fr_fs-p11": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_fs/repos/fr_fs-p11",
+  "detected": {
+   "Python": "app.py: from fastapi import FastAPI",
+   "FastAPI": "app.py: from fastapi import FastAPI",
+   "React": "App.tsx: import { useState } from 'react';",
+   "TypeScript": "App.tsx: import { useState } from 'react';"
+  },
+  "model_skills": [
+   "Python (app.py: from fastapi import FastAPI)",
+   "FastAPI (app.py: from fastapi import FastAPI)",
+   "React (App.tsx: import { useState } from 'react';)",
+   "TypeScript (App.tsx: import { useState } from 'react';)"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "FastAPI",
+   "Python",
+   "React",
+   "TypeScript"
+  ],
+  "mentioned_after": [
+   "FastAPI",
+   "Python",
+   "React",
+   "TypeScript"
+  ]
+ },
+ "fr_fs-p12": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_fs/repos/fr_fs-p12",
+  "detected": {
+   "Python": "billing.py: import stripe",
+   "Celery": "tasks.py: from celery import Celery",
+   "Redis": "tasks.py: import redis",
+   "Stripe": "billing.py: import stripe",
+   "TypeScript": "server.ts: import express from 'express';",
+   "Node.js": "server.ts: import express from 'express';"
+  },
+  "model_skills": [
+   "Python",
+   "Celery",
+   "Redis",
+   "Stripe",
+   "TypeScript",
+   "Node.js"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Celery",
+   "Node.js",
+   "Python",
+   "Redis",
+   "Stripe",
+   "TypeScript"
+  ],
+  "mentioned_after": [
+   "Celery",
+   "Node.js",
+   "Python",
+   "Redis",
+   "Stripe",
+   "TypeScript"
+  ]
+ },
+ "fr_fs-p14": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_fs/repos/fr_fs-p14",
+  "detected": {
+   "Python": "billing.py: import stripe",
+   "Celery": "tasks.py: from celery import Celery",
+   "Stripe": "billing.py: import stripe",
+   "Next.js": "page.tsx: import Link from 'next/link';",
+   "TypeScript": "page.tsx: import Link from 'next/link';",
+   "PostgreSQL": "schema.sql: CREATE INDEX idx_orders_user ON orders(user_id);"
+  },
+  "model_skills": [
+   "Python",
+   "Celery",
+   "Stripe",
+   "Next.js",
+   "TypeScript",
+   "PostgreSQL"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Celery",
+   "Next.js",
+   "PostgreSQL",
+   "Python",
+   "Stripe",
+   "TypeScript"
+  ],
+  "mentioned_after": [
+   "Celery",
+   "Next.js",
+   "PostgreSQL",
+   "Python",
+   "Stripe",
+   "TypeScript"
+  ]
+ },
+ "fr_fs-p15": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_fs/repos/fr_fs-p15",
+  "detected": {
+   "Python": "app.py: from fastapi import FastAPI",
+   "FastAPI": "app.py: from fastapi import FastAPI",
+   "TypeScript": "App.tsx: type Props = { id: string };",
+   "PostgreSQL": "schema.sql: CREATE INDEX idx_orders_user ON orders(user_id);"
+  },
+  "model_skills": [
+   "Python",
+   "FastAPI",
+   "TypeScript",
+   "PostgreSQL"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "FastAPI",
+   "PostgreSQL",
+   "Python",
+   "TypeScript"
+  ],
+  "mentioned_after": [
+   "FastAPI",
+   "PostgreSQL",
+   "Python",
+   "TypeScript"
+  ]
+ },
+ "fr_fs-p16": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_fs/repos/fr_fs-p16",
+  "detected": {
+   "Python": "app.py: from fastapi import FastAPI",
+   "FastAPI": "app.py: from fastapi import FastAPI",
+   "Celery": "tasks.py: from celery import Celery",
+   "React": "App.tsx: import { useState } from 'react';",
+   "TypeScript": "App.tsx: <div className=\"flex gap-4 p-6\">",
+   "Tailwind CSS": "App.tsx: <div className=\"flex gap-4 p-6\">"
+  },
+  "model_skills": [
+   "Python",
+   "FastAPI",
+   "Celery",
+   "React",
+   "TypeScript",
+   "Tailwind CSS"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Celery",
+   "FastAPI",
+   "Python",
+   "React",
+   "Tailwind CSS",
+   "TypeScript"
+  ],
+  "mentioned_after": [
+   "Celery",
+   "FastAPI",
+   "Python",
+   "React",
+   "Tailwind CSS",
+   "TypeScript"
+  ]
+ },
+ "fr_fs-p17": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_fs/repos/fr_fs-p17",
+  "detected": {
+   "Python": "billing.py: import stripe",
+   "Stripe": "billing.py: import stripe",
+   "React": "App.tsx: import { useState } from 'react';",
+   "Next.js": "page.tsx: import Link from 'next/link';",
+   "TypeScript": "App.tsx: import { useState } from 'react';",
+   "PostgreSQL": "schema.sql: CREATE INDEX idx_orders_user ON orders(user_id);"
+  },
+  "model_skills": [
+   "Python",
+   "Stripe",
+   "React",
+   "Next.js",
+   "TypeScript",
+   "PostgreSQL"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Next.js",
+   "PostgreSQL",
+   "Python",
+   "React",
+   "Stripe",
+   "TypeScript"
+  ],
+  "mentioned_after": [
+   "Next.js",
+   "PostgreSQL",
+   "Python",
+   "React",
+   "Stripe",
+   "TypeScript"
+  ]
+ },
+ "fr_fs-p20": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_fs/repos/fr_fs-p20",
+  "detected": {
+   "Python": "billing.py: import stripe",
+   "Django": "models.py: from django.db import models",
+   "Celery": "tasks.py: from celery import Celery",
+   "Stripe": "billing.py: import stripe",
+   "React": "App.tsx: import { useState } from 'react';",
+   "TypeScript": "App.tsx: import { useState } from 'react';",
+   "Tailwind CSS": "App.tsx: <div className=\"flex gap-4 p-6\">"
+  },
+  "model_skills": [
+   "Python",
+   "Django",
+   "Celery",
+   "Stripe",
+   "React",
+   "TypeScript",
+   "Tailwind CSS"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Celery",
+   "Django",
+   "Python",
+   "React",
+   "Stripe",
+   "Tailwind CSS",
+   "TypeScript"
+  ],
+  "mentioned_after": [
+   "Celery",
+   "Django",
+   "Python",
+   "React",
+   "Stripe",
+   "Tailwind CSS",
+   "TypeScript"
+  ]
+ }
+}

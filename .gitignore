@@ -6,3 +6,6 @@ __pycache__/
 node_modules/
 data/processed/
 GiGBid_Project_Specifications.md
+.claude/
+gigbid-starter-kit/
+CLAUDE.md

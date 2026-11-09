@@ -19,7 +19,8 @@ def _field(pattern: str, text: str) -> str | None:
     return m.group(1).strip() if m else None
 
 
-def load_persona(root: Path) -> list[Document]:
+def load_persona(root: Path, verified: Path | None = None) -> list[Document]:
+    """`verified`: a folder of code-verified case studies from rag/portfolio_builder.py."""
     persona, docs = root.name, []
     if (cv := root / "cv.pdf").exists():
         text = "\n".join(page.extract_text() for page in PdfReader(cv).pages)
@@ -38,6 +39,10 @@ def load_persona(root: Path) -> list[Document]:
             id=f"{project}/{path.name}", persona=persona, project=project, source=rel,
             type="repo_readme" if path.name.lower() == "readme.md" else "code",
             text=f"Repository {project}, file {path.name}:\n{path.read_text(encoding='utf-8')}"))
+    for path in sorted(verified.glob("*.md")) if verified and verified.is_dir() else []:
+        docs.append(Document(id=f"{path.stem}-verified", persona=persona, project=path.stem,
+                             type="verified_case_study", text=path.read_text(encoding="utf-8"),
+                             source=f"verified_case_studies/{path.name}"))
     for name, doc_type in (("reviews.jsonl", "review"), ("proposals.jsonl", "proposal")):
         if not (root / name).exists():
             continue

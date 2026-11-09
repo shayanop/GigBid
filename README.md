@@ -18,7 +18,7 @@ It runs against **GigSim**, a marketplace simulator, for safe development; the s
 - [uv](https://docs.astral.sh/uv/) (installs Python 3.12 for you)
 - Node.js 24 and npm
 - Docker Desktop (Postgres and Redis, or the whole stack)
-- A [Groq](https://console.groq.com) API key, or use the free scripted `fake` model profile (see [Configuration](#configuration))
+- A [Groq](https://console.groq.com) API key (optionally an [NVIDIA NIM](https://build.nvidia.com) key, `NIM_API_KEY`, for the `nim` profile), or use the free scripted `fake` model profile (see [Configuration](#configuration))
 
 `make` is optional. Every target below also shows the plain command, which is what to use on Windows without make.
 
@@ -38,7 +38,7 @@ Fill in `.env`. Generate each secret (`POSTGRES_PASSWORD`, `SESSION_SECRET`, `MC
 uv run python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
-Then put the same Postgres password into `DATABASE_URL` and `TEST_DATABASE_URL`, and add `GROQ_API_KEY`.
+Then put the same Postgres password into `DATABASE_URL` and `TEST_DATABASE_URL`, and add `GROQ_API_KEY` (plus `NIM_API_KEY` for the `nim` profile).
 
 ## 2. Run everything with Docker
 
@@ -116,6 +116,12 @@ uv run python -m agent.graphs.bid_graph job_00012
 
 (`make run-job JOB=job_00012` does the same.)
 
+Run the course starter kit's sample data (`gigbid-starter-kit/data/sample`) through the same graph. The kit's freelancer and portfolio items become a temporary persona, and its jobs and client are added to GigSim. The runner checks that jobs with warning signals are skipped and the others get a bid. It exits non-zero on a mismatch.
+
+```bash
+uv run python -m evals.runners.kit_sample
+```
+
 ## 5. Tests
 
 Unit, contract and integration tests (no API key needed; the agents use a scripted model):
@@ -177,10 +183,40 @@ uv run python -m data.personas.generate
 Run the retrieval evaluation (Recall@5, MRR, nDCG@10; results in `evals/results/`):
 
 ```bash
-uv run python -m evals.runners.rag_eval --variant v0
+uv run python -m evals.runners.rag_eval --variant v0 v1 v2 v3 v4 v8 --table rag_comparison.md
 ```
 
-Add `--limit 20` for a quick smoke run. Regenerate the graph diagrams with `make diagram`.
+Add `--limit 20` for a quick smoke run. Ablate the deployed pipeline (`rag.components` in `agent/config.yaml`):
+
+```bash
+uv run python -m evals.runners.ablation
+```
+
+Unsupported claims before and after the verifier (real models; about 25k tokens per job):
+
+```bash
+uv run python -m evals.runners.claims_eval --jobs 5
+```
+
+Judge calibration: run `export`, fill `human_score` in `evals/datasets/judge_labels.csv`, then run `score`:
+
+```bash
+uv run python -m evals.runners.judge_calibration score
+```
+
+Results and the deployment choice are in [docs/RAG_STUDY.md](docs/RAG_STUDY.md).
+
+Portfolio builder (signature extension X3): turn repositories into code-verified case studies through GitHub's MCP server (needs `GITHUB_TOKEN`; add `--source local` to read the same repositories from disk), then evaluate them:
+
+```bash
+uv run python -m rag.portfolio_builder fr_ml fr_fs fr_da
+```
+
+```bash
+uv run python -m evals.runners.portfolio_builder_eval
+```
+
+Design and results: [docs/EXTENSION.md](docs/EXTENSION.md). Regenerate the graph diagrams with `make diagram`.
 
 ## 7. Generated API client
 
@@ -216,6 +252,7 @@ Model profiles, chosen with `GIGBID_PROFILE` in `.env`:
 | Profile | Models |
 | --- | --- |
 | `open` (default) | Groq: `gpt-oss-20b` for most agents, `gpt-oss-120b` for Writer, Critic and Client Liaison |
+| `nim` | Like `open`, but Writer and Critic run on NVIDIA NIM `nemotron-3-ultra-550b-a55b` (needs `NIM_API_KEY`). A NIM call that fails, times out (20 s) or is rate-limited is retried on Groq `gpt-oss-120b` |
 | `open_alt` | Groq: `gpt-oss-20b` everywhere (the cheaper configuration to compare against) |
 | `local` | Ollama `qwen3:4b` for most agents (pull it with `make models`), Groq for the drafting agents |
 | `fake` | Scripted, deterministic answers: no API key, no cost; used by the end-to-end tests |
@@ -227,7 +264,7 @@ GigSim test accounts: `fr_ml` (AI/ML engineer), `fr_fs` (full-stack developer), 
 - **`make` not found on Windows**: use the plain commands in the tables above.
 - **API fails at startup on Windows with an event-loop error**: start it with `--loop asyncio:SelectorEventLoop` (as `make api` does).
 - **Connects balance reset, proposals gone**: GigSim keeps its state in memory; restarting it, or rebuilding the shared Python image, resets it.
-- **Groq 429 "rate limit" errors**: the free tier is easily exhausted. Runs that hit it end as "needs attention" and are replayed automatically later; `worker.max_jobs` in the config keeps concurrency at 2.
+- **Groq 429 "rate limit" errors**: the free tier is easily exhausted. Runs that hit it end as "needs attention" and are replayed automatically later; `worker.max_jobs` in the config keeps concurrency at 2. To pool several keys, set `GROQ_API_KEYS=key1,key2,key3`: a rate-limited call moves straight on to the next key. Groq counts limits per organization, so the keys must come from different Groq accounts.
 - **E2E run says `TEST_DATABASE_URL is not set`**: add it to `.env` and create the test database (section 5).
 - **Recovery and polling rules**: see [docs/RUNBOOK.md](docs/RUNBOOK.md).
 

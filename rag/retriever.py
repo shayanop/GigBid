@@ -16,6 +16,7 @@ from agent.config import load_config
 ROOT = Path(__file__).resolve().parents[1]
 PERSONAS_DIR = ROOT / "data" / "personas"
 INDEX_DIR = ROOT / "data" / "processed" / "index"
+VERIFIED_DIR = ROOT / "data" / "verified_case_studies"
 VARIANTS = {"v1": "v1_decompose", "v2": "v2_hybrid", "v3": "v3_rerank", "v4": "v4_outcome",
             "v8": "v8_corrective"}
 

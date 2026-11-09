@@ -118,3 +118,9 @@ class LiaisonReply(BaseModel):
 class JudgeScore(BaseModel):
     score: int = Field(ge=1, le=5, description="1 = would not send, 5 = excellent")
     reasons: str = Field(description="One or two sentences on what decided the score")
+
+
+class RepoCaseStudy(BaseModel):
+    title: str = Field(description="Short project title naming what was built, no client name")
+    summary: str = Field(description="Two to four sentences on what the code shows was built")
+    skills: list[str] = Field(description="Skills the code demonstrates, from the given list")

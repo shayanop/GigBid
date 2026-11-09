@@ -32,3 +32,9 @@ Case studies name about 60% of a project's skills and only imply the rest ("move
 - Template text: phrasing repeats far more than real portfolios do, which flatters lexical methods.
 - Skill vocabulary is the 39 GigSim skills; real portfolios need a broader taxonomy.
 - Labels are derived from the generator's ground truth, not human judgment.
+
+## Code-verified case studies (`data/verified_case_studies/`)
+
+- Derived from the persona repositories by the portfolio builder (signature extension X3, `rag/portfolio_builder.py`): 34 Markdown files (12 `fr_ml`, 13 `fr_fs`, 9 `fr_da`) plus one `manifest.json` per persona with the detected skills, model output and dropped sentences.
+- Each skill listed under "Code-verified stack" cites the file and line of code that shows it. Summaries were written by `gpt-oss-20b` and contain no skill without code evidence.
+- Committed so that every checkout and container indexes the same evidence. Rebuilding needs `GITHUB_TOKEN` (or `--source local`) and one model call per repository.

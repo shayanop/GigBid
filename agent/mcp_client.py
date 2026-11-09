@@ -10,6 +10,7 @@ from typing import Any
 import httpx2
 from mcp import Client
 from mcp.client.streamable_http import streamable_http_client
+from mcp.shared.exceptions import MCPError
 
 from agent.nodes.common import record
 from mcp_servers.auth import mint
@@ -28,6 +29,7 @@ ALLOWLIST: dict[str, set[tuple[str, str]]] = {
                 ("workspace", "find_free_slots")},
     "liaison_approval": {("marketplace", "send_message")},  # dry_run previews only
     "liaison_send": {("marketplace", "send_message"), ("workspace", "hold_slot")},
+    "portfolio_builder": {("github", "get_file_contents")},  # third-party, read-only
 }
 
 
@@ -74,7 +76,8 @@ class Toolbox:
             try:
                 async with asyncio.timeout(self.timeout), self._client(server) as client:
                     result = await client.call_tool(tool, args)
-            except (TimeoutError, OSError, httpx2.TransportError):
+            # MCPError: protocol-level error responses, e.g. GitHub's intermittent ones.
+            except (TimeoutError, OSError, httpx2.TransportError, MCPError):
                 if last:
                     raise
             else:

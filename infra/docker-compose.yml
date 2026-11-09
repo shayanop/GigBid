@@ -15,7 +15,9 @@ x-app-env: &app-env
   MARKETPLACE_MCP_URL: http://marketplace-mcp:8200/mcp
   PORTFOLIO_MCP_URL: http://portfolio-mcp:8300/mcp
   WORKSPACE_MCP_URL: http://workspace-mcp:8400/mcp
+  NIM_API_KEY: ${NIM_API_KEY:-}
   GROQ_API_KEY: ${GROQ_API_KEY}
+  GROQ_API_KEYS: ${GROQ_API_KEYS:-}
   GIGBID_PROFILE: ${GIGBID_PROFILE:-open}
   OLLAMA_HOST: http://ollama:11434
   DEMO_EMAIL: ${DEMO_EMAIL}

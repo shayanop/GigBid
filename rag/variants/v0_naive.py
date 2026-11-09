@@ -13,4 +13,6 @@ def build(persona: str, embedder=None) -> VectorIndex:
     return build_index(retriever.PERSONAS_DIR / persona, retriever.INDEX_DIR / "v0" / persona,
                        embedder or fast_embedder(cfg["embedding_model"]),
                        partial(fixed_chunks, size=size, overlap=overlap),
-                       chunker_key=f"fixed-{size}-{overlap}")
+                       chunker_key=f"fixed-{size}-{overlap}",
+                       verified_dir=retriever.VERIFIED_DIR / persona
+                       if cfg.get("verified_case_studies") else None)

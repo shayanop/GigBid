@@ -71,10 +71,11 @@ def _hash(doc: Document) -> str:
 
 
 def build_index(persona_dir: Path, index_dir: Path, embedder: Embedder,
-                chunker: Callable[[Document], list[Chunk]], chunker_key: str) -> VectorIndex:
+                chunker: Callable[[Document], list[Chunk]], chunker_key: str,
+                verified_dir: Path | None = None) -> VectorIndex:
     """Loads the persona, re-embedding only documents that are new or changed since
     the last build in index_dir. Removed documents drop out."""
-    docs = load_persona(persona_dir)
+    docs = load_persona(persona_dir, verified_dir)
     manifest_path = index_dir / "manifest.json"
     old = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
     reusable: dict[str, list[tuple[Chunk, np.ndarray]]] = {}

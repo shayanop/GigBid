@@ -1,0 +1,233 @@
+[
+ {
+  "variant": "v0",
+  "components": [],
+  "overall": {
+   "n": 576,
+   "recall@5": 0.5239,
+   "mrr": 0.6866,
+   "ndcg@10": 0.5912,
+   "p50_latency_ms": 26.5,
+   "p95_latency_ms": 44.4
+  },
+  "per_persona": {
+   "fr_ml": {
+    "n": 189,
+    "recall@5": 0.497,
+    "mrr": 0.6667,
+    "ndcg@10": 0.5799,
+    "p50_latency_ms": 27.3,
+    "p95_latency_ms": 43.4
+   },
+   "fr_fs": {
+    "n": 190,
+    "recall@5": 0.5097,
+    "mrr": 0.683,
+    "ndcg@10": 0.5875,
+    "p50_latency_ms": 26.8,
+    "p95_latency_ms": 42.7
+   },
+   "fr_da": {
+    "n": 197,
+    "recall@5": 0.5635,
+    "mrr": 0.7091,
+    "ndcg@10": 0.6057,
+    "p50_latency_ms": 25.5,
+    "p95_latency_ms": 61.3
+   }
+  },
+  "per_job_type": {
+   "4+ skills": {
+    "n": 370,
+    "recall@5": 0.5196,
+    "mrr": 0.6563,
+    "ndcg@10": 0.5815,
+    "p50_latency_ms": 27.3,
+    "p95_latency_ms": 45.4
+   },
+   "under 4 skills": {
+    "n": 206,
+    "recall@5": 0.5317,
+    "mrr": 0.7409,
+    "ndcg@10": 0.6087,
+    "p50_latency_ms": 25.5,
+    "p95_latency_ms": 40.1
+   }
+  }
+ },
+ {
+  "variant": "selected",
+  "components": [
+   "hybrid",
+   "outcome"
+  ],
+  "overall": {
+   "n": 576,
+   "recall@5": 0.5953,
+   "mrr": 0.717,
+   "ndcg@10": 0.6291,
+   "p50_latency_ms": 27.6,
+   "p95_latency_ms": 53.7
+  },
+  "per_persona": {
+   "fr_ml": {
+    "n": 189,
+    "recall@5": 0.5745,
+    "mrr": 0.7035,
+    "ndcg@10": 0.6226,
+    "p50_latency_ms": 28.3,
+    "p95_latency_ms": 45.8
+   },
+   "fr_fs": {
+    "n": 190,
+    "recall@5": 0.5814,
+    "mrr": 0.649,
+    "ndcg@10": 0.5963,
+    "p50_latency_ms": 28.8,
+    "p95_latency_ms": 56.1
+   },
+   "fr_da": {
+    "n": 197,
+    "recall@5": 0.6288,
+    "mrr": 0.7955,
+    "ndcg@10": 0.6671,
+    "p50_latency_ms": 26.0,
+    "p95_latency_ms": 60.2
+   }
+  },
+  "per_job_type": {
+   "4+ skills": {
+    "n": 370,
+    "recall@5": 0.6011,
+    "mrr": 0.6973,
+    "ndcg@10": 0.6272,
+    "p50_latency_ms": 28.7,
+    "p95_latency_ms": 51.0
+   },
+   "under 4 skills": {
+    "n": 206,
+    "recall@5": 0.585,
+    "mrr": 0.7523,
+    "ndcg@10": 0.6325,
+    "p50_latency_ms": 26.5,
+    "p95_latency_ms": 56.5
+   }
+  }
+ },
+ {
+  "variant": "without hybrid",
+  "components": [
+   "outcome"
+  ],
+  "overall": {
+   "n": 576,
+   "recall@5": 0.5563,
+   "mrr": 0.7018,
+   "ndcg@10": 0.607,
+   "p50_latency_ms": 26.2,
+   "p95_latency_ms": 44.7
+  },
+  "per_persona": {
+   "fr_ml": {
+    "n": 189,
+    "recall@5": 0.5572,
+    "mrr": 0.6815,
+    "ndcg@10": 0.593,
+    "p50_latency_ms": 26.3,
+    "p95_latency_ms": 45.7
+   },
+   "fr_fs": {
+    "n": 190,
+    "recall@5": 0.5239,
+    "mrr": 0.6284,
+    "ndcg@10": 0.5717,
+    "p50_latency_ms": 26.5,
+    "p95_latency_ms": 43.9
+   },
+   "fr_da": {
+    "n": 197,
+    "recall@5": 0.5865,
+    "mrr": 0.7921,
+    "ndcg@10": 0.6543,
+    "p50_latency_ms": 26.0,
+    "p95_latency_ms": 42.6
+   }
+  },
+  "per_job_type": {
+   "4+ skills": {
+    "n": 370,
+    "recall@5": 0.5566,
+    "mrr": 0.6753,
+    "ndcg@10": 0.6007,
+    "p50_latency_ms": 26.9,
+    "p95_latency_ms": 44.7
+   },
+   "under 4 skills": {
+    "n": 206,
+    "recall@5": 0.5557,
+    "mrr": 0.7493,
+    "ndcg@10": 0.6181,
+    "p50_latency_ms": 25.5,
+    "p95_latency_ms": 43.4
+   }
+  }
+ },
+ {
+  "variant": "without outcome",
+  "components": [
+   "hybrid"
+  ],
+  "overall": {
+   "n": 576,
+   "recall@5": 0.5499,
+   "mrr": 0.6667,
+   "ndcg@10": 0.5938,
+   "p50_latency_ms": 27.6,
+   "p95_latency_ms": 46.0
+  },
+  "per_persona": {
+   "fr_ml": {
+    "n": 189,
+    "recall@5": 0.5186,
+    "mrr": 0.6475,
+    "ndcg@10": 0.5815,
+    "p50_latency_ms": 29.0,
+    "p95_latency_ms": 46.2
+   },
+   "fr_fs": {
+    "n": 190,
+    "recall@5": 0.54,
+    "mrr": 0.6746,
+    "ndcg@10": 0.5905,
+    "p50_latency_ms": 27.0,
+    "p95_latency_ms": 46.0
+   },
+   "fr_da": {
+    "n": 197,
+    "recall@5": 0.5895,
+    "mrr": 0.6776,
+    "ndcg@10": 0.6087,
+    "p50_latency_ms": 26.7,
+    "p95_latency_ms": 44.2
+   }
+  },
+  "per_job_type": {
+   "4+ skills": {
+    "n": 370,
+    "recall@5": 0.5465,
+    "mrr": 0.6401,
+    "ndcg@10": 0.5853,
+    "p50_latency_ms": 28.1,
+    "p95_latency_ms": 48.0
+   },
+   "under 4 skills": {
+    "n": 206,
+    "recall@5": 0.5561,
+    "mrr": 0.7145,
+    "ndcg@10": 0.609,
+    "p50_latency_ms": 26.6,
+    "p95_latency_ms": 40.5
+   }
+  }
+ }
+]

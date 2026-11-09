@@ -1,0 +1,364 @@
+{
+ "fr_ml-p01": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_ml/repos/fr_ml-p01",
+  "detected": {
+   "Python": "agent.py: from langgraph.graph import StateGraph",
+   "LangGraph": "agent.py: from langgraph.graph import StateGraph",
+   "scikit-learn": "train.py: from sklearn.pipeline import Pipeline",
+   "MLOps": "train.py: import mlflow"
+  },
+  "model_skills": [
+   "Python",
+   "LangGraph",
+   "scikit-learn",
+   "MLOps"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "LangGraph",
+   "MLOps",
+   "Python",
+   "scikit-learn"
+  ],
+  "mentioned_after": [
+   "LangGraph",
+   "MLOps",
+   "Python",
+   "scikit-learn"
+  ]
+ },
+ "fr_ml-p03": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_ml/repos/fr_ml-p03",
+  "detected": {
+   "Python": "agent.py: from langgraph.graph import StateGraph",
+   "LangGraph": "agent.py: from langgraph.graph import StateGraph",
+   "RAG": "agent.py: def retrieve_then_generate(question, store, llm):",
+   "scikit-learn": "train.py: from sklearn.pipeline import Pipeline",
+   "OpenAI API": "app.py: from openai import OpenAI",
+   "Docker": "Dockerfile: FROM python:3.12-slim"
+  },
+  "model_skills": [
+   "Python",
+   "LangGraph",
+   "RAG",
+   "scikit-learn",
+   "OpenAI API",
+   "Docker"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Docker",
+   "LangGraph",
+   "OpenAI API",
+   "Python",
+   "RAG"
+  ],
+  "mentioned_after": [
+   "Docker",
+   "LangGraph",
+   "OpenAI API",
+   "Python",
+   "RAG"
+  ]
+ },
+ "fr_ml-p04": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_ml/repos/fr_ml-p04",
+  "detected": {
+   "Python": "app.py: from fastapi import FastAPI",
+   "PyTorch": "train.py: import torch",
+   "FastAPI": "app.py: from fastapi import FastAPI",
+   "MLOps": "train.py: import mlflow",
+   "Docker": "Dockerfile: FROM python:3.12-slim"
+  },
+  "model_skills": [
+   "Python",
+   "PyTorch",
+   "FastAPI",
+   "MLOps",
+   "Docker"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Docker",
+   "FastAPI",
+   "MLOps",
+   "PyTorch",
+   "Python"
+  ],
+  "mentioned_after": [
+   "Docker",
+   "FastAPI",
+   "MLOps",
+   "PyTorch",
+   "Python"
+  ]
+ },
+ "fr_ml-p06": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_ml/repos/fr_ml-p06",
+  "detected": {
+   "Python": "agent.py: def retrieve_then_generate(question, store, llm):",
+   "PyTorch": "train.py: import torch",
+   "RAG": "agent.py: def retrieve_then_generate(question, store, llm):",
+   "FastAPI": "app.py: from fastapi import FastAPI",
+   "Docker": "Dockerfile: FROM python:3.12-slim"
+  },
+  "model_skills": [
+   "Python",
+   "PyTorch",
+   "RAG",
+   "FastAPI",
+   "Docker"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Docker",
+   "FastAPI",
+   "PyTorch",
+   "Python"
+  ],
+  "mentioned_after": [
+   "Docker",
+   "FastAPI",
+   "PyTorch",
+   "Python"
+  ]
+ },
+ "fr_ml-p09": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_ml/repos/fr_ml-p09",
+  "detected": {
+   "Python": "agent.py: def retrieve_then_generate(question, store, llm):",
+   "RAG": "agent.py: def retrieve_then_generate(question, store, llm):",
+   "Hugging Face": "train.py: from transformers import AutoModelForSequenceClassification",
+   "scikit-learn": "train.py: from sklearn.pipeline import Pipeline",
+   "FastAPI": "app.py: from fastapi import FastAPI"
+  },
+  "model_skills": [
+   "Python",
+   "RAG",
+   "Hugging Face",
+   "scikit-learn",
+   "FastAPI"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "FastAPI",
+   "Hugging Face",
+   "Python",
+   "RAG",
+   "scikit-learn"
+  ],
+  "mentioned_after": [
+   "FastAPI",
+   "Hugging Face",
+   "Python",
+   "RAG",
+   "scikit-learn"
+  ]
+ },
+ "fr_ml-p10": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_ml/repos/fr_ml-p10",
+  "detected": {
+   "Python": "agent.py: from langgraph.graph import StateGraph",
+   "LangGraph": "agent.py: from langgraph.graph import StateGraph",
+   "scikit-learn": "train.py: from sklearn.pipeline import Pipeline",
+   "OpenAI API": "app.py: from openai import OpenAI"
+  },
+  "model_skills": [
+   "Python",
+   "LangGraph",
+   "scikit-learn",
+   "OpenAI API"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "LangGraph",
+   "OpenAI API",
+   "Python",
+   "scikit-learn"
+  ],
+  "mentioned_after": [
+   "LangGraph",
+   "OpenAI API",
+   "Python",
+   "scikit-learn"
+  ]
+ },
+ "fr_ml-p11": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_ml/repos/fr_ml-p11",
+  "detected": {
+   "Python": "agent.py: def retrieve_then_generate(question, store, llm):",
+   "RAG": "agent.py: def retrieve_then_generate(question, store, llm):",
+   "Hugging Face": "train.py: from transformers import AutoModelForSequenceClassification",
+   "scikit-learn": "train.py: from sklearn.pipeline import Pipeline",
+   "FastAPI": "app.py: from fastapi import FastAPI"
+  },
+  "model_skills": [
+   "Python",
+   "RAG",
+   "Hugging Face",
+   "scikit-learn",
+   "FastAPI"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "FastAPI",
+   "Hugging Face",
+   "Python",
+   "RAG",
+   "scikit-learn"
+  ],
+  "mentioned_after": [
+   "FastAPI",
+   "Hugging Face",
+   "Python",
+   "RAG",
+   "scikit-learn"
+  ]
+ },
+ "fr_ml-p12": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_ml/repos/fr_ml-p12",
+  "detected": {
+   "Python": "app.py: from pinecone import Pinecone",
+   "LangChain": "app.py: from langchain_core.prompts import ChatPromptTemplate",
+   "Pinecone": "app.py: from pinecone import Pinecone",
+   "Docker": "Dockerfile: FROM python:3.12-slim"
+  },
+  "model_skills": [
+   "Python",
+   "LangChain",
+   "Pinecone",
+   "Docker"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Docker",
+   "LangChain",
+   "Pinecone",
+   "Python"
+  ],
+  "mentioned_after": [
+   "Docker",
+   "LangChain",
+   "Pinecone",
+   "Python"
+  ]
+ },
+ "fr_ml-p13": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_ml/repos/fr_ml-p13",
+  "detected": {
+   "Python": "app.py: from langchain_core.prompts import ChatPromptTemplate",
+   "LangChain": "app.py: from langchain_core.prompts import ChatPromptTemplate",
+   "FastAPI": "app.py: from fastapi import FastAPI",
+   "Docker": "Dockerfile: FROM python:3.12-slim"
+  },
+  "model_skills": [
+   "Python",
+   "LangChain",
+   "FastAPI",
+   "Docker"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Docker",
+   "FastAPI",
+   "LangChain",
+   "Python"
+  ],
+  "mentioned_after": [
+   "Docker",
+   "FastAPI",
+   "LangChain",
+   "Python"
+  ]
+ },
+ "fr_ml-p14": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_ml/repos/fr_ml-p14",
+  "detected": {
+   "Python": "agent.py: from langgraph.graph import StateGraph",
+   "PyTorch": "train.py: import torch",
+   "LangGraph": "agent.py: from langgraph.graph import StateGraph",
+   "scikit-learn": "train.py: from sklearn.pipeline import Pipeline",
+   "Docker": "Dockerfile: FROM python:3.12-slim"
+  },
+  "model_skills": [
+   "Python",
+   "PyTorch",
+   "LangGraph",
+   "scikit-learn",
+   "Docker"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Docker",
+   "LangGraph",
+   "PyTorch",
+   "Python",
+   "scikit-learn"
+  ],
+  "mentioned_after": [
+   "Docker",
+   "LangGraph",
+   "PyTorch",
+   "Python",
+   "scikit-learn"
+  ]
+ },
+ "fr_ml-p15": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_ml/repos/fr_ml-p15",
+  "detected": {
+   "Python": "app.py: def main() -> None:",
+   "PyTorch": "train.py: import torch",
+   "Hugging Face": "train.py: from transformers import AutoModelForSequenceClassification",
+   "OpenAI API": "app.py: from openai import OpenAI",
+   "Docker": "Dockerfile: FROM python:3.12-slim"
+  },
+  "model_skills": [
+   "Python",
+   "PyTorch",
+   "Hugging Face",
+   "OpenAI API",
+   "Docker"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Hugging Face",
+   "OpenAI API",
+   "PyTorch",
+   "Python"
+  ],
+  "mentioned_after": [
+   "Hugging Face",
+   "OpenAI API",
+   "PyTorch",
+   "Python"
+  ]
+ },
+ "fr_ml-p19": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_ml/repos/fr_ml-p19",
+  "detected": {
+   "Python": "agent.py: from langgraph.graph import StateGraph",
+   "LangGraph": "agent.py: from langgraph.graph import StateGraph",
+   "Pinecone": "app.py: from pinecone import Pinecone",
+   "FastAPI": "app.py: from fastapi import FastAPI"
+  },
+  "model_skills": [
+   "Python (agent.py: from langgraph.graph import StateGraph)",
+   "LangGraph (agent.py: from langgraph.graph import StateGraph)",
+   "Pinecone (app.py: from pinecone import Pinecone)",
+   "FastAPI (app.py: from fastapi import FastAPI)"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "FastAPI",
+   "LangGraph",
+   "Pinecone",
+   "Python"
+  ],
+  "mentioned_after": [
+   "FastAPI",
+   "LangGraph",
+   "Pinecone",
+   "Python"
+  ]
+ }
+}

@@ -5,9 +5,9 @@ profile: open # override with GIGBID_PROFILE
 
 # Model specs are "provider:model" (passed to langchain init_chat_model).
 # Nodes not listed under `nodes` use `default`, and fall back to
-# `default_fallback` on errors (cheap nodes only).
+# `default_fallback` on errors; a node entry can also be [primary, fallback].
 profiles:
-  open: # deployed profile: open-weight models served by Groq
+  open: # deployed profile: open-weight gpt-oss models served by Groq (fastest)
     default: groq:openai/gpt-oss-20b
     default_fallback: groq:openai/gpt-oss-120b
     nodes:
@@ -15,6 +15,16 @@ profiles:
       critic: groq:openai/gpt-oss-120b
       liaison: groq:openai/gpt-oss-120b
       judge: groq:openai/gpt-oss-120b
+
+  nim: # Groq everywhere except Writer and Critic on NVIDIA NIM (NIM_API_KEY), Groq as their backup
+    default: groq:openai/gpt-oss-20b
+    default_fallback: groq:openai/gpt-oss-120b
+    nodes:
+      writer: [nvidia:nvidia/nemotron-3-ultra-550b-a55b, groq:openai/gpt-oss-120b]
+      critic: [nvidia:nvidia/nemotron-3-ultra-550b-a55b, groq:openai/gpt-oss-120b]
+      liaison: groq:openai/gpt-oss-120b
+      judge: groq:openai/gpt-oss-120b
+    thinking: [writer, critic] # NIM reasoning on only where prose quality matters
 
   open_alt: # second open configuration for the model comparison: small model everywhere
     default: groq:openai/gpt-oss-20b
@@ -35,9 +45,17 @@ profiles:
 marketplace:
   adapter: gigsim # gigsim | upwork
 
+portfolio_builder: # X3: code-verified case studies from GitHub repositories
+  github_mcp_url: https://api.githubcopilot.com/mcp/ # GitHub's hosted MCP server (GITHUB_TOKEN)
+  owner: shayanop
+  repo: GigBid
+  ref: master
+  repos_path: data/personas/{persona}/repos # one folder per project repository
+
 rag: # deployed retrieval pipeline; change only from evals/results evidence (R6)
-  variant: v0 # v0, v1..v8, selected (uses components below), or custom:hybrid+rerank
-  components: {} # the deployed combination when variant is "selected"
+  variant: selected # v0, v1..v8, selected (uses components below), or custom:hybrid+rerank
+  components: {hybrid: true, outcome: true} # the deployed combination when variant is "selected"
+  verified_case_studies: true # index code-verified case studies (X3; docs/EXTENSION.md)
   reranker: Xenova/ms-marco-MiniLM-L-6-v2 # cross-encoder for rerank and corrective grading
   grade_threshold: 0.0 # corrective retrieval drops evidence the grader scores below this
   embedding_model: BAAI/bge-small-en-v1.5

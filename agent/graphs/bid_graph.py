@@ -256,6 +256,7 @@ async def _demo(job_id: str) -> None:
     if "draft" in s:
         print(f"--- draft ({s.get('revisions', 0)} revisions)")
         print(s["draft"].cover_letter)
+    return s
 
 
 if __name__ == "__main__":

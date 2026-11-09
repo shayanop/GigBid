@@ -126,7 +126,8 @@
               "repo_readme",
               "code",
               "review",
-              "proposal"
+              "proposal",
+              "verified_case_study"
             ],
             "title": "Type",
             "type": "string"
@@ -272,7 +273,8 @@
                         "repo_readme",
                         "code",
                         "review",
-                        "proposal"
+                        "proposal",
+                        "verified_case_study"
                       ],
                       "type": "string"
                     },
@@ -419,7 +421,8 @@
                   "repo_readme",
                   "code",
                   "review",
-                  "proposal"
+                  "proposal",
+                  "verified_case_study"
                 ],
                 "title": "Type",
                 "type": "string"

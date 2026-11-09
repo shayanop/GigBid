@@ -1,0 +1,264 @@
+{
+ "fr_da-p03": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_da/repos/fr_da-p03",
+  "detected": {
+   "Python": "app.py: def main() -> None:",
+   "pandas": "clean.py: import pandas as pd",
+   "Airflow": "pipeline.py: from airflow import DAG",
+   "Looker": "orders.lkml: explore: orders {}"
+  },
+  "model_skills": [
+   "Python",
+   "pandas",
+   "Airflow",
+   "Looker"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Airflow",
+   "Looker",
+   "Python",
+   "pandas"
+  ],
+  "mentioned_after": [
+   "Airflow",
+   "Looker",
+   "Python",
+   "pandas"
+  ]
+ },
+ "fr_da-p05": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_da/repos/fr_da-p05",
+  "detected": {
+   "Python": "clean.py: from google.cloud import bigquery",
+   "BigQuery": "clean.py: from google.cloud import bigquery",
+   "SQL": "models.sql: SELECT user_id, SUM(amount) OVER (PARTITION BY user_id) FROM orders;",
+   "dbt": "models.sql: {{ config(materialized='table') }}",
+   "Looker": "orders.lkml: explore: orders {}"
+  },
+  "model_skills": [
+   "Python",
+   "BigQuery",
+   "SQL",
+   "dbt",
+   "Looker"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "BigQuery",
+   "Looker",
+   "Python",
+   "SQL",
+   "dbt"
+  ],
+  "mentioned_after": [
+   "BigQuery",
+   "Looker",
+   "Python",
+   "SQL",
+   "dbt"
+  ]
+ },
+ "fr_da-p06": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_da/repos/fr_da-p06",
+  "detected": {
+   "Python": "analysis.py: from scipy import stats",
+   "Statistics": "analysis.py: from scipy import stats",
+   "dbt": "models.sql: {{ config(materialized='table') }}"
+  },
+  "model_skills": [
+   "Python",
+   "Statistics",
+   "dbt"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Python",
+   "dbt"
+  ],
+  "mentioned_after": [
+   "Python",
+   "dbt"
+  ]
+ },
+ "fr_da-p07": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_da/repos/fr_da-p07",
+  "detected": {
+   "Python": "app.py: def main() -> None:",
+   "pandas": "clean.py: import pandas as pd",
+   "Snowflake": "models.sql: USE WAREHOUSE analytics_wh;"
+  },
+  "model_skills": [
+   "Python",
+   "pandas",
+   "Snowflake"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Python",
+   "Snowflake",
+   "pandas"
+  ],
+  "mentioned_after": [
+   "Python",
+   "Snowflake",
+   "pandas"
+  ]
+ },
+ "fr_da-p12": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_da/repos/fr_da-p12",
+  "detected": {
+   "Python": "analysis.py: from scipy import stats",
+   "pandas": "clean.py: import pandas as pd",
+   "Airflow": "pipeline.py: from airflow import DAG",
+   "Statistics": "analysis.py: from scipy import stats"
+  },
+  "model_skills": [
+   "Python",
+   "pandas",
+   "Airflow",
+   "Statistics"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Airflow",
+   "Statistics",
+   "pandas"
+  ],
+  "mentioned_after": [
+   "Airflow",
+   "Statistics",
+   "pandas"
+  ]
+ },
+ "fr_da-p13": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_da/repos/fr_da-p13",
+  "detected": {
+   "Python": "app.py: def main() -> None:",
+   "Airflow": "pipeline.py: from airflow import DAG",
+   "Snowflake": "models.sql: USE WAREHOUSE analytics_wh;"
+  },
+  "model_skills": [
+   "Python (app.py: def main() -> None:)",
+   "Airflow (pipeline.py: from airflow import DAG)",
+   "Snowflake (models.sql: USE WAREHOUSE analytics_wh;)"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Airflow",
+   "Python",
+   "Snowflake"
+  ],
+  "mentioned_after": [
+   "Airflow",
+   "Python",
+   "Snowflake"
+  ]
+ },
+ "fr_da-p15": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_da/repos/fr_da-p15",
+  "detected": {
+   "Python": "analysis.py: from scipy import stats",
+   "Airflow": "pipeline.py: from airflow import DAG",
+   "Statistics": "analysis.py: from scipy import stats",
+   "dbt": "models.sql: {{ config(materialized='table') }}",
+   "Snowflake": "models.sql: USE WAREHOUSE analytics_wh;",
+   "Looker": "orders.lkml: explore: orders {}"
+  },
+  "model_skills": [
+   "Python",
+   "Airflow",
+   "Statistics",
+   "dbt",
+   "Snowflake",
+   "Looker"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "Airflow",
+   "Looker",
+   "Python",
+   "Snowflake",
+   "dbt"
+  ],
+  "mentioned_after": [
+   "Airflow",
+   "Looker",
+   "Python",
+   "Snowflake",
+   "dbt"
+  ]
+ },
+ "fr_da-p16": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_da/repos/fr_da-p16",
+  "detected": {
+   "Python": "app.py: def main() -> None:",
+   "pandas": "clean.py: import pandas as pd",
+   "BigQuery": "clean.py: from google.cloud import bigquery",
+   "SQL": "models.sql: SELECT user_id, SUM(amount) OVER (PARTITION BY user_id) FROM orders;",
+   "dbt": "models.sql: {{ config(materialized='table') }}",
+   "Snowflake": "models.sql: USE WAREHOUSE analytics_wh;"
+  },
+  "model_skills": [
+   "Python",
+   "pandas",
+   "BigQuery",
+   "SQL",
+   "dbt",
+   "Snowflake"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "BigQuery",
+   "Python",
+   "SQL",
+   "Snowflake",
+   "dbt",
+   "pandas"
+  ],
+  "mentioned_after": [
+   "BigQuery",
+   "Python",
+   "SQL",
+   "Snowflake",
+   "dbt",
+   "pandas"
+  ]
+ },
+ "fr_da-p17": {
+  "source": "https://github.com/shayanop/GigBid/tree/master/data/personas/fr_da/repos/fr_da-p17",
+  "detected": {
+   "Python": "clean.py: from google.cloud import bigquery",
+   "BigQuery": "clean.py: from google.cloud import bigquery",
+   "SQL": "models.sql: SELECT user_id, SUM(amount) OVER (PARTITION BY user_id) FROM orders;",
+   "dbt": "models.sql: {{ config(materialized='table') }}",
+   "Snowflake": "models.sql: USE WAREHOUSE analytics_wh;",
+   "Looker": "orders.lkml: explore: orders {}"
+  },
+  "model_skills": [
+   "Python",
+   "BigQuery",
+   "SQL",
+   "dbt",
+   "Snowflake",
+   "Looker"
+  ],
+  "dropped_sentences": [],
+  "mentioned_before": [
+   "BigQuery",
+   "Looker",
+   "Python",
+   "SQL",
+   "Snowflake",
+   "dbt"
+  ],
+  "mentioned_after": [
+   "BigQuery",
+   "Looker",
+   "Python",
+   "SQL",
+   "Snowflake",
+   "dbt"
+  ]
+ }
+}

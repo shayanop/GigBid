@@ -1,0 +1,122 @@
+{
+ "generated_at": "2026-11-08T19:26:36+00:00",
+ "skill_extraction": {
+  "repositories": 34,
+  "sources": {
+   "hand-written case study": {
+    "precision": 0.961,
+    "recall": 0.658
+   },
+   "README": {
+    "precision": 0.0,
+    "recall": 0.0
+   },
+   "code detector": {
+    "precision": 0.809,
+    "recall": 0.94
+   },
+   "case study + code detector": {
+    "precision": 0.818,
+    "recall": 0.993
+   },
+   "model summary, before verification": {
+    "precision": 0.807,
+    "recall": 0.899
+   },
+   "model summary, after verification": {
+    "precision": 0.807,
+    "recall": 0.899
+   }
+  },
+  "model_mentions_without_code_evidence": 0,
+  "sentences_dropped": 0,
+  "implied_skills_recovered": 50,
+  "implied_skills_total": 51
+ },
+ "retrieval": {
+  "without": {
+   "overall": {
+    "n": 576,
+    "recall@5": 0.5953,
+    "mrr": 0.717,
+    "ndcg@10": 0.6291,
+    "p50_latency_ms": 16.4,
+    "p95_latency_ms": 25.6
+   },
+   "jobs with a repository project": {
+    "n": 498,
+    "recall@5": 0.5841,
+    "mrr": 0.7389,
+    "ndcg@10": 0.6318
+   },
+   "per_persona": {
+    "fr_ml": {
+     "n": 189,
+     "recall@5": 0.5745,
+     "mrr": 0.7035,
+     "ndcg@10": 0.6226,
+     "p50_latency_ms": 16.5,
+     "p95_latency_ms": 25.7
+    },
+    "fr_fs": {
+     "n": 190,
+     "recall@5": 0.5814,
+     "mrr": 0.649,
+     "ndcg@10": 0.5963,
+     "p50_latency_ms": 16.8,
+     "p95_latency_ms": 26.3
+    },
+    "fr_da": {
+     "n": 197,
+     "recall@5": 0.6288,
+     "mrr": 0.7955,
+     "ndcg@10": 0.6671,
+     "p50_latency_ms": 16.1,
+     "p95_latency_ms": 24.9
+    }
+   }
+  },
+  "with": {
+   "overall": {
+    "n": 576,
+    "recall@5": 0.5913,
+    "mrr": 0.7209,
+    "ndcg@10": 0.6283,
+    "p50_latency_ms": 17.3,
+    "p95_latency_ms": 25.1
+   },
+   "jobs with a repository project": {
+    "n": 498,
+    "recall@5": 0.5809,
+    "mrr": 0.7427,
+    "ndcg@10": 0.6306
+   },
+   "per_persona": {
+    "fr_ml": {
+     "n": 189,
+     "recall@5": 0.569,
+     "mrr": 0.7026,
+     "ndcg@10": 0.6202,
+     "p50_latency_ms": 17.9,
+     "p95_latency_ms": 27.2
+    },
+    "fr_fs": {
+     "n": 190,
+     "recall@5": 0.5752,
+     "mrr": 0.6538,
+     "ndcg@10": 0.5952,
+     "p50_latency_ms": 17.4,
+     "p95_latency_ms": 24.4
+    },
+    "fr_da": {
+     "n": 197,
+     "recall@5": 0.6283,
+     "mrr": 0.8031,
+     "ndcg@10": 0.668,
+     "p50_latency_ms": 16.8,
+     "p95_latency_ms": 23.7
+    }
+   }
+  }
+ }
+}
