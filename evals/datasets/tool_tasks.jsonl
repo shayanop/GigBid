@@ -1,0 +1,40 @@
+{"id": "t01", "request": "Show me the full post for job_00487.", "calls": [{"tool": "get_job", "args": {"job_id": "job_00487"}}]}
+{"id": "t02", "request": "What screening questions does job_01213 ask?", "calls": [{"tool": "get_job", "args": {"job_id": "job_01213"}}]}
+{"id": "t03", "request": "Open job_01114 so I can read the description.", "calls": [{"tool": "get_job", "args": {"job_id": "job_01114"}}]}
+{"id": "t04", "request": "What's the budget on job_00267?", "calls": [{"tool": "get_job", "args": {"job_id": "job_00267"}}]}
+{"id": "t05", "request": "Is job_00757 hourly or fixed price?", "calls": [{"tool": "get_job", "args": {"job_id": "job_00757"}}]}
+{"id": "t06", "request": "Which skills does job_01236 require?", "calls": [{"tool": "get_job", "args": {"job_id": "job_01236"}}]}
+{"id": "t07", "request": "How long is the timeline for job_00970?", "calls": [{"tool": "get_job", "args": {"job_id": "job_00970"}}]}
+{"id": "t08", "request": "Pull up job_01281, I want to bid on it.", "calls": [{"tool": "get_job", "args": {"job_id": "job_01281"}}]}
+{"id": "t09", "request": "Is client cl_0258 reliable? Check their hiring history.", "calls": [{"tool": "get_client_history", "args": {"client_id": "cl_0258"}}]}
+{"id": "t10", "request": "Has client cl_0223 verified their payment method?", "calls": [{"tool": "get_client_history", "args": {"client_id": "cl_0223"}}]}
+{"id": "t11", "request": "What do other freelancers say about client cl_0090?", "calls": [{"tool": "get_client_history", "args": {"client_id": "cl_0090"}}]}
+{"id": "t12", "request": "How much has cl_0181 spent on the marketplace?", "calls": [{"tool": "get_client_history", "args": {"client_id": "cl_0181"}}]}
+{"id": "t13", "request": "What's the hire rate of client cl_0169?", "calls": [{"tool": "get_client_history", "args": {"client_id": "cl_0169"}}]}
+{"id": "t14", "request": "Who posted job_01189 and do they pay on time?", "calls": [{"tool": "get_job", "args": {"job_id": "job_01189"}}]}
+{"id": "t15", "request": "Is the client behind job_00134 trustworthy?", "calls": [{"tool": "get_job", "args": {"job_id": "job_00134"}}]}
+{"id": "t16", "request": "Check whether the person who posted job_01240 has good reviews.", "calls": [{"tool": "get_job", "args": {"job_id": "job_01240"}}]}
+{"id": "t17", "request": "Could job_00026 be a scam? Look at the post and its client.", "calls": [{"tool": "get_job", "args": {"job_id": "job_00026"}}]}
+{"id": "t18", "request": "How many Connects do I have left?", "calls": [{"tool": "get_connects_balance", "args": {}}]}
+{"id": "t19", "request": "Can I afford to bid this week? Check my Connects balance.", "calls": [{"tool": "get_connects_balance", "args": {}}]}
+{"id": "t20", "request": "Check my Connects and show me job_00487.", "calls": [{"tool": "get_connects_balance", "args": {}}, {"tool": "get_job", "args": {"job_id": "job_00487"}}]}
+{"id": "t21", "request": "Any new messages from clients?", "calls": [{"tool": "list_messages", "args": {}}]}
+{"id": "t22", "request": "Did anyone reply to my proposals?", "calls": [{"tool": "list_messages", "args": {}}]}
+{"id": "t23", "request": "Show my client conversations.", "calls": [{"tool": "list_messages", "args": {}}]}
+{"id": "t24", "request": "Find open jobs that need Celery and Django.", "calls": [{"tool": "search_jobs", "args": {"keywords": ["celery", "django"]}}]}
+{"id": "t25", "request": "Are there any Power BI dashboard jobs posted?", "calls": [{"tool": "search_jobs", "args": {"keywords": ["power bi"]}}]}
+{"id": "t26", "request": "Look for LangGraph agent projects I could bid on.", "calls": [{"tool": "search_jobs", "args": {"keywords": ["langgraph"]}}]}
+{"id": "t27", "request": "Search the marketplace for Snowflake or dbt work.", "calls": [{"tool": "search_jobs", "args": {"keywords": ["snowflake", "dbt"]}}]}
+{"id": "t28", "request": "Find me React Native jobs.", "calls": [{"tool": "search_jobs", "args": {"keywords": ["react native"]}}]}
+{"id": "t29", "request": "What Stripe integration jobs are open right now?", "calls": [{"tool": "search_jobs", "args": {"keywords": ["stripe"]}}]}
+{"id": "t30", "request": "Do I have portfolio evidence of building RAG pipelines?", "calls": [{"tool": "search_evidence", "args": {"keywords": ["rag"]}}]}
+{"id": "t31", "request": "Find something in my portfolio that shows I've used Airflow.", "calls": [{"tool": "search_evidence", "args": {"keywords": ["airflow"]}}]}
+{"id": "t32", "request": "What have I done with background jobs in Celery? I need proof for a proposal.", "calls": [{"tool": "search_evidence", "args": {"keywords": ["celery"]}}]}
+{"id": "t33", "request": "Find evidence for both Stripe payments and Celery background jobs.", "calls": [{"tool": "search_evidence", "args": {"keywords": ["stripe"]}}, {"tool": "search_evidence", "args": {"keywords": ["celery"]}}]}
+{"id": "t34", "request": "Find portfolio proof for Tableau dashboards and for SQL reporting.", "calls": [{"tool": "search_evidence", "args": {"keywords": ["tableau"]}}, {"tool": "search_evidence", "args": {"keywords": ["sql"]}}]}
+{"id": "t35", "request": "Which of my past proposals mention fine-tuning a model?", "calls": [{"tool": "search_evidence", "args": {"keywords": ["fine-tun"]}}]}
+{"id": "t36", "request": "Open my case study fr_ml-p09.", "calls": [{"tool": "get_case_study", "args": {"case_id": "fr_ml-p09"}}]}
+{"id": "t37", "request": "Give me the full write-up of project fr_fs-p02.", "calls": [{"tool": "get_case_study", "args": {"case_id": "fr_fs-p02"}}]}
+{"id": "t38", "request": "What did I deliver in case study fr_da-p03?", "calls": [{"tool": "get_case_study", "args": {"case_id": "fr_da-p03"}}]}
+{"id": "t39", "request": "Which skills does my portfolio mention?", "calls": [{"tool": "list_skills", "args": {}}]}
+{"id": "t40", "request": "List the skills I can show evidence for and how often each appears.", "calls": [{"tool": "list_skills", "args": {}}]}

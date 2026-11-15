@@ -11,7 +11,9 @@ from rag.schema import Evidence
 @common.node("matcher")
 async def match(state: dict) -> dict:
     job, tools = state["job"], common.toolbox()
-    queries = [f"{job.title}\n{job.description}"[:2000], *job.skills]
+    # Skills shorter than the tool's 3-character minimum ("R", "C#" on real Upwork posts) stay
+    # in the post query instead of failing the whole node.
+    queries = [f"{job.title}\n{job.description}"[:2000], *(s for s in job.skills if len(s) >= 3)]
     results = await asyncio.gather(*(tools.call(
         "matcher", "portfolio", "search_evidence", {"requirement": q, "k": 4}) for q in queries))
     found = {e["id"]: Evidence.model_validate(e) for hits in results for e in hits}

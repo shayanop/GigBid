@@ -8,7 +8,8 @@ import { approvalsDecideMutation, messagesDecideMutation } from "@/lib/api/@tans
 import { errorMessage } from "@/lib/labels";
 
 type Mode = "review" | "edit" | "reject";
-type Decision = { action: "approve" | "edit" | "reject"; text?: string; reason?: string };
+type Decision = { action: "approve" | "edit" | "reject"; text?: string; reason?: string; answers?: string[] };
+type Answer = { question: string; answer: string };
 
 const COPY = {
   proposal: { edit: "Edit the cover letter", editButton: "Edit draft" },
@@ -16,15 +17,18 @@ const COPY = {
 };
 
 /** Approve, edit or reject. Nothing reaches the marketplace without the first button. */
-export function ApprovalPanel({ kind, threadId, text, approveLabel, onEditing }: {
+export function ApprovalPanel({ kind, threadId, text, answers = [], approveLabel, onEditing }: {
   kind: "proposal" | "message";
   threadId: string;
   text: string;
+  answers?: Answer[];
   approveLabel: string;
   onEditing: (editing: boolean) => void;
 }) {
   const [mode, setMode] = useState<Mode>("review");
   const [edited, setEdited] = useState(text);
+  const [editedAnswers, setEditedAnswers] = useState(answers.map((a) => a.answer));
+  const answersChanged = editedAnswers.some((a, i) => a !== answers[i]?.answer);
   const [reason, setReason] = useState("");
   const queryClient = useQueryClient();
   const onSuccess = () => {
@@ -38,7 +42,10 @@ export function ApprovalPanel({ kind, threadId, text, approveLabel, onEditing }:
   function switchTo(next: Mode) {
     setMode(next);
     onEditing(next === "edit");
-    if (next === "edit") setEdited(text);
+    if (next === "edit") {
+      setEdited(text);
+      setEditedAnswers(answers.map((a) => a.answer));
+    }
   }
   const send = (body: Decision) =>
     kind === "proposal"
@@ -57,6 +64,13 @@ export function ApprovalPanel({ kind, threadId, text, approveLabel, onEditing }:
           </span>
         </label>
       )}
+      {mode === "edit" && answers.map((a, i) => (
+        <label key={a.question} className="mb-3 flex flex-col gap-1">
+          <span className="font-bold">{a.question}</span>
+          <textarea className={`${input} min-h-20`} value={editedAnswers[i]}
+                    onChange={(e) => setEditedAnswers(editedAnswers.map((v, j) => (j === i ? e.target.value : v)))} />
+        </label>
+      ))}
       {mode === "reject" && (
         <label className="mb-3 flex flex-col gap-1">
           <span className="font-bold">Why are you rejecting it?</span>
@@ -78,8 +92,8 @@ export function ApprovalPanel({ kind, threadId, text, approveLabel, onEditing }:
         )}
         {mode === "edit" && (
           <>
-            <button className={button.primary} disabled={decide.isPending || !edited.trim() || edited === text}
-                    onClick={() => send({ action: "edit", text: edited })}>
+            <button className={button.primary} disabled={decide.isPending || !edited.trim() || (edited === text && !answersChanged)}
+                    onClick={() => send({ action: "edit", text: edited, ...(answers.length ? { answers: editedAnswers } : {}) })}>
               Save edit
             </button>
             <button className={button.secondary} onClick={() => switchTo("review")}>Cancel</button>

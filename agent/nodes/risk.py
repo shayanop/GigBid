@@ -9,8 +9,11 @@ from agent.nodes import common
 
 RULES = {
     "off_platform_contact": r"telegram|whatsapp|skype|wechat|contact me (?:at|on|via)",
-    "off_platform_payment": (r"crypto|bitcoin|usdt|outside the platform|avoid (?:the )?fees"
-                             r"|pay you directly"),
+    # Crypto only in a payment phrase: on real Upwork postings a bare "crypto" matched 625
+    # legitimate crypto projects (data/real); this form matches 13 (docs/DATA_CARD.md).
+    "off_platform_payment": (r"(?:pay|paid|payment)\w*\W+(?:\w+\W+){0,3}(?:in|with|via)\W+"
+                             r"(?:crypto\w*|bitcoin|btc|usdt)|outside the platform"
+                             r"|avoid (?:the )?fees|pay you directly"),
     "free_work": r"\bfree (?:sample|test|trial)\b|\bfor free\b|\bunpaid\b",
     "sensitive_data": r"bank (?:account|details)|photo of your id|passport|social security",
     "prompt_injection": (r"ignore (?:all )?(?:previous|prior) instructions"
@@ -34,6 +37,11 @@ async def assess(state: dict) -> dict:
     job = state["job"]
     client = Client.model_validate(await common.toolbox().call(
         "risk", "marketplace", "get_client_history", {"client_id": job.client_id}))
+    return {"risk": await judge(job, client), "client": client}
+
+
+async def judge(job, client: Client) -> RiskReport:
+    """Rule flags plus the model's judgement; also used by evals/runners/scam_eval.py."""
     flags = rule_flags(f"{job.title}\n{job.description}", client)
     history = (f"Client: payment verified {client.payment_verified}, total spend "
                f"{client.total_spend:.0f} USD, hire rate {client.hire_rate:.0%}, "
@@ -43,7 +51,6 @@ async def assess(state: dict) -> dict:
     floor = 0.8 if HARD & set(flags) else 0.3 if "unverified_client" in flags else 0.0
     # Facts from client history belong to the rules; the model has invented them before.
     model_flags = {f for f in report.flags if f not in FACT_FLAGS}
-    report = report.model_copy(update={
+    return report.model_copy(update={
         "score": max(report.score, floor), "flags": sorted(model_flags | set(flags)),
         "injection_detected": report.injection_detected or "prompt_injection" in flags})
-    return {"risk": report, "client": client}

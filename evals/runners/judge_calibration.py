@@ -19,7 +19,7 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
-from agent.config import load_config
+from agent.config import model_spec
 from agent.handoffs import JudgeScore
 from agent.nodes import common
 from evals.runners.rag_eval import RESULTS, ROOT
@@ -79,8 +79,7 @@ def score(path: Path = LABELS) -> dict:
     judges = [j.score for j in judged]
     result = {
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
-        "judge_model": load_config()["profiles"][load_config()["profile"]]
-        .get("nodes", {}).get("judge"),
+        "judge_model": model_spec("judge")[0],
         "items": len(rows),
         "weighted_kappa": round(weighted_kappa(humans, judges), 3),
         "exact_agreement": round(sum(h == j for h, j in zip(humans, judges)) / len(rows), 3),

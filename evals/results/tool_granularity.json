@@ -1,0 +1,2008 @@
+{
+ "generated_at": "2026-11-14T19:45:49+00:00",
+ "model": "cerebras:gpt-oss-120b",
+ "tasks": 40,
+ "sets": {
+  "fine": {
+   "selection_accuracy": 0.925,
+   "argument_accuracy": 0.93,
+   "tokens_per_task": 620,
+   "no_call": 0,
+   "errors": 0,
+   "rows": [
+    {
+     "id": "t01",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_00487"
+       }
+      }
+     ],
+     "tokens": 601,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t02",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_01213"
+       }
+      }
+     ],
+     "tokens": 604,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t03",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_01114"
+       }
+      }
+     ],
+     "tokens": 602,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t04",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_00267"
+       }
+      }
+     ],
+     "tokens": 602,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t05",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_00757"
+       }
+      }
+     ],
+     "tokens": 619,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t06",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_01236"
+       }
+      }
+     ],
+     "tokens": 603,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t07",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_00970"
+       }
+      }
+     ],
+     "tokens": 617,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t08",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_01281"
+       }
+      }
+     ],
+     "tokens": 605,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t09",
+     "calls": [
+      {
+       "name": "get_client_history",
+       "args": {
+        "client_id": "cl_0258"
+       }
+      }
+     ],
+     "tokens": 605,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t10",
+     "calls": [
+      {
+       "name": "get_client_history",
+       "args": {
+        "client_id": "cl_0223"
+       }
+      }
+     ],
+     "tokens": 649,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t11",
+     "calls": [
+      {
+       "name": "get_client_history",
+       "args": {
+        "client_id": "cl_0090"
+       }
+      }
+     ],
+     "tokens": 607,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t12",
+     "calls": [
+      {
+       "name": "get_client_history",
+       "args": {
+        "client_id": "cl_0181"
+       }
+      }
+     ],
+     "tokens": 607,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t13",
+     "calls": [
+      {
+       "name": "get_client_history",
+       "args": {
+        "client_id": "cl_0169"
+       }
+      }
+     ],
+     "tokens": 607,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t14",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_01189"
+       }
+      }
+     ],
+     "tokens": 662,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t15",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_00134"
+       }
+      }
+     ],
+     "tokens": 672,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t16",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_01240"
+       }
+      }
+     ],
+     "tokens": 633,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t17",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_00026"
+       }
+      }
+     ],
+     "tokens": 650,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t18",
+     "calls": [
+      {
+       "name": "get_connects_balance",
+       "args": {}
+      }
+     ],
+     "tokens": 587,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t19",
+     "calls": [
+      {
+       "name": "get_connects_balance",
+       "args": {}
+      }
+     ],
+     "tokens": 592,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t20",
+     "calls": [
+      {
+       "name": "get_connects_balance",
+       "args": {}
+      }
+     ],
+     "tokens": 607,
+     "error": null,
+     "selection_ok": false,
+     "args_right": 1,
+     "args_expected": 2
+    },
+    {
+     "id": "t21",
+     "calls": [
+      {
+       "name": "list_messages",
+       "args": {}
+      }
+     ],
+     "tokens": 584,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t22",
+     "calls": [
+      {
+       "name": "list_messages",
+       "args": {}
+      }
+     ],
+     "tokens": 585,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t23",
+     "calls": [
+      {
+       "name": "list_messages",
+       "args": {}
+      }
+     ],
+     "tokens": 587,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t24",
+     "calls": [
+      {
+       "name": "search_jobs",
+       "args": {
+        "query": "Celery Django",
+        "skills": [],
+        "limit": 20
+       }
+      }
+     ],
+     "tokens": 625,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t25",
+     "calls": [
+      {
+       "name": "search_jobs",
+       "args": {
+        "query": "Power BI dashboard",
+        "skills": [],
+        "limit": 10
+       }
+      }
+     ],
+     "tokens": 606,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t26",
+     "calls": [
+      {
+       "name": "search_jobs",
+       "args": {
+        "query": "LangGraph agent",
+        "limit": 20
+       }
+      }
+     ],
+     "tokens": 646,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t27",
+     "calls": [
+      {
+       "name": "search_jobs",
+       "args": {
+        "query": "Snowflake dbt",
+        "skills": [
+         "Snowflake",
+         "dbt"
+        ],
+        "limit": 20
+       }
+      }
+     ],
+     "tokens": 640,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t28",
+     "calls": [
+      {
+       "name": "search_jobs",
+       "args": {
+        "query": "React Native",
+        "skills": [
+         "React Native"
+        ],
+        "limit": 10
+       }
+      }
+     ],
+     "tokens": 617,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t29",
+     "calls": [
+      {
+       "name": "search_jobs",
+       "args": {
+        "query": "Stripe integration",
+        "limit": 20
+       }
+      }
+     ],
+     "tokens": 620,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t30",
+     "calls": [
+      {
+       "name": "search_evidence",
+       "args": {
+        "requirement": "RAG pipelines",
+        "k": 5
+       }
+      }
+     ],
+     "tokens": 613,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t31",
+     "calls": [
+      {
+       "name": "search_evidence",
+       "args": {
+        "requirement": "Airflow",
+        "k": 5
+       }
+      }
+     ],
+     "tokens": 611,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t32",
+     "calls": [
+      {
+       "name": "search_evidence",
+       "args": {
+        "requirement": "background jobs with Celery",
+        "k": 5
+       }
+      }
+     ],
+     "tokens": 656,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t33",
+     "calls": [
+      {
+       "name": "search_evidence",
+       "args": {
+        "requirement": "Stripe payments",
+        "k": 5
+       }
+      }
+     ],
+     "tokens": 641,
+     "error": null,
+     "selection_ok": false,
+     "args_right": 1,
+     "args_expected": 2
+    },
+    {
+     "id": "t34",
+     "calls": [
+      {
+       "name": "search_evidence",
+       "args": {
+        "requirement": "Tableau dashboards",
+        "k": 5
+       }
+      }
+     ],
+     "tokens": 639,
+     "error": null,
+     "selection_ok": false,
+     "args_right": 1,
+     "args_expected": 2
+    },
+    {
+     "id": "t35",
+     "calls": [
+      {
+       "name": "search_evidence",
+       "args": {
+        "requirement": "fine-tuning a model",
+        "k": 10
+       }
+      }
+     ],
+     "tokens": 745,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t36",
+     "calls": [
+      {
+       "name": "get_case_study",
+       "args": {
+        "case_id": "fr_ml-p09"
+       }
+      }
+     ],
+     "tokens": 618,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t37",
+     "calls": [
+      {
+       "name": "get_case_study",
+       "args": {
+        "case_id": "fr_fs-p02"
+       }
+      }
+     ],
+     "tokens": 641,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t38",
+     "calls": [
+      {
+       "name": "get_case_study",
+       "args": {
+        "case_id": "fr_da-p03"
+       }
+      }
+     ],
+     "tokens": 609,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t39",
+     "calls": [
+      {
+       "name": "list_skills",
+       "args": {}
+      }
+     ],
+     "tokens": 591,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t40",
+     "calls": [
+      {
+       "name": "list_skills",
+       "args": {}
+      }
+     ],
+     "tokens": 596,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    }
+   ]
+  },
+  "coarse": {
+   "selection_accuracy": 0.875,
+   "argument_accuracy": 0.884,
+   "tokens_per_task": 420,
+   "no_call": 0,
+   "errors": 0,
+   "rows": [
+    {
+     "id": "t01",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_job",
+        "job_id": "job_00487"
+       }
+      }
+     ],
+     "tokens": 388,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t02",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_job",
+        "job_id": "job_01213"
+       }
+      }
+     ],
+     "tokens": 392,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t03",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_job",
+        "job_id": "job_01114"
+       }
+      }
+     ],
+     "tokens": 389,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t04",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_job",
+        "job_id": "job_00267"
+       }
+      }
+     ],
+     "tokens": 390,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t05",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_job",
+        "job_id": "job_00757"
+       }
+      }
+     ],
+     "tokens": 395,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t06",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_job",
+        "job_id": "job_01236"
+       }
+      }
+     ],
+     "tokens": 391,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t07",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_job",
+        "job_id": "job_00970"
+       }
+      }
+     ],
+     "tokens": 406,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t08",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_job",
+        "job_id": "job_01281"
+       }
+      }
+     ],
+     "tokens": 393,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t09",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_client",
+        "client_id": "cl_0258"
+       }
+      }
+     ],
+     "tokens": 398,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t10",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_client",
+        "client_id": "cl_0223"
+       }
+      }
+     ],
+     "tokens": 407,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t11",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_client",
+        "client_id": "cl_0090"
+       }
+      }
+     ],
+     "tokens": 393,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t12",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "connects",
+        "client_id": "cl_0181"
+       }
+      }
+     ],
+     "tokens": 436,
+     "error": null,
+     "selection_ok": false,
+     "args_right": 0,
+     "args_expected": 1
+    },
+    {
+     "id": "t13",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_client",
+        "client_id": "cl_0169"
+       }
+      }
+     ],
+     "tokens": 392,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t14",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_job",
+        "job_id": "job_01189"
+       }
+      }
+     ],
+     "tokens": 434,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t15",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_job",
+        "job_id": "job_00134"
+       }
+      }
+     ],
+     "tokens": 418,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t16",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_job",
+        "job_id": "job_01240"
+       }
+      }
+     ],
+     "tokens": 424,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t17",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "get_job",
+        "job_id": "job_00026"
+       }
+      }
+     ],
+     "tokens": 409,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t18",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "connects"
+       }
+      }
+     ],
+     "tokens": 405,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t19",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "connects"
+       }
+      }
+     ],
+     "tokens": 383,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t20",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "connects"
+       }
+      }
+     ],
+     "tokens": 408,
+     "error": null,
+     "selection_ok": false,
+     "args_right": 1,
+     "args_expected": 2
+    },
+    {
+     "id": "t21",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "messages"
+       }
+      }
+     ],
+     "tokens": 418,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t22",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "messages"
+       }
+      }
+     ],
+     "tokens": 454,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t23",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "messages"
+       }
+      }
+     ],
+     "tokens": 464,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t24",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "search_jobs",
+        "query": "Celery Django",
+        "skills": [
+         "Celery",
+         "Django"
+        ]
+       }
+      }
+     ],
+     "tokens": 412,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t25",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "search_jobs",
+        "query": "Power BI dashboard",
+        "skills": [
+         "Power BI"
+        ]
+       }
+      }
+     ],
+     "tokens": 408,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t26",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "search_jobs",
+        "query": "LangGraph agent",
+        "skills": [
+         "LangGraph"
+        ]
+       }
+      }
+     ],
+     "tokens": 413,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t27",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "search_jobs",
+        "query": "Snowflake dbt"
+       }
+      }
+     ],
+     "tokens": 412,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t28",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "search_jobs",
+        "query": "React Native",
+        "skills": [
+         "React Native"
+        ]
+       }
+      }
+     ],
+     "tokens": 399,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t29",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "search_jobs",
+        "query": "Stripe integration",
+        "skills": [
+         "Stripe"
+        ]
+       }
+      }
+     ],
+     "tokens": 398,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t30",
+     "calls": [
+      {
+       "name": "portfolio",
+       "args": {
+        "action": "search",
+        "query": "RAG pipelines"
+       }
+      }
+     ],
+     "tokens": 393,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t31",
+     "calls": [
+      {
+       "name": "portfolio",
+       "args": {
+        "action": "search",
+        "query": "Airflow"
+       }
+      }
+     ],
+     "tokens": 395,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t32",
+     "calls": [
+      {
+       "name": "portfolio",
+       "args": {
+        "action": "search",
+        "query": "Celery background jobs"
+       }
+      }
+     ],
+     "tokens": 458,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t33",
+     "calls": [
+      {
+       "name": "portfolio",
+       "args": {
+        "action": "search",
+        "query": "Stripe payments"
+       }
+      }
+     ],
+     "tokens": 518,
+     "error": null,
+     "selection_ok": false,
+     "args_right": 1,
+     "args_expected": 2
+    },
+    {
+     "id": "t34",
+     "calls": [
+      {
+       "name": "portfolio",
+       "args": {
+        "action": "search",
+        "query": "Tableau dashboards"
+       }
+      }
+     ],
+     "tokens": 423,
+     "error": null,
+     "selection_ok": false,
+     "args_right": 1,
+     "args_expected": 2
+    },
+    {
+     "id": "t35",
+     "calls": [
+      {
+       "name": "marketplace",
+       "args": {
+        "action": "messages"
+       }
+      }
+     ],
+     "tokens": 720,
+     "error": null,
+     "selection_ok": false,
+     "args_right": 0,
+     "args_expected": 1
+    },
+    {
+     "id": "t36",
+     "calls": [
+      {
+       "name": "portfolio",
+       "args": {
+        "action": "case_study",
+        "case_id": "fr_ml-p09"
+       }
+      }
+     ],
+     "tokens": 411,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t37",
+     "calls": [
+      {
+       "name": "portfolio",
+       "args": {
+        "action": "case_study",
+        "case_id": "fr_fs-p02"
+       }
+      }
+     ],
+     "tokens": 432,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t38",
+     "calls": [
+      {
+       "name": "portfolio",
+       "args": {
+        "action": "case_study",
+        "case_id": "fr_da-p03"
+       }
+      }
+     ],
+     "tokens": 398,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t39",
+     "calls": [
+      {
+       "name": "portfolio",
+       "args": {
+        "action": "skills"
+       }
+      }
+     ],
+     "tokens": 370,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t40",
+     "calls": [
+      {
+       "name": "portfolio",
+       "args": {
+        "action": "skills"
+       }
+      }
+     ],
+     "tokens": 460,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    }
+   ]
+  },
+  "tuned": {
+   "selection_accuracy": 0.9,
+   "argument_accuracy": 0.907,
+   "tokens_per_task": 671,
+   "no_call": 0,
+   "errors": 0,
+   "rows": [
+    {
+     "id": "t01",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_00487"
+       }
+      }
+     ],
+     "tokens": 657,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t02",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_01213"
+       }
+      }
+     ],
+     "tokens": 660,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t03",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_01114"
+       }
+      }
+     ],
+     "tokens": 658,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t04",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_00267"
+       }
+      }
+     ],
+     "tokens": 671,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t05",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_00757"
+       }
+      }
+     ],
+     "tokens": 667,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t06",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_01236"
+       }
+      }
+     ],
+     "tokens": 659,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t07",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_00970"
+       }
+      }
+     ],
+     "tokens": 661,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t08",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_01281"
+       }
+      }
+     ],
+     "tokens": 664,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t09",
+     "calls": [
+      {
+       "name": "get_client_history",
+       "args": {
+        "client_id": "cl_0258"
+       }
+      }
+     ],
+     "tokens": 665,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t10",
+     "calls": [
+      {
+       "name": "get_client_history",
+       "args": {
+        "client_id": "cl_0223"
+       }
+      }
+     ],
+     "tokens": 671,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t11",
+     "calls": [
+      {
+       "name": "get_client_history",
+       "args": {
+        "client_id": "cl_0090"
+       }
+      }
+     ],
+     "tokens": 664,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t12",
+     "calls": [
+      {
+       "name": "get_client_history",
+       "args": {
+        "client_id": "cl_0181"
+       }
+      }
+     ],
+     "tokens": 664,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t13",
+     "calls": [
+      {
+       "name": "get_client_history",
+       "args": {
+        "client_id": "cl_0169"
+       }
+      }
+     ],
+     "tokens": 662,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t14",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_01189"
+       }
+      }
+     ],
+     "tokens": 723,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t15",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_00134"
+       }
+      }
+     ],
+     "tokens": 684,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t16",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_01240"
+       }
+      }
+     ],
+     "tokens": 675,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t17",
+     "calls": [
+      {
+       "name": "get_job",
+       "args": {
+        "job_id": "job_00026"
+       }
+      }
+     ],
+     "tokens": 681,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t18",
+     "calls": [
+      {
+       "name": "get_connects_balance",
+       "args": {}
+      }
+     ],
+     "tokens": 657,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t19",
+     "calls": [
+      {
+       "name": "get_connects_balance",
+       "args": {}
+      }
+     ],
+     "tokens": 649,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t20",
+     "calls": [
+      {
+       "name": "get_connects_balance",
+       "args": {}
+      }
+     ],
+     "tokens": 655,
+     "error": null,
+     "selection_ok": false,
+     "args_right": 1,
+     "args_expected": 2
+    },
+    {
+     "id": "t21",
+     "calls": [
+      {
+       "name": "list_messages",
+       "args": {}
+      }
+     ],
+     "tokens": 640,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t22",
+     "calls": [
+      {
+       "name": "list_messages",
+       "args": {}
+      }
+     ],
+     "tokens": 641,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t23",
+     "calls": [
+      {
+       "name": "list_messages",
+       "args": {}
+      }
+     ],
+     "tokens": 640,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t24",
+     "calls": [
+      {
+       "name": "search_jobs",
+       "args": {
+        "skills": [
+         "Celery",
+         "Django"
+        ],
+        "limit": 20
+       }
+      }
+     ],
+     "tokens": 686,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t25",
+     "calls": [
+      {
+       "name": "search_jobs",
+       "args": {
+        "query": "Power BI dashboard",
+        "limit": 20
+       }
+      }
+     ],
+     "tokens": 662,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t26",
+     "calls": [
+      {
+       "name": "search_jobs",
+       "args": {
+        "query": "LangGraph agent",
+        "limit": 20
+       }
+      }
+     ],
+     "tokens": 688,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t27",
+     "calls": [
+      {
+       "name": "search_jobs",
+       "args": {
+        "query": "Snowflake dbt",
+        "limit": 20
+       }
+      }
+     ],
+     "tokens": 687,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t28",
+     "calls": [
+      {
+       "name": "search_jobs",
+       "args": {
+        "query": "",
+        "skills": [
+         "React Native"
+        ],
+        "limit": 20
+       }
+      }
+     ],
+     "tokens": 698,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t29",
+     "calls": [
+      {
+       "name": "search_jobs",
+       "args": {
+        "query": "Stripe integration",
+        "skills": [
+         "Stripe"
+        ],
+        "limit": 20
+       }
+      }
+     ],
+     "tokens": 676,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t30",
+     "calls": [
+      {
+       "name": "search_evidence",
+       "args": {
+        "requirement": "RAG pipelines",
+        "k": 5
+       }
+      }
+     ],
+     "tokens": 671,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t31",
+     "calls": [
+      {
+       "name": "search_evidence",
+       "args": {
+        "requirement": "Airflow",
+        "k": 5
+       }
+      }
+     ],
+     "tokens": 669,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t32",
+     "calls": [
+      {
+       "name": "search_evidence",
+       "args": {
+        "requirement": "background jobs with Celery",
+        "k": 5
+       }
+      }
+     ],
+     "tokens": 721,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t33",
+     "calls": [
+      {
+       "name": "search_evidence",
+       "args": {
+        "requirement": "Stripe payments",
+        "k": 5
+       }
+      }
+     ],
+     "tokens": 668,
+     "error": null,
+     "selection_ok": false,
+     "args_right": 1,
+     "args_expected": 2
+    },
+    {
+     "id": "t34",
+     "calls": [
+      {
+       "name": "search_evidence",
+       "args": {
+        "requirement": "Tableau dashboards",
+        "k": 5
+       }
+      }
+     ],
+     "tokens": 699,
+     "error": null,
+     "selection_ok": false,
+     "args_right": 1,
+     "args_expected": 2
+    },
+    {
+     "id": "t35",
+     "calls": [
+      {
+       "name": "list_messages",
+       "args": {}
+      }
+     ],
+     "tokens": 697,
+     "error": null,
+     "selection_ok": false,
+     "args_right": 0,
+     "args_expected": 1
+    },
+    {
+     "id": "t36",
+     "calls": [
+      {
+       "name": "get_case_study",
+       "args": {
+        "case_id": "fr_ml-p09"
+       }
+      }
+     ],
+     "tokens": 660,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t37",
+     "calls": [
+      {
+       "name": "get_case_study",
+       "args": {
+        "case_id": "fr_fs-p02"
+       }
+      }
+     ],
+     "tokens": 712,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t38",
+     "calls": [
+      {
+       "name": "get_case_study",
+       "args": {
+        "case_id": "fr_da-p03"
+       }
+      }
+     ],
+     "tokens": 663,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t39",
+     "calls": [
+      {
+       "name": "list_skills",
+       "args": {}
+      }
+     ],
+     "tokens": 651,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    },
+    {
+     "id": "t40",
+     "calls": [
+      {
+       "name": "list_skills",
+       "args": {}
+      }
+     ],
+     "tokens": 647,
+     "error": null,
+     "selection_ok": true,
+     "args_right": 1,
+     "args_expected": 1
+    }
+   ]
+  }
+ }
+}

@@ -37,6 +37,12 @@ export type Approval = {
      */
     action: 'approve' | 'edit' | 'reject';
     /**
+     * Answers
+     *
+     * Edited screening answers for 'edit', in the draft's order
+     */
+    answers?: Array<string> | null;
+    /**
      * Reason
      *
      * Required for 'reject'

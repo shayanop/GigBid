@@ -66,6 +66,32 @@ jobs:
           name: playwright-report
           path: apps/web/playwright-report
 
+  eval-smoke: # E2: 30 jobs and 3 proposals with real models, gated by eval_gates in agent/config.yaml
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      GIGBID_PROFILE: cerebras
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Model keys present
+        id: keys
+        run: |
+          if [ -n "$GROQ_API_KEY" ] && [ -n "$CEREBRAS_API_KEY" ]; then echo "ok=1" >> "$GITHUB_OUTPUT"
+          else echo "::notice::GROQ_API_KEY / CEREBRAS_API_KEY secrets not set (or a fork PR): smoke eval skipped"; fi
+      - uses: astral-sh/setup-uv@v10.3.2
+        if: steps.keys.outputs.ok == '1'
+      - if: steps.keys.outputs.ok == '1'
+        run: uv sync --locked
+      - if: steps.keys.outputs.ok == '1'
+        run: uv run python -m evals.runners.smoke
+      - uses: actions/upload-artifact@v7
+        if: always() && steps.keys.outputs.ok == '1'
+        with:
+          name: smoke-eval
+          path: evals/results/smoke.json
+
   secrets:
     runs-on: ubuntu-latest
     steps:

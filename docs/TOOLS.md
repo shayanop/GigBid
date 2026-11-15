@@ -69,3 +69,44 @@ Used by the portfolio builder (signature extension X3, [EXTENSION.md](EXTENSION.
 - **Failure isolation.** The builder runs as an offline batch job. If GitHub is down or rate-limited, the existing index is untouched and agents keep working.
 
 The official Upwork MCP server (live marketplace mode) is not integrated yet.
+
+## Tool granularity experiment (A7)
+
+Research question A: does the shape of the tool set change what the agent calls?
+[`evals/runners/tool_granularity.py`](../evals/runners/tool_granularity.py) sends 40
+requests with known correct calls ([`tool_tasks.jsonl`](../evals/datasets/tool_tasks.jsonl),
+written by hand) to `gpt-oss-120b` on Cerebras, at temperature 0, with three tool sets:
+
+- **Fine:** the eight read-only tools above, as the servers describe them.
+- **Coarse:** two tools, `marketplace(action, ...)` and `portfolio(action, ...)`.
+- **Tuned:** the fine tools with descriptions that say when to use each one and with what.
+
+Each request gets one model turn. The calls it makes are scored without being run.
+Selection is right when the tools called match the expected ones. An argument is right when
+an id matches exactly, or when free text contains the expected keywords. A request whose
+second call needs the first one's result (a client id from a job) expects only the first.
+Results: [`tool_granularity.md`](../evals/results/tool_granularity.md).
+
+| Tool set | Tools | Selection accuracy | Argument accuracy | Tokens per task |
+| --- | --- | --- | --- | --- |
+| Fine | 8 | 0.925 | 0.930 | 620 |
+| Coarse | 2 | 0.875 | 0.884 | 420 |
+| Tuned | 8 | 0.900 | 0.907 | 671 |
+
+- **Missed second call (all three sets).** All three sets miss the same three requests,
+  each of which needs two independent calls ("find evidence for both Stripe payments and
+  Celery"). The model makes only the first, although the system prompt asks for
+  independent calls together. Granularity does not cause this one-call-per-turn habit.
+  The bid graph avoids it by issuing its parallel searches in code (`agent/nodes/matcher.py`).
+- **Coarse.** The coarse set saves about a third of the tokens, because two schemas are
+  shorter than eight. It costs two more errors: "how much has cl_0181 spent" went to
+  `action: connects`, and "past proposals mentioning fine-tuning" went to `messages`.
+  An `action` enum hides the distinctions that separate tool names carry.
+- **Tuned.** One tuned description made things worse. `list_messages` now mentions "new
+  replies to proposals", which pulled the "past proposals" request to it. The tuned set
+  changed nothing else, and the fine descriptions stay.
+- **Noise.** Each task is 2.5 points, and the sets differ by one or two tasks in a single
+  run, so none of the differences is statistically meaningful. The finding that holds is the
+  shared failure on independent multi-call requests.
+
+The deployed tool set stays fine-grained with the original descriptions.

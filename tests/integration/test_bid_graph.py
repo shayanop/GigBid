@@ -87,6 +87,19 @@ async def test_edit_is_rechecked_by_compliance_and_diff_is_kept(harness):
     assert snap.values["status"] == "submitted"
 
 
+async def test_to_confirm_answer_is_filled_in_by_the_edit(harness):
+    harness.fake.ask_start = True
+    draft = (await run(harness, {"job_id": harness.job(scam=False)})).values["draft"]
+    assert bid_graph.unconfirmed(draft.model_dump()) == ["When can you start?"]
+    letter = draft.cover_letter
+    snap = await run(harness, Command(resume={"action": "edit", "text": letter,
+                                              "answers": ["Next Monday."]}))
+    assert snap.next == ("approval",)
+    assert snap.values["draft"].screening_answers[0].answer == "Next Monday."
+    snap = await run(harness, Command(resume={"action": "approve"}))
+    assert snap.values["status"] == "submitted"
+
+
 async def test_compliance_block_needs_attention(harness):
     harness.fake.verdict = "block"
     snap = await run(harness, {"job_id": harness.job(scam=False)})

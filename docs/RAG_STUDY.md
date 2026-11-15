@@ -88,9 +88,21 @@ stay available as presets but are not deployed.
 These need model calls and are run separately:
 
 - `uv run python -m evals.runners.claims_eval --jobs 5` counts unsupported claims per
-  proposal before and after the verifier → `evals/results/claims_eval.json`. The first
-  attempt hit Groq's free-tier daily token cap (200k per model). Each proposal costs
-  about 25k tokens, so keep the sample small and quote its size.
+  proposal before and after the verifier → `evals/results/claims_eval.json`. It runs until
+  it has 5 drafted proposals, trying at most 20 jobs. Run it with `GIGBID_PROFILE=cerebras`:
+  on the `open` profile it hit Groq's rate limits (docs/RUNBOOK.md). Latest run, 5
+  proposals from 8 jobs, about 14.6k tokens each:
+
+  | | Claims per proposal | Unsupported per proposal | Unsupported share |
+  | --- | --- | --- | --- |
+  | First draft | 4.4 | 0.6 | 13.6% |
+  | Final draft, after the verifier | 4.2 | 0 | 0% |
+
+  The run before this one left 0.6 unsupported per proposal in the final draft. Every one of
+  those was an availability promise ("I can start this week and allocate up to 30 hours"),
+  which no persona data supports. Writer prompt v2 forbids availability, start dates,
+  weekly hours and rates. A screening question asking for one is answered `TO CONFIRM`,
+  and the API refuses approval until the freelancer edits that answer.
 - Judge calibration: fill `human_score` (1–5) for the 30 rows in
   `evals/datasets/judge_labels.csv`, then run
   `uv run python -m evals.runners.judge_calibration score`. This reports

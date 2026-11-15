@@ -7,6 +7,7 @@ search(query, k, where) -> list[Evidence].
 """
 
 import importlib
+import os
 import threading
 from functools import cache
 from pathlib import Path
@@ -14,8 +15,10 @@ from pathlib import Path
 from agent.config import load_config
 
 ROOT = Path(__file__).resolve().parents[1]
-PERSONAS_DIR = ROOT / "data" / "personas"
-INDEX_DIR = ROOT / "data" / "processed" / "index"
+# PORTFOLIO_DIR points the Portfolio MCP server at your own portfolio folders
+# (mcp_servers/portfolio/README.md); PORTFOLIO_INDEX_DIR at a writable index location.
+PERSONAS_DIR = Path(os.getenv("PORTFOLIO_DIR") or ROOT / "data" / "personas")
+INDEX_DIR = Path(os.getenv("PORTFOLIO_INDEX_DIR") or ROOT / "data" / "processed" / "index")
 VERIFIED_DIR = ROOT / "data" / "verified_case_studies"
 VARIANTS = {"v1": "v1_decompose", "v2": "v2_hybrid", "v3": "v3_rerank", "v4": "v4_outcome",
             "v8": "v8_corrective"}

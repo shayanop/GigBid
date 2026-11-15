@@ -1,6 +1,19 @@
 # Data card
 
-All data is synthetic and generated deterministically. No real clients or freelancers.
+GigBid uses two kinds of data, kept apart:
+
+- **Synthetic, generated deterministically:** the default GigSim marketplace, the three freelancer portfolios, client reviews, past proposals, message threads and client reply preferences. No real people.
+- **Real, public Kaggle datasets:** real Upwork job postings, client histories, posted budgets, paid contracts and labelled fake job postings (see [Real datasets](#real-datasets)). They power GigSim's real mode and two evaluations on real text.
+
+Every record built from real data names its source in `_source` and lists any synthetic fill-in fields in `_synthetic`. GigSim's API strips `_` fields, so agents never see them.
+
+| Need in the spec | Real data | Synthetic data |
+| --- | --- | --- |
+| Jobs | Upwork 60k (GigSim real mode), Upwork 50k (retrieval evaluation) | GigSim default seed |
+| Client histories | Upwork 60k: payment verification, spend, rating, feedback count, country | Hire rate, jobs posted, account age, reply preferences |
+| Fair prices | Upwork 200k posted budgets, 1.3M paid contracts | GigSim fair bands |
+| Scam risk | Fake-jobs labelled postings | GigSim scam and injection lines |
+| Portfolios, reviews, proposals, conversations | none available | All three personas, GigSim threads |
 
 ## GigSim marketplace (`gigsim/seed.py`, seed 42)
 
@@ -27,7 +40,7 @@ Case studies name about 60% of a project's skills and only imply the rest ("move
 - Evidence unit: project. Gain = number of job skills the project truly has. A project is relevant when gain ≥ max(2, ⌈0.6 × job skills⌉), about 4 relevant projects per job.
 - Metrics (`evals/runners/rag_eval.py`): Recall@5 capped at |relevant|, MRR, nDCG@10 with graded gains.
 
-## Known limitations
+## Known limitations of the synthetic data
 
 - Template text: phrasing repeats far more than real portfolios do, which flatters lexical methods.
 - Skill vocabulary is the 39 GigSim skills; real portfolios need a broader taxonomy.
@@ -38,3 +51,105 @@ Case studies name about 60% of a project's skills and only imply the rest ("move
 - Derived from the persona repositories by the portfolio builder (signature extension X3, `rag/portfolio_builder.py`): 34 Markdown files (12 `fr_ml`, 13 `fr_fs`, 9 `fr_da`) plus one `manifest.json` per persona with the detected skills, model output and dropped sentences.
 - Each skill listed under "Code-verified stack" cites the file and line of code that shows it. Summaries were written by `gpt-oss-20b` and contain no skill without code evidence.
 - Committed so that every checkout and container indexes the same evidence. Rebuilding needs `GITHUB_TOKEN` (or `--source local`) and one model call per repository.
+
+## Real datasets
+
+Built by `uv run python -m data.real.prepare` (`data/real/prepare.py`). It downloads the files anonymously from Kaggle into `data/raw/kaggle/` (about 730 MB) and writes `data/processed/real/` (about 170 MB). Both folders are git-ignored, for size and because the fake-jobs license is unknown. Only aggregate statistics are committed, in `evals/results/real_data_summary.json`. A full rebuild takes about 4 minutes.
+
+| Dataset (Kaggle) | Author | License | Files used | Used for |
+| --- | --- | --- | --- | --- |
+| [Upwork Freelance Jobs 60K+](https://www.kaggle.com/datasets/ahmedmyalo/upwork-freelance-jobs-60k) | Ahmed Myalo | Apache 2.0 | `Final_Upwork_Dataset.csv` (63,950 rows, Feb-Mar 2023) | GigSim real-mode jobs and client histories |
+| [Upwork Job Postings 2024 (50k)](https://www.kaggle.com/datasets/asaniczka/upwork-job-postings-dataset-2024-50k-records) | asaniczka | ODC-By 1.0 | `upwork-jobs.csv` (53,058 rows, Feb 2024) | Retrieval evaluation on real postings |
+| [All Upwork Job Postings, Monthly Tracker (200k+)](https://www.kaggle.com/datasets/asaniczka/all-jobs-on-upwork-200k-plus) | asaniczka | ODC-By 1.0 | the three 2024 CSVs (Feb-Jul 2024, titles and budgets, no descriptions) | Posted budgets and hourly ranges: fair price bands |
+| [Freelance Contracts (1.3M)](https://www.kaggle.com/datasets/asaniczka/freelance-contracts-dataset-1-3-million-entries) | asaniczka | ODC-By 1.0 | `contracts.csv` (titles, hours, amounts paid, hourly rates) | What contracts actually paid |
+| [Fake-Job-Posting-Detection](https://www.kaggle.com/datasets/adityammantri/trial-1) | Aditya M. Mantri | Unknown | `processed_labeled_dataset_without_encoding.xlsx` (44,042 labelled rows) | Scam-detection evaluation of the Risk Assessor |
+| [Freelancer Marketplace Dataset for ML](https://www.kaggle.com/datasets/sarveshchhetri/freelancer-success-earnings-and-churn-prediction) | Sarvesh Chhetri | Apache 2.0 | `freelancer_gig_success_dataset.csv` (12,000 rows) | Checked as a rate benchmark and **rejected** (see below) |
+
+**Attribution.** The ODC-By datasets require attribution, given in the table above, in `real_data_summary.json` and in `data/real/prepare.py`. The Apache 2.0 datasets are not redistributed; if they were, the license text would have to ship with them. The fake-jobs dataset has no stated license, so it is used only locally for evaluation, and nothing derived from it is committed except aggregate scores.
+
+### Preprocessing
+
+- **All text:** HTML entities decoded, whitespace collapsed, emails and phone numbers masked with `agent/redact.py`.
+- **Upwork 60k → GigSim jobs** (`data/processed/real/gigsim.jsonl`):
+  - 4,215 repeated postings dropped (the scrape repeats jobs across search keywords), leaving 59,735.
+  - Skill tags are the job's Upwork categories.
+  - Budget, budget type, hourly range and Connects cost (the doubled 2023 values) come from the posting.
+  - Category (ml, fullstack, data, other) comes from whole-word keyword matches on the title and tags. Result: 2,272 ml, 6,928 fullstack, 3,423 data and 47,112 other; the scrape is mostly marketing and 3D work.
+  - Posting time is the scrape date minus the posting's relative age ("5 minutes ago").
+- **Upwork 60k → GigSim clients.** The scrape has no client ids, so each posting gets its own client.
+  - Real: payment verification (65% verified), total spend (48% zero), rating, feedback count, country.
+  - Synthetic, listed in `_synthetic` (seed 42): hire rate, jobs posted (set to the feedback count), account age, and the hidden reply preferences GigSim uses to simulate replies.
+- **Fair price bands** (`_truth.fair_band`): the posted budgets in the 200k files for the same category, p25 to p75; for hourly jobs, the midpoint of the hourly range.
+- **Upwork 50k → retrieval set** (`data/processed/real/retrieval_real.jsonl`):
+  - The scraper's appended metadata is parsed off the description: budget, posting time, Upwork category and skill tags.
+  - Tags are mapped onto the 39-skill GigSim vocabulary by whole-word match plus two aliases ("Amazon Web Services" → AWS, "Retrieval Augmented Generation" → RAG). Postings with fewer than 2 mapped skills are dropped.
+  - Relevance uses the same rule as the synthetic dev set: a project is relevant when it truly has max(2, ⌈0.6 × job skills⌉) of the job's skills.
+  - Result: the first 200 qualifying postings per persona by date, 469 queries in all (fr_ml 69, fr_fs 200, fr_da 200), with 2.9 relevant projects per query.
+  - This set is held out: the 2024 postings never enter GigSim, which uses the 2023 scrape.
+- **Fake jobs → scam set** (`data/processed/real/scam_real.jsonl`): every labelled row with a description, 44,042 postings, 12,520 of them fake. 10,000 of the fakes are near-identical generated posts ("... earn 5000week immediate hiring contact now at ..."). They are marked `templated` so that results can be split.
+
+### Real against synthetic: market rates (USD)
+
+Posted budgets from the 200k files, amounts paid from the contracts, and GigSim's synthetic jobs, as p25 / median / p75.
+
+| Category | Real posted fixed | Real paid per contract | Real posted hourly (mid) | Real paid hourly | GigSim synthetic fixed | GigSim synthetic hourly |
+| --- | --- | --- | --- | --- | --- | --- |
+| ml | 50 / 150 / 500 | 84 / 300 / 1,170 | 20 / 28 / 43 | 19 / 30 / 50 | 4,195 / 8,235 / 12,258 | 55 / 64 / 72 |
+| fullstack | 50 / 150 / 500 | 138 / 570 / 2,600 | 18 / 25 / 38 | 15 / 25 / 40 | 3,320 / 6,070 / 9,900 | 46 / 52 / 58 |
+| data | 20 / 50 / 200 | 50 / 161 / 611 | 10 / 23 / 35 | 15 / 30 / 50 | 2,835 / 5,320 / 8,645 | 39 / 45 / 50 |
+
+GigSim's synthetic fixed budgets are 30 to 100 times the real posted ones, and its hourly rates about twice as high. Two consequences:
+- The fixed-bid floor was first set at $300, against synthetic prices, and never came into play on GigSim. On 150 sampled real fixed-price jobs it set the price 84% of the time, and on 57% the bid was above the client's posted maximum. `pricing.fixed_bid_floor` is now $100. That figure sets the price on 31% of those jobs and is above the client's maximum on 29% (the same check gives 47% and 41% at $150). The floor only sets the bid amount: pricing runs after the bid/skip decision and makes no model calls, so the decision, cost and latency results are unchanged.
+- Expected-value numbers measured on synthetic GigSim do not carry over to the real market.
+
+The freelancer-success dataset was rejected as a rate benchmark. Its author describes it as "realistic" rather than real, and its hourly rates are clipped at 280 USD, which is also the median for every one of its 11 skills.
+
+### Evaluations on real data
+
+**Retrieval on real postings** (`uv run python -m evals.runners.rag_eval --dataset real --variant v0 v2 v4 selected --table rag_real_comparison.md`; results in `evals/results/rag_real_*.json` and `rag_real_comparison.md`). The index includes the verified case studies, as deployed.
+
+| Variant | Recall@5 | MRR | nDCG@10 |
+| --- | --- | --- | --- |
+| v0 dense | 0.480 | 0.491 | 0.519 |
+| v2 hybrid | 0.521 | 0.516 | 0.531 |
+| v4 outcome | 0.568 | 0.572 | 0.580 |
+| selected (hybrid + outcome, deployed) | **0.578** | **0.583** | **0.593** |
+
+The deployed pipeline holds up on real text. Its gain over dense search is larger on real postings (+0.098 Recall@5) than on the synthetic dev set (+0.071). Absolute scores are lower, with MRR 0.58 against 0.72, because real postings are longer and noisier than the templates. Only 24 real queries have 4 or more mapped skills, too few for the per-job-type segment to mean anything.
+
+**Scam detection on labelled postings** (`uv run python -m evals.runners.scam_eval --n 60`; results in `evals/results/scam_eval.md` and `.json`). A posting counts as caught when the Risk Assessor's score exceeds `decision.bid_max_risk`, which makes the bid graph skip it. Every posting gets the same verified, established client, so only the text decides. The model sample is balanced: 30 real postings, 15 templated fakes and 15 other fakes.
+
+| Detector | Postings | Precision | Recall | F1 | False-positive rate | Recall, templated fakes | Recall, other fakes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Rules, all labelled postings | 44,042 | 0.017 | 0.002 | 0.004 | 0.045 | 0.00 | 0.01 |
+| Rules, sample | 58 | 0.000 | 0.000 | 0.000 | 0.138 | 0.00 | 0.00 |
+| Rules + model (`gpt-oss-20b`), sample | 58 | 0.643 | 0.310 | 0.419 | 0.172 | 0.57 | 0.07 |
+
+Two of the 60 sampled postings failed because the model returned unparseable output.
+
+- **The rules do not transfer.** They are written for freelance scams (Telegram, crypto payment, unpaid samples, ID photos). These fakes are employment scams ("earn 5000 a week, contact now at ..."), and the published text has lost the punctuation the rules expect. Their few hits are mostly false positives, such as "passport" in teach-abroad ads.
+- **The model catches the obvious fakes, not the subtle ones.** An earlier run with identical inputs except the old crypto rule scored F1 0.600, with recall 0.87 on templated fakes and 0.13 on the others. The templated fakes contain no crypto wording, so the gap between the runs is model variance, and with 58 postings the numbers are only rough.
+- **The false positives are arguable.** They include "teach English abroad" packages and a commission-only "local representative" opportunity, which a freelancer would reasonably avoid too.
+- **Not fixed:** the Risk Assessor stays tuned for marketplace scams. Treat this set as a domain-shift check, not a target to optimise.
+
+**Finding from real data, fixed.** The rule `off_platform_payment` matched any mention of "crypto", so the bid graph hard-skipped legitimate jobs such as an 8,000 USD crypto-volatility model for a verified client (real job `rj_f3569e2f87`). On the 59,735 real postings it fired 625 times. It now needs a payment phrase ("paid in crypto", "payment via bitcoin") and fires 13 times. Those 13 include product features ("users pay with crypto") and warnings against contact "outside the platform". It still matches all 37 synthetic scam jobs it matched before. Real postings also showed that "outside of Upwork" almost always appears in warnings against going off-platform, so it is deliberately not a scam signal.
+
+### Running GigSim on real data
+
+Build the data, then start GigSim in real mode (PowerShell):
+
+```powershell
+uv run python -m data.real.prepare
+$env:GIGSIM_DATA = "real"; uv run uvicorn gigsim.app:create_app --factory --port 8100
+```
+
+Loading takes about 5 seconds. The three synthetic freelancers, their portfolios and the seeded message threads, whose texts are synthetic, are unchanged; the threads simply point at real jobs. With `GIGSIM_DATA=real` set, `uv run python -m agent.graphs.bid_graph rj_f3569e2f87` runs one real job end to end.
+
+### Limitations of the real data
+
+- **Scraped, not official.** Postings are what each scraper collected over a few weeks in 2023 or 2024, with no guarantee of coverage. Deleted jobs and private invitations are missing.
+- **Client histories are partial.** There is no client id, hire rate, number of jobs posted or account age; those fields are synthetic. A real repeat client therefore appears as many one-off clients.
+- **No real outcomes per job.** None of the datasets says which proposal won or whether a client replied, so GigSim's reply simulation stays synthetic in real mode.
+- **Taxonomy mismatch.** Upwork has thousands of skill tags and the personas use 39. Labels exist only where tags map onto those 39, which leaves 69 ML queries, because real ML postings tag broad terms such as "Machine Learning" that the vocabulary lacks. Category keywords and title-only categories (200k, contracts) are approximate.
+- **The scam set is not freelance.** The labelled postings are employment ads, and 80% of the fakes are templated text, which flatters any detector. The other fakes appear to come from the public EMSCAD corpus of 2012-2014 job ads, whose labels include borderline postings (MLM, "teach English abroad"). The text was lowercased with punctuation removed before publication, which weakens regex rules written for normal text.
+- **Personal data.** Descriptions can name people or companies. Emails and phone numbers are masked, but names are not. Raw and processed files therefore stay local and are not committed.

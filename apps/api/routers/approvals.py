@@ -4,6 +4,7 @@ from uuid import UUID, uuid4
 
 from fastapi import APIRouter, HTTPException, Request
 
+from agent.graphs.bid_graph import TO_CONFIRM, unconfirmed
 from agent.handoffs import Approval
 from apps.api import db
 from apps.api.auth import User
@@ -38,6 +39,12 @@ async def decide(thread_id: UUID, body: Approval, user: User, request: Request):
     row = await db.owned_thread(pool, user["id"], thread_id)
     if not row or row["status"] != "awaiting_approval":
         raise HTTPException(409, "not awaiting approval")
+    if body.action == "approve":
+        snap = await request.app.state.graph.aget_state(
+            {"configurable": {"thread_id": str(thread_id)}})
+        if snap.interrupts and (missing := unconfirmed(snap.interrupts[0].value["draft"])):
+            raise HTTPException(409, f"fill in the answers marked {TO_CONFIRM} first: "
+                                     + "; ".join(missing))
     budget = user["settings"].get("weekly_connects_budget")
     if body.action == "approve" and budget is not None:
         spent = await db.fetchone(

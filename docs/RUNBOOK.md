@@ -33,6 +33,36 @@ The TypeScript client in `apps/web/src/lib/api` is generated; after any API chan
 
 Live Upwork mode uses the same limits; never lower the interval to approximate scraping.
 
+### Model rate limits
+
+Free-tier limits, read from the providers' `x-ratelimit-*` response headers on 2026-11-13:
+
+| Bucket | Requests | Tokens |
+| --- | --- | --- |
+| Groq `gpt-oss-20b` | 1,000 a day | 8k a minute |
+| Groq `gpt-oss-120b` | 1,000 a day | 8k a minute, separate from 20b |
+| Cerebras `gpt-oss-120b` | 5 a minute, 150 an hour, 2,400 a day | 30k a minute, 1M a day |
+
+One proposal takes about 10 model calls and 19–24k tokens. The verifier alone uses 38% of
+the tokens, then the writer (18%), matcher (15%), critic (12%) and the small nodes.
+On one 8k-a-minute Groq bucket, a single proposal overruns the minute.
+
+`GIGBID_PROFILE=cerebras` gives each node group its own bucket:
+
+| Bucket | Nodes |
+| --- | --- |
+| Cerebras | Verifier and matcher |
+| Groq 120b | Writer, critic, liaison and judge |
+| Groq 20b | The small nodes |
+
+The critic ran on NIM until 2026-11-15, when NIM's free `gpt-oss-20b` took 70–106 s to
+answer a five-word prompt.
+
+Every fallback points at a different bucket. Cerebras calls are spaced 12 s apart in each
+process (`agent/config._cerebras_pace`), so they wait instead of getting a 429.
+
+Three bids in a row ran with 0 429s, at about 35 s each.
+
 ## How work is recovered
 
 | Failure | What happens |
@@ -53,3 +83,31 @@ uv run python -m mcp_servers.auth fr_ml --days 30
 ```
 
 Rotating `MCP_SIGNING_SECRET` revokes every token at once.
+
+## Tracing (Phoenix)
+
+[`agent/tracing.py`](../agent/tracing.py) exports OpenTelemetry spans to Arize Phoenix when
+`PHOENIX_COLLECTOR_ENDPOINT` is set. Compose sets it to its own `phoenix` service; the UI is
+at http://localhost:6006.
+
+**What is traced.** Every LangGraph node and every model call in a worker run becomes a
+span, with its prompt, output and token counts. The run's spans share one session id: the
+GigBid trace id.
+
+**Following one id.** The same trace id is returned on every API response as `X-Trace-Id`,
+passed to the worker job, sent to every MCP server as `X-Trace-Id`, and written in the
+marketplace audit log (`MARKETPLACE_AUDIT_LOG`). Search for it in Phoenix's Sessions view
+or grep the audit log to follow one request end to end.
+
+**PII.** String attributes pass through `agent.redact` before export, so emails and phone
+numbers in job posts or client messages are masked in Phoenix too
+(`tests/unit/test_tracing.py`).
+
+**Public traces.** The README is meant to link three public traces, which needs a shared
+Phoenix. Create a Phoenix Cloud space, then set `PHOENIX_COLLECTOR_ENDPOINT` to its
+collector URL and `OTEL_EXPORTER_OTLP_HEADERS` to the auth header its setup page gives.
+Run a bid that is approved, one skipped as a scam and one with a Critic loop, and share
+those three traces. This needs the account owner.
+
+Per-node tokens and model are also in each thread's own trace (the run timeline in the
+web app, `trace` in the graph state). `evals/runners/budget_eval.py` prices them.

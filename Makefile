@@ -1,4 +1,4 @@
-.PHONY: dev gigsim marketplace-mcp portfolio-mcp workspace-mcp data seed api worker diagram run-job eval models test test-live lint e2e web
+.PHONY: dev gigsim marketplace-mcp portfolio-mcp workspace-mcp data seed api worker diagram run-job eval eval-smoke models test test-live lint e2e web
 
 COMPOSE = docker compose -f infra/docker-compose.yml --env-file .env
 
@@ -36,8 +36,13 @@ diagram:
 run-job: # make run-job JOB=job_00012 (needs GROQ_API_KEY; runs GigSim and MCP servers in-process)
 	uv run python -m agent.graphs.bid_graph $(JOB)
 
-eval:
-	uv run python -m evals.runners.rag_eval --variant v0
+eval: # retrieval, decisions and claims (real models for the last two; evals/results/)
+	uv run python -m evals.runners.rag_eval --variant v0 selected
+	uv run python -m evals.runners.decision_eval
+	uv run python -m evals.runners.claims_eval --jobs 5
+
+eval-smoke: # the gated CI smoke evaluation
+	uv run python -m evals.runners.smoke
 
 models:
 	$(COMPOSE) exec ollama ollama pull qwen3:4b

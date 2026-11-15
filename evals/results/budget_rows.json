@@ -1,0 +1,388 @@
+[
+ {
+  "status": "skipped",
+  "analyze_seconds": 20.93,
+  "seconds": 20.99,
+  "tokens": 5997,
+  "analyze_usd": 0.002727,
+  "usd": 0.002727,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_ml",
+  "job_id": "rj_d4379f4203"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 10.83,
+  "seconds": 10.84,
+  "tokens": 5366,
+  "analyze_usd": 0.002251,
+  "usd": 0.002251,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_ml",
+  "job_id": "rj_da18480235"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 11.92,
+  "seconds": 11.92,
+  "tokens": 5371,
+  "analyze_usd": 0.002037,
+  "usd": 0.002037,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_ml",
+  "job_id": "rj_d41d620b6a"
+ },
+ {
+  "status": "awaiting_approval",
+  "analyze_seconds": 12.79,
+  "seconds": 27.96,
+  "tokens": 18402,
+  "analyze_usd": 0.003422,
+  "usd": 0.007549,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_ml",
+  "job_id": "rj_ec14b5e892"
+ },
+ {
+  "status": "needs_attention",
+  "analyze_seconds": 32.04,
+  "seconds": 39.34,
+  "tokens": 13192,
+  "analyze_usd": 0.002311,
+  "usd": 0.005542,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b",
+   "openai/gpt-oss-20b"
+  ],
+  "attention": "compliance blocked: Violation of guarantees policy",
+  "persona": "fr_ml",
+  "job_id": "rj_574a93ce29"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 8.91,
+  "seconds": 8.92,
+  "tokens": 6318,
+  "analyze_usd": 0.002718,
+  "usd": 0.002718,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_ml",
+  "job_id": "rj_54f5119b66"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 11.86,
+  "seconds": 11.87,
+  "tokens": 6013,
+  "analyze_usd": 0.002522,
+  "usd": 0.002522,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_ml",
+  "job_id": "rj_ed3d32534c"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 12.28,
+  "seconds": 12.28,
+  "tokens": 6027,
+  "analyze_usd": 0.002608,
+  "usd": 0.002608,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_ml",
+  "job_id": "rj_dddbb96adb"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 11.58,
+  "seconds": 11.58,
+  "tokens": 5082,
+  "analyze_usd": 0.002211,
+  "usd": 0.002211,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_fs",
+  "job_id": "rj_bdc5c70cee"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 15.11,
+  "seconds": 15.12,
+  "tokens": 5412,
+  "analyze_usd": 0.002138,
+  "usd": 0.002138,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_fs",
+  "job_id": "rj_b90f0d73f1"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 17.09,
+  "seconds": 17.09,
+  "tokens": 7007,
+  "analyze_usd": 0.00322,
+  "usd": 0.00322,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_fs",
+  "job_id": "rj_f0aec74689"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 16.64,
+  "seconds": 16.64,
+  "tokens": 6307,
+  "analyze_usd": 0.002619,
+  "usd": 0.002619,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_fs",
+  "job_id": "rj_36d4a8a350"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 10.64,
+  "seconds": 10.64,
+  "tokens": 5571,
+  "analyze_usd": 0.002448,
+  "usd": 0.002448,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_fs",
+  "job_id": "rj_1c0a79aff4"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 15.64,
+  "seconds": 15.64,
+  "tokens": 5611,
+  "analyze_usd": 0.002101,
+  "usd": 0.002101,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_fs",
+  "job_id": "rj_86fea9e724"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 16.56,
+  "seconds": 16.57,
+  "tokens": 6561,
+  "analyze_usd": 0.002801,
+  "usd": 0.002801,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_fs",
+  "job_id": "rj_5a31e819c4"
+ },
+ {
+  "status": "awaiting_approval",
+  "analyze_seconds": 13.92,
+  "seconds": 40.07,
+  "tokens": 12950,
+  "analyze_usd": 0.002059,
+  "usd": 0.005369,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_fs",
+  "job_id": "rj_2a3a4b201e"
+ },
+ {
+  "status": "awaiting_approval",
+  "analyze_seconds": 23.82,
+  "seconds": 65.23,
+  "tokens": 17920,
+  "analyze_usd": 0.003324,
+  "usd": 0.007078,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_da",
+  "job_id": "rj_1b059d4834"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 14.39,
+  "seconds": 14.4,
+  "tokens": 4775,
+  "analyze_usd": 0.00187,
+  "usd": 0.00187,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_da",
+  "job_id": "rj_a4e4c5a1e2"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 12.85,
+  "seconds": 12.86,
+  "tokens": 6078,
+  "analyze_usd": 0.002596,
+  "usd": 0.002596,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_da",
+  "job_id": "rj_f7186f11dc"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 18.93,
+  "seconds": 18.93,
+  "tokens": 6092,
+  "analyze_usd": 0.002446,
+  "usd": 0.002446,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_da",
+  "job_id": "rj_d599a73186"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 18.14,
+  "seconds": 18.14,
+  "tokens": 6274,
+  "analyze_usd": 0.002734,
+  "usd": 0.002734,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_da",
+  "job_id": "rj_c20821423f"
+ },
+ {
+  "status": "watching",
+  "analyze_seconds": 3.53,
+  "seconds": 3.53,
+  "tokens": 5903,
+  "analyze_usd": 0.002422,
+  "usd": 0.002422,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b",
+   "openai/gpt-oss-20b"
+  ],
+  "attention": "",
+  "persona": "fr_da",
+  "job_id": "rj_0c31f16b65"
+ },
+ {
+  "status": "watching",
+  "analyze_seconds": 17.06,
+  "seconds": 17.06,
+  "tokens": 7399,
+  "analyze_usd": 0.003549,
+  "usd": 0.003549,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_da",
+  "job_id": "rj_b653e372ff"
+ },
+ {
+  "status": "skipped",
+  "analyze_seconds": 18.08,
+  "seconds": 18.08,
+  "tokens": 5878,
+  "analyze_usd": 0.002405,
+  "usd": 0.002405,
+  "unpriced_calls": 0,
+  "models": [
+   "gpt-oss-120b",
+   "openai/gpt-oss-120b"
+  ],
+  "attention": "",
+  "persona": "fr_da",
+  "job_id": "rj_794e781521"
+ }
+]

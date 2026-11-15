@@ -15,7 +15,9 @@ const nextConfig: NextConfig = {
   },
   // Same-origin proxy to FastAPI, so the session cookie needs no CORS.
   async rewrites() {
-    const api = process.env.API_URL ?? "http://localhost:8000";
+    // Render's private network gives "host:port" with no scheme.
+    const raw = process.env.API_URL ?? "http://localhost:8000";
+    const api = /^https?:\/\//.test(raw) ? raw : `http://${raw}`;
     return [{ source: "/api/:path*", destination: `${api}/:path*` }];
   },
 };

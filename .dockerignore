@@ -7,3 +7,9 @@ data/processed
 apps/web/.next*
 apps/web/playwright-report
 apps/web/test-results
+data/raw
+gigbid-starter-kit
+apps/web/tsconfig.tsbuildinfo
+evals/results/*.log*
+.pytest_cache
+.ruff_cache

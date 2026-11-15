@@ -81,7 +81,9 @@ export default function Studio() {
             {draft.screening_answers?.map((a) => (
               <div key={a.question} className="mt-6 border-t border-line pt-4">
                 <p className="font-sans font-bold">{a.question}</p>
-                <p className="mt-1">{a.answer.replace(CITATION, "")}</p>
+                {a.answer.includes("TO CONFIRM")
+                  ? <p className="mt-1 font-sans text-[15px] text-caution">Only you can answer this: edit the draft to fill it in.</p>
+                  : <p className="mt-1">{a.answer.replace(CITATION, "")}</p>}
               </div>
             ))}
           </div>
@@ -140,7 +142,7 @@ export default function Studio() {
           </Panel>
         </aside>
       </div>
-      <ApprovalPanel kind="proposal" threadId={id} text={draft.cover_letter}
+      <ApprovalPanel kind="proposal" threadId={id} text={draft.cover_letter} answers={draft.screening_answers ?? []}
                      approveLabel={`Approve and submit (${preview.connects_cost} Connects)`}
                      onEditing={setEditing} />
     </article>

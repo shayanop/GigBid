@@ -4,9 +4,11 @@ Keys starting with "_" are ground truth (scam/injection labels, fair price
 bands, hidden client preferences) and are never returned by the API.
 """
 
+import json
 import random
 import re
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 
 NOW = datetime(2026, 10, 1, tzinfo=UTC)
 
@@ -192,3 +194,20 @@ def build(n_jobs: int = 1500, seed: int = 42) -> dict:
         "threads": _threads(rng, jobs),
         "proposals": {},
     }
+
+
+REAL = Path(__file__).resolve().parents[1] / "data" / "processed" / "real" / "gigsim.jsonl"
+
+
+def load_real(path: Path = REAL, seed: int = 42) -> dict:
+    """GigSim state from real Upwork postings and client histories (data/real/prepare.py).
+    Freelancers, message threads and client reply preferences stay synthetic; each record
+    lists its synthetic fields under "_synthetic"."""
+    rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+    jobs = [r["job"] for r in rows]
+    threads = _threads(random.Random(seed), jobs)
+    for t in threads.values():
+        t["_source"] = "synthetic"
+    return {"freelancers": {k: dict(v) for k, v in FREELANCERS.items()},
+            "clients": {r["client"]["id"]: r["client"] for r in rows},
+            "jobs": {j["id"]: j for j in jobs}, "threads": threads, "proposals": {}}

@@ -45,6 +45,21 @@
       "title": "Action",
       "type": "string"
      },
+     "answers": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "Edited screening answers for 'edit', in the draft's order",
+      "title": "Answers"
+     },
      "reason": {
       "anyOf": [
        {

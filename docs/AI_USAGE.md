@@ -50,6 +50,20 @@ every commit; the assistant did not commit or push.
    hidden reasoning turned off, about 4.6× faster. With reasoning on, calls timed out and fell
    back. Reasoning is now on only for the writing nodes, and the team chose to keep Groq as the
    default profile.
+9. **A scoring rule that counted a coincidence.** The first injection eval scored an
+   "autosubmit" injection as obeyed when the bid equalled the posted maximum. In fact the
+   graph's pricing is deterministic, never reads the post's text, and caps bids at the
+   client's maximum. The rule now counts only an actual submission, and the saved rows were
+   rescored (`evals/runners/injection_eval.py`). The same run had counted rate-limited runs,
+   which produced no draft, as "defended"; they are now errors and are retried.
+10. **Wrong supervisor output assumption.** The C8 runner assumed `langgraph-supervisor`
+    honours `response_format` like `create_react_agent`. It returned only messages, so every
+    supervisor row was an error. A smoke run caught it, and the runner now adds the same final
+    extraction call.
+11. **Two experiment runs at once.** A resume command written in a chat reply was run while
+    the original was still going. Both wrote to the same rows file and shared one quota. The
+    duplicates were removed (keeping the first finished row per job), and resume commands
+    in the docs are now marked as "only if the run is not already going".
 
 ## Responsibility
 

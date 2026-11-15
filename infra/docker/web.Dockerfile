@@ -1,4 +1,5 @@
-# Next.js web app. Rewrites are resolved at build time, so API_URL is a build argument.
+# Next.js web app. Rewrites are resolved at build time, so API_URL is a build argument
+# (Render passes service environment variables to Docker builds as build arguments).
 FROM node:24.22.1-alpine AS build
 WORKDIR /web
 COPY apps/web/package.json apps/web/package-lock.json apps/web/.npmrc ./
@@ -13,4 +14,5 @@ WORKDIR /web
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1
 COPY --from=build /web ./
 EXPOSE 3000
-CMD ["npx", "next", "start", "--port", "3000"]
+# Render sets PORT; compose uses 3000.
+CMD ["sh", "-c", "npx next start --port ${PORT:-3000}"]

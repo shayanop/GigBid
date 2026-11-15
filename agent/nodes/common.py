@@ -110,7 +110,11 @@ async def ask(node: str, schema, user: str):
     out = await config.get_model(node, schema).ainvoke(
         [{"role": "system", "content": system}, {"role": "user", "content": user}])
     usage = getattr(out["raw"], "usage_metadata", None) or {}
+    meta = getattr(out["raw"], "response_metadata", None) or {}
     record({"kind": "llm", "prompt_version": version, "tokens": usage.get("total_tokens", 0),
+            "input_tokens": usage.get("input_tokens", 0),
+            "output_tokens": usage.get("output_tokens", 0),
+            "model": meta.get("model_name") or meta.get("model"),  # which fallback answered
             "ms": round((time.perf_counter() - start) * 1000, 1)})
     if out["parsed"] is None:
         raise ModelOutputError(f"{node}: unparseable model output: {out.get('parsing_error')}")

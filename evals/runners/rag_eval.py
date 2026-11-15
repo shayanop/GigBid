@@ -24,6 +24,8 @@ from rag.schema import Evidence
 
 ROOT = Path(__file__).resolve().parents[2]
 DATASET = ROOT / "evals" / "datasets" / "dev_retrieval.jsonl"
+# Real 2024 Upwork postings with the same labelling rule (data/real/prepare.py).
+REAL_DATASET = ROOT / "data" / "processed" / "real" / "retrieval_real.jsonl"
 RESULTS = ROOT / "evals" / "results"
 
 
@@ -55,8 +57,9 @@ def _summary(rows: list[dict]) -> dict:
             "p95_latency_ms": round(lat[min(len(lat) - 1, math.ceil(0.95 * len(lat)) - 1)], 1)}
 
 
-def evaluate(variant: str, limit: int | None = None, embedder=None) -> dict:
-    queries = [json.loads(line) for line in DATASET.read_text(encoding="utf-8").splitlines()]
+def evaluate(variant: str, limit: int | None = None, embedder=None,
+             dataset: Path = DATASET) -> dict:
+    queries = [json.loads(line) for line in dataset.read_text(encoding="utf-8").splitlines()]
     by_persona = defaultdict(list)
     for q in queries:
         by_persona[q["persona"]].append(q)
@@ -77,8 +80,8 @@ def evaluate(variant: str, limit: int | None = None, embedder=None) -> dict:
         "variant": variant,
         "components": components_for(variant).on(),
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
-        "dataset": {"path": DATASET.relative_to(ROOT).as_posix(),
-                    "sha256": hashlib.sha256(DATASET.read_bytes()).hexdigest()[:16]},
+        "dataset": {"path": dataset.relative_to(ROOT).as_posix(),
+                    "sha256": hashlib.sha256(dataset.read_bytes()).hexdigest()[:16]},
         "config": rag_config(),
         "overall": _summary(every),
         "per_persona": {p: _summary(rows) for p, rows in scored.items()},
@@ -109,12 +112,16 @@ def main() -> None:
                         help="one or more: v0 v1 v2 v3 v4 v8 selected custom:hybrid+rerank")
     parser.add_argument("--limit", type=int, help="queries per persona (smoke runs)")
     parser.add_argument("--table", help="also write a markdown comparison to this results file")
+    parser.add_argument("--dataset", choices=["dev", "real"], default="dev",
+                        help="real: labelled real Upwork postings (results rag_real_*.json)")
     args = parser.parse_args()
     RESULTS.mkdir(parents=True, exist_ok=True)
     results = []
     for variant in args.variant:
-        result = evaluate(variant, args.limit)
-        name = variant.replace(":", "_").replace("+", "_")
+        result = evaluate(variant, args.limit,
+                          dataset=REAL_DATASET if args.dataset == "real" else DATASET)
+        prefix = "real_" if args.dataset == "real" else ""
+        name = prefix + variant.replace(":", "_").replace("+", "_")
         (RESULTS / f"rag_{name}.json").write_text(json.dumps(result, indent=1), encoding="utf-8")
         print(variant, json.dumps(result["overall"]))
         results.append(result)

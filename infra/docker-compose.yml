@@ -16,6 +16,8 @@ x-app-env: &app-env
   PORTFOLIO_MCP_URL: http://portfolio-mcp:8300/mcp
   WORKSPACE_MCP_URL: http://workspace-mcp:8400/mcp
   NIM_API_KEY: ${NIM_API_KEY:-}
+  CEREBRAS_API_KEY: ${CEREBRAS_API_KEY:-}
+  PHOENIX_COLLECTOR_ENDPOINT: ${PHOENIX_COLLECTOR_ENDPOINT:-http://phoenix:6006} # traces (agent/tracing.py)
   GROQ_API_KEY: ${GROQ_API_KEY}
   GROQ_API_KEYS: ${GROQ_API_KEYS:-}
   GIGBID_PROFILE: ${GIGBID_PROFILE:-open}

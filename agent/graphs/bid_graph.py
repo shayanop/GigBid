@@ -80,6 +80,17 @@ def client_text(text: str) -> str:
     return re.sub(r"[ \t]+([.,;:!?])", r"\1", CITATION.sub("", text)).strip()
 
 
+# The writer answers availability, start-date, hours and rate questions with this marker;
+# only the freelancer can fill them in (agent/prompts/writer.md).
+TO_CONFIRM = "TO CONFIRM"
+
+
+def unconfirmed(draft: dict) -> list[str]:
+    """Screening questions whose answer still holds the marker; approval is refused until
+    the freelancer fills them in."""
+    return [a["question"] for a in draft.get("screening_answers", []) if TO_CONFIRM in a["answer"]]         + (["cover letter"] if TO_CONFIRM in draft.get("cover_letter", "") else [])
+
+
 def _proposal_args(state: dict) -> dict:
     draft = state["draft"]
     return {"job_id": state["job"].id, "cover_letter": client_text(draft.cover_letter),
@@ -119,8 +130,15 @@ async def request_approval(state: dict) -> dict:
             await observe_edit(store, user, before, decision.text, f"proposal:{_thread_id()}")
         diff = "".join(difflib.unified_diff(before.splitlines(True),
                                             decision.text.splitlines(True), "draft", "edited"))
+        answers = state["draft"].screening_answers
+        if decision.answers is not None:
+            if len(decision.answers) != len(answers):
+                raise ValueError("edit must give one answer per screening question")
+            answers = [a.model_copy(update={"answer": text})
+                       for a, text in zip(answers, decision.answers, strict=True)]
         return {**update, "status": "drafting",
-                "draft": state["draft"].model_copy(update={"cover_letter": decision.text}),
+                "draft": state["draft"].model_copy(update={"cover_letter": decision.text,
+                                                           "screening_answers": answers}),
                 "edits": [{"at": datetime.now(UTC).isoformat(), "before": before,
                            "after": decision.text, "diff": diff}]}
     return update
@@ -128,6 +146,8 @@ async def request_approval(state: dict) -> dict:
 
 @common.node("submit")
 async def submit(state: dict) -> dict:
+    if missing := unconfirmed(state["draft"].model_dump()):  # the API refuses this first
+        raise ValueError(f"still marked {TO_CONFIRM}: {', '.join(missing)}")
     args, tools = _proposal_args(state), common.toolbox()
     created = await tools.call("submit", "marketplace", "create_proposal_draft",
                                {**args, "idempotency_key": _key("draft", args)})

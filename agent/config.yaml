@@ -26,6 +26,23 @@ profiles:
       judge: groq:openai/gpt-oss-120b
     thinking: [writer, critic] # NIM reasoning on only where prose quality matters
 
+  cerebras: # one node group per rate-limit bucket (measured 2026-11-13, docs/RUNBOOK.md);
+    # every fallback is a different bucket, so a 429 moves the call instead of failing it
+    default: groq:openai/gpt-oss-20b # analyst, risk, pricing, compliance, intent
+    default_fallback: groq:openai/gpt-oss-120b
+    nodes:
+      verifier: [cerebras:gpt-oss-120b, groq:openai/gpt-oss-20b] # largest prompts: 30k TPM bucket
+      matcher: [cerebras:gpt-oss-120b, groq:openai/gpt-oss-20b]
+      writer: [groq:openai/gpt-oss-120b, cerebras:gpt-oss-120b]
+      critic: [groq:openai/gpt-oss-120b, cerebras:gpt-oss-120b] # NIM took 70-106 s a call on 2026-11-15
+      liaison: [groq:openai/gpt-oss-120b, cerebras:gpt-oss-120b]
+      judge: [groq:openai/gpt-oss-120b, cerebras:gpt-oss-120b]
+
+  c8: # the architecture experiment (C8): gpt-oss-120b on Cerebras for every node, no fallback
+    # to another host, so all three implementations share one model and one quota
+    default: cerebras:gpt-oss-120b
+    cerebras_rpm: 2.4 # Cerebras' free tier caps at 150 requests an hour
+
   open_alt: # second open configuration for the model comparison: small model everywhere
     default: groq:openai/gpt-oss-20b
     default_fallback: groq:openai/gpt-oss-120b
@@ -75,7 +92,7 @@ critic:
 
 pricing:
   hourly_rate_floor: 40 # USD; per-user settings override this later
-  fixed_bid_floor: 300
+  fixed_bid_floor: 100 # USD; was 300, which set 84% of real fixed-price bids (DATA_CARD.md)
   assumed_hours: 40 # to value hourly jobs
   win_rate_at_full_fit: 0.25
 
@@ -86,6 +103,22 @@ budgets: # per graph thread; exhaustion -> needs_attention
   max_tokens: 60000
   node_timeout_seconds: 120
   retry_initial_seconds: 1.0 # node retries back off from here (3 attempts)
+
+# CI smoke evaluation gates (evals/runners/smoke.py, E2). Set below the measured dev
+# results (bid F1 0.82, 0 unsupported claims after the verifier) to catch regressions.
+eval_gates:
+  min_bid_f1: 0.70
+  max_unsupported_per_proposal: 0.5
+  min_proposals_measured: 2
+  max_errors: 3
+
+# USD per 1M tokens, list prices read 2026-11-15, keyed by the model name each provider
+# reports: console.groq.com/docs/model/<model> and inference-docs.cerebras.ai/models/openai-oss.
+# NVIDIA NIM runs as a trial service with no listed price, so its calls are counted, not priced.
+prices:
+  openai/gpt-oss-20b: {input: 0.075, output: 0.30} # Groq
+  openai/gpt-oss-120b: {input: 0.15, output: 0.60} # Groq
+  gpt-oss-120b: {input: 0.35, output: 0.75} # Cerebras
 
 memory: # promotion policy, see agent/memory/promotion_rules.py
   style_min_support: 2 # separate edits showing the same change before it becomes a preference

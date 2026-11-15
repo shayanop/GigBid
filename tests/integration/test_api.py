@@ -113,6 +113,16 @@ async def test_weekly_connects_budget_blocks_approval(api, harness):
     assert r.status_code == 409 and "weekly Connects budget" in r.json()["detail"]
 
 
+async def test_to_confirm_answer_blocks_approval(api, harness):
+    harness.fake.ask_start = True
+    client = api.server.client
+    await signup(client)
+    thread_id = (await client.post("/jobs", json={"job_id": harness.job(scam=False)})).json()["thread_id"]
+    await api.drain()
+    r = await client.post(f"/approvals/{thread_id}", json={"action": "approve"})
+    assert r.status_code == 409 and "When can you start?" in r.json()["detail"]
+
+
 async def test_users_only_see_their_own_threads(api, harness):
     client = api.server.client
     await signup(client)

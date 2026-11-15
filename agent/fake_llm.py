@@ -19,6 +19,7 @@ from agent.handoffs import (
     ProposalDraft,
     RequirementMatch,
     RiskReport,
+    ScreeningAnswer,
 )
 
 FAKE_ID = "fr_ml-p99#0"  # not in the portfolio; the verifier must reject claims citing it
@@ -28,8 +29,9 @@ FILLER = "I would start with a short call to confirm scope, data access and mile
 class FakeLLM:
     """Stands in for common.ask; returns schema objects shaped like real model output."""
 
-    def __init__(self, critic_rejections=0, fit=0.9, compliance="pass"):
+    def __init__(self, critic_rejections=0, fit=0.9, compliance="pass", ask_start=False):
         self.critic_rejections, self.fit, self.verdict = critic_rejections, fit, compliance
+        self.ask_start = ask_start  # draft a "When can you start?" answer left TO CONFIRM
         self.calls: list[str] = []
 
     async def __call__(self, node, schema, user):
@@ -54,7 +56,9 @@ class FakeLLM:
         return ProposalDraft(cover_letter=(
             f"Your team needs answers grounded in its own documents. I built a retrieval "
             f"pipeline for a similar client [{evidence_id}]. I have 15 years of Rust "
-            f"experience [{FAKE_ID}]. {FILLER}"))
+            f"experience [{FAKE_ID}]. {FILLER}"),
+            screening_answers=[ScreeningAnswer(question="When can you start?", answer="TO CONFIRM")]
+            if self.ask_start else [])
 
     def verifier(self, user):
         letter = user.split("Proposal:\n")[1]

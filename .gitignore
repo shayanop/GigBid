@@ -9,3 +9,6 @@ GiGBid_Project_Specifications.md
 .claude/
 gigbid-starter-kit/
 CLAUDE.md
+data/raw/
+evals/results/*.log
+evals/results/*.log.err

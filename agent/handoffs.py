@@ -92,6 +92,8 @@ class ComplianceVerdict(BaseModel):
 class Approval(BaseModel):
     action: Literal["approve", "edit", "reject"]
     text: str | None = Field(default=None, description="Edited cover letter for 'edit'")
+    answers: list[str] | None = Field(
+        default=None, description="Edited screening answers for 'edit', in the draft's order")
     reason: str | None = Field(default=None, description="Required for 'reject'")
 
     @model_validator(mode="after")

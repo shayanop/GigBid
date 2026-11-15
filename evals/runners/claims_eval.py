@@ -20,7 +20,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.config import get_config
 from langgraph.store.memory import InMemoryStore
 
-from agent.config import load_config
+from agent.config import profile_name
 from agent.graphs import bid_graph
 from agent.graphs.checkpoint import serde
 from agent.handoffs import ClaimReport
@@ -48,7 +48,7 @@ async def run(n_jobs: int) -> dict:
         "http://gigsim", user, transport=httpx.ASGITransport(app=gigsim))
     jobs = [json.loads(line) for line in DATASET.read_text(encoding="utf-8").splitlines()]
     jobs = [j for j in jobs if j["persona"] == "fr_ml"
-            and not gigsim.state.data["jobs"][j["job_id"]]["_truth"]["scam"]][:n_jobs]
+            and not gigsim.state.data["jobs"][j["job_id"]]["_truth"]["scam"]][:4 * n_jobs]
 
     first_drafts, original_ask = {}, common.ask
 
@@ -63,7 +63,9 @@ async def run(n_jobs: int) -> dict:
     graph = bid_graph.build(InMemorySaver(serde=serde()), InMemoryStore())
     toolbox = Toolbox({"marketplace": marketplace.mcp, "portfolio": portfolio.mcp})
     rows = []
-    for job in jobs:
+    for job in jobs:  # decide watches or skips many jobs: keep going until n_jobs are drafted
+        if sum("before" in r for r in rows) >= n_jobs:
+            break
         cfg = {"configurable": {"thread_id": f"claims-{job['job_id']}"}}
         await graph.ainvoke({"job_id": job["job_id"]}, cfg, context=common.Context(toolbox=toolbox))
         values = (await graph.aget_state(cfg)).values
@@ -91,7 +93,7 @@ async def run(n_jobs: int) -> dict:
     drafted = [r for r in rows if "before" in r]
     return {
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
-        "profile": load_config()["profile"], "jobs_attempted": len(rows),
+        "profile": profile_name(), "jobs_attempted": len(rows),
         "proposals_measured": len(drafted),
         "before_verification": _rate([ClaimReport.model_validate(r["before"]) for r in drafted])
         if drafted else None,
@@ -104,7 +106,7 @@ async def run(n_jobs: int) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--jobs", type=int, default=5)
+    parser.add_argument("--jobs", type=int, default=5, help="proposals to measure")
     args = parser.parse_args()
     loop = asyncio.SelectorEventLoop if sys.platform == "win32" else None
     result = asyncio.run(run(args.jobs), loop_factory=loop)

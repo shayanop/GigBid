@@ -1,0 +1,571 @@
+{
+ "generated_at": "2026-11-12T09:19:05+00:00",
+ "profile": "open",
+ "threshold": 0.4,
+ "rules_all_postings": {
+  "n": 44042,
+  "precision": 0.017,
+  "recall": 0.002,
+  "f1": 0.004,
+  "false_positive_rate": 0.045,
+  "recall_templated_fakes": 0.0,
+  "recall_other_fakes": 0.01
+ },
+ "rules_sample": {
+  "n": 58,
+  "precision": 0.0,
+  "recall": 0.0,
+  "f1": 0.0,
+  "false_positive_rate": 0.138,
+  "recall_templated_fakes": 0.0,
+  "recall_other_fakes": 0.0
+ },
+ "risk_sample": {
+  "n": 58,
+  "precision": 0.643,
+  "recall": 0.31,
+  "f1": 0.419,
+  "false_positive_rate": 0.172,
+  "recall_templated_fakes": 0.571,
+  "recall_other_fakes": 0.067
+ },
+ "errors": [
+  {
+   "id": "fj_37911",
+   "error": "ModelOutputError: risk: unparseable model output: Failed to parse RiskReport from completion {\"description\": \"\", \"properties\": {\"flags\": {\"description\": \"Short labels, e.g. off_platform_contact, free_"
+  },
+  {
+   "id": "fj_05796",
+   "error": "ModelOutputError: risk: unparseable model output: Failed to parse RiskReport from completion {\"description\": \"Risk assessment of client job post\", \"properties\": {\"flags\": {\"description\": \"Short labels"
+  }
+ ],
+ "per_posting": [
+  {
+   "id": "fj_40004",
+   "score": 0.8,
+   "flags": [
+    "sensitive_data"
+   ],
+   "caught": true,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_23199",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_37031",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_41551",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_24368",
+   "score": 0.8,
+   "flags": [
+    "sensitive_data"
+   ],
+   "caught": true,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_11423",
+   "score": 0.8,
+   "flags": [
+    "off_platform_contact",
+    "vague_high_pay"
+   ],
+   "caught": true,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_18967",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_27360",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_26520",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_23847",
+   "score": 0.3,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_42492",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_37911",
+   "error": "ModelOutputError: risk: unparseable model output: Failed to parse RiskReport from completion {\"description\": \"\", \"properties\": {\"flags\": {\"description\": \"Short labels, e.g. off_platform_contact, free_",
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_39517",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_20461",
+   "score": 0.05,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_26215",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_22304",
+   "score": 0.05,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_30119",
+   "score": 0.8,
+   "flags": [
+    "sensitive_data"
+   ],
+   "caught": true,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_41603",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_42161",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_17571",
+   "score": 0.8,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": true,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_27142",
+   "score": 0.1,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_14782",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_19736",
+   "score": 0.05,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_14802",
+   "score": 0.2,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_36957",
+   "score": 0.2,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_13267",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_31360",
+   "score": 0.05,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_38452",
+   "score": 0.05,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_18667",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_42214",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 0,
+   "templated": false
+  },
+  {
+   "id": "fj_08725",
+   "score": 0.3,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_09861",
+   "score": 0.3,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_02407",
+   "score": 0.7,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": true,
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_05081",
+   "score": 0.6,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": true,
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_01618",
+   "score": 0.4,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_01208",
+   "score": 0.6,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": true,
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_05409",
+   "score": 0.7,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": true,
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_07735",
+   "score": 0.35,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_09171",
+   "score": 0.6,
+   "flags": [
+    "off_platform_contact",
+    "vague_high_pay"
+   ],
+   "caught": true,
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_01649",
+   "score": 0.6,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": true,
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_05796",
+   "error": "ModelOutputError: risk: unparseable model output: Failed to parse RiskReport from completion {\"description\": \"Risk assessment of client job post\", \"properties\": {\"flags\": {\"description\": \"Short labels",
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_07113",
+   "score": 0.4,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_05180",
+   "score": 0.6,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": true,
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_03350",
+   "score": 0.6,
+   "flags": [
+    "off_platform_contact",
+    "vague_high_pay"
+   ],
+   "caught": true,
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_09052",
+   "score": 0.4,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": true
+  },
+  {
+   "id": "fj_36202",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": false
+  },
+  {
+   "id": "fj_36062",
+   "score": 0.05,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": false
+  },
+  {
+   "id": "fj_36384",
+   "score": 0.1,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": false
+  },
+  {
+   "id": "fj_30728",
+   "score": 0.4,
+   "flags": [
+    "off_platform_contact"
+   ],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": false
+  },
+  {
+   "id": "fj_15615",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": false
+  },
+  {
+   "id": "fj_38368",
+   "score": 0.05,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": false
+  },
+  {
+   "id": "fj_11091",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": false
+  },
+  {
+   "id": "fj_17047",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": false
+  },
+  {
+   "id": "fj_35882",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": false
+  },
+  {
+   "id": "fj_10215",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": false
+  },
+  {
+   "id": "fj_44009",
+   "score": 1.0,
+   "flags": [
+    "off_platform_contact",
+    "off_platform_payment",
+    "vague_high_pay_offers"
+   ],
+   "caught": true,
+   "fraudulent": 1,
+   "templated": false
+  },
+  {
+   "id": "fj_36270",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": false
+  },
+  {
+   "id": "fj_35613",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": false
+  },
+  {
+   "id": "fj_29966",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": false
+  },
+  {
+   "id": "fj_35581",
+   "score": 0.0,
+   "flags": [],
+   "caught": false,
+   "fraudulent": 1,
+   "templated": false
+  }
+ ]
+}

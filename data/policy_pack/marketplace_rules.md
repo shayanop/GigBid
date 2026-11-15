@@ -12,3 +12,5 @@
 6. automation: Proposals and messages must be reviewed and approved by the freelancer before
    sending. No mass or unreviewed submissions.
 7. impersonation: Do not misrepresent who will do the work.
+8. external_links: Do not put links to outside websites, repositories or portfolios in a
+   proposal (added 2026-11-15, GigSim policy v2). Describe the work instead.

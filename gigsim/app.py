@@ -49,6 +49,9 @@ def _get(table: dict, key: str) -> dict:
     return table[key]
 
 
+# Policy change v2 (2026-11-15, docs/DESIGN_REVIEW.md): Connects cost twice as much, and a
+# proposal containing an external link is refused. GIGSIM_POLICY=v2 turns it on.
+LINK = re.compile(r"https?://|www\.|\b[\w-]+\.(?:com|io|dev|net|org|app)/", re.IGNORECASE)
 GENERIC_OPENING = re.compile(r"dear sir|i am an expert|best fit for|i can do this job"
                              r"|check my profile", re.IGNORECASE)
 CLIENT_LINES = {
@@ -92,9 +95,14 @@ def simulate_client(state: dict, me: dict, proposal: dict) -> None:
 def create_app(n_jobs: int = 1500, rate_per_min: int | None = None,
                error_rate: float | None = None) -> FastAPI:
     # ponytail: in-memory state and idempotency keys reset on restart; fine for a simulator.
-    state = seed.build(n_jobs)
+    # GIGSIM_DATA=real serves real Upwork postings (data/real/prepare.py builds them).
+    state = seed.load_real() if os.getenv("GIGSIM_DATA") == "real" else seed.build(n_jobs)
     rate = rate_per_min or int(os.getenv("GIGSIM_RATE_PER_MIN", "120"))
     errors = error_rate if error_rate is not None else float(os.getenv("GIGSIM_ERROR_RATE", "0"))
+    policy_v2 = os.getenv("GIGSIM_POLICY") == "v2"
+    if policy_v2:
+        for job in state["jobs"].values():
+            job["connects_cost"] *= 2
     hits: dict[str, deque] = defaultdict(deque)
     replies: dict[tuple[str, str], tuple[str, dict]] = {}
     chaos = random.Random()
@@ -202,6 +210,8 @@ def create_app(n_jobs: int = 1500, rate_per_min: int | None = None,
             p = my_proposal(me, proposal_id)
             if p["status"] != "draft":
                 raise HTTPException(409, "proposal already submitted")
+            if policy_v2 and LINK.search(p["cover_letter"]):
+                raise HTTPException(422, "policy: proposals may not contain external links")
             if me["connects"] < p["connects_cost"]:
                 raise HTTPException(402, "insufficient connects")
             me["connects"] -= p["connects_cost"]

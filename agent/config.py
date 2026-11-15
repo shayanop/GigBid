@@ -20,9 +20,12 @@ def load_config() -> dict:
     return yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
 
 
+def profile_name() -> str:
+    return os.getenv("GIGBID_PROFILE", load_config()["profile"])
+
+
 def active_profile() -> dict:
-    cfg = load_config()
-    return cfg["profiles"][os.getenv("GIGBID_PROFILE", cfg["profile"])]
+    return load_config()["profiles"][profile_name()]
 
 
 def model_spec(node: str) -> tuple[str, str | None]:
@@ -73,6 +76,16 @@ def _nvidia(model: str, schema, think: bool):
         | RunnableLambda(parse)
 
 
+@cache
+def _cerebras_pace():
+    """Cerebras' free tier allows 5 requests a minute (a profile's cerebras_rpm can lower it):
+    space calls evenly, shared by every node, so they wait instead of failing. ponytail: per
+    process; the API and worker each get their own, so lower the rate if both call Cerebras."""
+    from langchain_core.rate_limiters import InMemoryRateLimiter
+    rpm = active_profile().get("cerebras_rpm", 5)
+    return InMemoryRateLimiter(requests_per_second=rpm / 60, max_bucket_size=1)
+
+
 def _build(spec: str, schema, node: str):
     provider, model = spec.split(":", 1)
     if provider == "fake":
@@ -80,9 +93,14 @@ def _build(spec: str, schema, node: str):
         return scripted_model(node)
     if provider == "nvidia":
         return _nvidia(model, schema, node in active_profile().get("thinking", []))
+    if provider == "cerebras":  # init_chat_model has no cerebras provider
+        from langchain_cerebras import ChatCerebras
+        return _structured(ChatCerebras(model=model, temperature=0,
+                                        rate_limiter=_cerebras_pace()), schema)
     keys = groq_keys() if provider == "groq" else []
-    if len(keys) < 2:
-        return _structured(init_chat_model(model, model_provider=provider), schema)
+    if len(keys) < 2:  # a profile's max_retries waits out per-minute limits (429 says how long)
+        retries = {"max_retries": n} if (n := active_profile().get("max_retries")) else {}
+        return _structured(init_chat_model(model, model_provider=provider, **retries), schema)
     from groq import RateLimitError
     # One client per key: a 429 (per-minute or daily cap) shifts to the next key at once
     # instead of waiting it out; only the last key keeps the client's own retries.

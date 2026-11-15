@@ -12,6 +12,8 @@ from agent.redact import redact
 
 ROOT = Path(__file__).resolve().parents[2]
 GUARANTEE = re.compile(r"\bguarantee[sd]?\b|\b100\s?% (?:success|accura|satisf)", re.IGNORECASE)
+# Policy rule 8, external_links (2026-11-15): the same pattern GigSim's policy v2 refuses.
+LINK = re.compile(r"https?://|www\.|\b[\w-]+\.(?:com|io|dev|net|org|app)/", re.IGNORECASE)
 
 
 @cache
@@ -21,13 +23,16 @@ def policy_pack() -> str:
 
 
 def scrub(text: str) -> tuple[str, list[str]]:
-    """Drops sentences with contact details or guarantees; returns what was removed."""
+    """Drops sentences with contact details, guarantees or external links; returns what was
+    removed."""
     masked = redact(text)
     sentences = re.split(r"(?<=[.!?])\s+", masked)
     contact = [s for s in sentences if "[REDACTED]" in s]
     promises = [s for s in sentences if GUARANTEE.search(s)]
-    removed = ["contact details"] * bool(contact) + ["guarantees"] * bool(promises)
-    return common.drop_sentences(masked, contact + promises), removed
+    links = [s for s in sentences if LINK.search(s)]
+    removed = (["contact details"] * bool(contact) + ["guarantees"] * bool(promises)
+               + ["external links"] * bool(links))
+    return common.drop_sentences(masked, contact + promises + links), removed
 
 
 @common.node("compliance")

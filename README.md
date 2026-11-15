@@ -13,6 +13,48 @@ It runs against **GigSim**, a marketplace simulator, for safe development; the s
 - **Memory**: preferences learned from your edits (after 2 matching edits) and outcomes per skill, both visible and deletable in Settings.
 - **Web app** (Next.js) over a FastAPI API; a worker runs every graph and scheduled search.
 
+```mermaid
+flowchart LR
+  user([Freelancer]) --> web[Next.js web app]
+  web -- "/api proxy" --> api[FastAPI API]
+  api -- enqueue --> redis[(Redis queue)]
+  redis --> worker[Arq worker: bid and conversation graphs]
+  api --- pg[(Postgres: users, threads, checkpoints, memory)]
+  worker --- pg
+  worker -- "MCP + signed per-user token" --> mmcp[Marketplace MCP]
+  worker -- MCP --> pmcp[Portfolio MCP: hybrid search]
+  worker -- MCP --> wmcp[Workspace MCP: calendar]
+  mmcp -- marketplace port --> gigsim[GigSim / Upwork adapter]
+  worker -. "spans, X-Trace-Id" .-> phoenix[(Phoenix traces)]
+```
+
+The bid graph as generated from code: [docs/images/bid_graph.mmd](docs/images/bid_graph.mmd).
+
+## Results
+
+All numbers are reproducible from `evals/results/`; the [design review](docs/DESIGN_REVIEW.md) links each one to its evidence.
+
+**Retrieval** (576 synthetic dev queries, and 469 held-out real Upwork queries) — [RAG_STUDY.md](docs/RAG_STUDY.md)
+
+| Variant | Recall@5 (dev) | MRR (dev) | nDCG@10 (dev) | Recall@5 (real) |
+| --- | --- | --- | --- | --- |
+| V0 dense | 0.524 | 0.687 | 0.591 | 0.480 |
+| V2 hybrid | 0.550 | 0.667 | 0.594 | 0.521 |
+| V4 outcome prior | 0.556 | 0.702 | 0.607 | 0.568 |
+| **Deployed: hybrid + outcome** | **0.595** | **0.717** | **0.629** | **0.578** |
+
+**Decisions and claims** — [EVALUATION.md](docs/EVALUATION.md)
+- Bid/skip on 60 dev jobs: F1 0.82, precision 1.00, recall 0.69; scams caught 12/12.
+- Unsupported claims per proposal: 0.6 in first drafts, 0 after the Claim Verifier (5 proposals).
+- Tool granularity (40 tasks): fine-grained tools 0.925 selection accuracy, coarse 0.875, tuned 0.90 ([TOOLS.md](docs/TOOLS.md#tool-granularity-experiment-a7)).
+- Held-out real jobs: $0.0026 per analysed job and $0.0067 per proposal against $0.01 / $0.05 budgets; p95 latency 23.8 s / 65.2 s against 20 s / 60 s targets.
+
+**Multi-agent comparison** (C8: ReAct agent vs prebuilt supervisor vs this graph, 50 jobs, one model) — running; results land in [evals/results/architecture_eval.md](evals/results/architecture_eval.md) and [EVALUATION.md](docs/EVALUATION.md#architecture-experiment-c8-running).
+
+**Public traces** — to be added once a shared Phoenix project is set up ([RUNBOOK.md](docs/RUNBOOK.md#tracing-phoenix)).
+
+What real data changed, and why synthetic tests missed it: [docs/ARTICLE.md](docs/ARTICLE.md).
+
 ## Prerequisites
 
 - [uv](https://docs.astral.sh/uv/) (installs Python 3.12 for you)
@@ -206,6 +248,24 @@ uv run python -m evals.runners.judge_calibration score
 
 Results and the deployment choice are in [docs/RAG_STUDY.md](docs/RAG_STUDY.md).
 
+Real data: download the public Kaggle datasets (real Upwork postings, client histories, budgets, paid contracts and labelled fake postings) and build GigSim's real mode and the real-data evaluation sets. It takes about 4 minutes and needs no Kaggle account:
+
+```bash
+uv run python -m data.real.prepare
+```
+
+Then run retrieval on real 2024 postings and scam detection on labelled postings (the scam eval makes about 60 model calls):
+
+```bash
+uv run python -m evals.runners.rag_eval --dataset real --variant v0 v2 v4 selected --table rag_real_comparison.md
+```
+
+```bash
+uv run python -m evals.runners.scam_eval --n 60
+```
+
+Set `GIGSIM_DATA=real` to make GigSim serve the real postings. Sources, licenses, preprocessing, which fields are synthetic, and limitations are in [docs/DATA_CARD.md](docs/DATA_CARD.md).
+
 Portfolio builder (signature extension X3): turn repositories into code-verified case studies through GitHub's MCP server (needs `GITHUB_TOKEN`; add `--source local` to read the same repositories from disk), then evaluate them:
 
 ```bash
@@ -217,6 +277,38 @@ uv run python -m evals.runners.portfolio_builder_eval
 ```
 
 Design and results: [docs/EXTENSION.md](docs/EXTENSION.md). Regenerate the graph diagrams with `make diagram`.
+
+Agent-level experiments (real models; each writes `evals/results/<name>.json` and `.md`). Results are in [docs/EVALUATION.md](docs/EVALUATION.md):
+
+```bash
+uv run python -m evals.runners.decision_eval --per-persona 20
+```
+
+```bash
+uv run python -m evals.runners.tool_granularity
+```
+
+```bash
+uv run python -m evals.runners.budget_eval --per-persona 8
+```
+
+```bash
+uv run python -m evals.runners.injection_eval --per-persona 5
+```
+
+The decision eval measures bid/skip F1, scam detection and price bands on 60 dev jobs. The tool granularity eval covers 40 tool-selection tasks with three tool sets. The budget eval measures latency and cost against the declared budgets on held-out real jobs (needs `data.real.prepare`). The injection eval measures planted prompt injections with and without defenses.
+
+The architecture comparison (ReAct vs supervisor vs the graph) needs about 4M tokens, so on free tiers it runs over several days and resumes on its own; `--wait` keeps it going through quota resets. Start it only when no other copy is running (two copies share the quota and write duplicate rows):
+
+```text
+uv run python -m evals.runners.architecture_eval --jobs 50 --wait
+```
+
+The CI smoke gate (30 jobs + 3 proposals, fails when bid F1 or unsupported claims regress past `eval_gates` in `agent/config.yaml`):
+
+```bash
+uv run python -m evals.runners.smoke
+```
 
 ## 7. Generated API client
 
@@ -241,7 +333,12 @@ To call any server over HTTP, mint a bearer token for an account (valid 30 days)
 uv run python -m mcp_servers.auth fr_ml --days 30
 ```
 
-Rotating `MCP_SIGNING_SECRET` revokes every token.
+Rotating `MCP_SIGNING_SECRET` revokes every token. The Portfolio server also ships as a Docker image that reads your own portfolio folder: [mcp_servers/portfolio/README.md](mcp_servers/portfolio/README.md).
+
+## 9. Deploy and trace
+
+- **Public demo on Render:** [`render.yaml`](render.yaml) is a Blueprint for the web app, a backend container (API, worker, GigSim and the MCP servers), Postgres and Key Value. Steps, cost and what was checked locally are in [docs/DEPLOY.md](docs/DEPLOY.md).
+- **Tracing:** set `PHOENIX_COLLECTOR_ENDPOINT` (compose's Phoenix runs on :6006) to export every node and model call to Arize Phoenix, tagged with the request's trace id and redacted ([docs/RUNBOOK.md](docs/RUNBOOK.md#tracing-phoenix)).
 
 ## Configuration
 

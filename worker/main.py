@@ -30,6 +30,7 @@ from arq.worker import Worker, run_worker
 from dotenv import load_dotenv
 from langgraph.types import Command
 
+from agent import tracing
 from agent.config import load_config
 from agent.graphs import bid_graph, conversation_graph
 from agent.graphs.checkpoint import postgres_checkpointer
@@ -66,6 +67,7 @@ CONVERSATION = Kind(
 
 
 async def startup(ctx: dict) -> None:
+    tracing.setup("gigbid-worker")  # Phoenix export when PHOENIX_COLLECTOR_ENDPOINT is set
     ctx["db"] = await db.open_pool()
     ctx["saver"], ctx["store_cm"] = postgres_checkpointer(), postgres_store()
     saver, ctx["store"] = await ctx["saver"].__aenter__(), await ctx["store_cm"].__aenter__()
@@ -151,11 +153,13 @@ async def _run(ctx: dict, kind: Kind, thread_id: str, trace_id: str | None,
     if payload != "already applied":
         context = Context(toolbox=ctx["toolbox_for"](row["account"], trace_id),
                           user_id=str(row["user_id"]))
-        async for chunk in graph.astream(payload, cfg, context=context, stream_mode="updates"):
-            for node, update in chunk.items():
-                status = update.get("status") if isinstance(update, dict) else None
-                await streaming.publish(redis, thread_id, {"event": "node", "node": node,
-                                                           "status": status})
+        with tracing.session(trace_id):  # every span of this run carries the trace id
+            async for chunk in graph.astream(payload, cfg, context=context,
+                                             stream_mode="updates"):
+                for node, update in chunk.items():
+                    status = update.get("status") if isinstance(update, dict) else None
+                    await streaming.publish(redis, thread_id, {"event": "node", "node": node,
+                                                               "status": status})
     values = (await graph.aget_state({"configurable": {"thread_id": thread_id}})).values
     await db.save_summary(pool, kind.table, thread_id, values)
     status = values.get("status")
