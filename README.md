@@ -337,7 +337,7 @@ Rotating `MCP_SIGNING_SECRET` revokes every token. The Portfolio server also shi
 
 ## 9. Deploy and trace
 
-- **Public demo on Render:** [`render.yaml`](render.yaml) is a Blueprint for the web app, a backend container (API, worker, GigSim and the MCP servers), Postgres and Key Value. Steps, cost and what was checked locally are in [docs/DEPLOY.md](docs/DEPLOY.md).
+- **Public demo on a Hugging Face Space (free):** [`infra/hf/`](infra/hf) builds the whole stack (web app, API, worker, GigSim, MCP servers, Postgres, Redis) into one Docker Space, and `uv run python infra/hf/push.py <user>/gigbid` uploads it. A Render Blueprint ([`render.yaml`](render.yaml), about $38 a month) is kept as a paid alternative with managed Postgres. Steps and trade-offs are in [docs/DEPLOY.md](docs/DEPLOY.md).
 - **Tracing:** set `PHOENIX_COLLECTOR_ENDPOINT` (compose's Phoenix runs on :6006) to export every node and model call to Arize Phoenix, tagged with the request's trace id and redacted ([docs/RUNBOOK.md](docs/RUNBOOK.md#tracing-phoenix)).
 
 ## Configuration

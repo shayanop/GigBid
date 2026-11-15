@@ -68,5 +68,7 @@ every commit; the assistant did not commit or push.
 ## Responsibility
 
 All measurements in `evals/results/` come from running the code; none were written by hand.
-The judge-calibration labels in `evals/datasets/judge_labels.csv` must come from a human, not
-from the assistant.
+The judge-calibration labels in `evals/datasets/judge_labels.csv` must come from a human. At
+the team's request the assistant filled them in as a placeholder, marked in the `rater`
+column and recorded as `raters` in `evals/results/judge_calibration.json`. The resulting
+kappa is not a human calibration.

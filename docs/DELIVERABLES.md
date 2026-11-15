@@ -21,7 +21,8 @@ The spec's project artifacts and requirements, with where each one lives and wha
 | CI: tests, contracts, Playwright, secrets scan, gated smoke eval | `.github/workflows/ci.yml`, `evals/runners/smoke.py` |
 | Tracing code (Phoenix), trace id end to end, PII redaction | `agent/tracing.py`, [RUNBOOK.md](RUNBOOK.md#tracing-phoenix) |
 | `docker compose up` stack | `infra/docker-compose.yml` |
-| Render Blueprint, built and run locally the way Render runs it | `render.yaml`, [DEPLOY.md](DEPLOY.md) |
+| Free public deployment: Hugging Face Docker Space, built and run locally the way the Space runs it | `infra/hf/`, [DEPLOY.md](DEPLOY.md) |
+| Paid alternative: Render Blueprint | `render.yaml`, [DEPLOY.md](DEPLOY.md#alternative-render-about-38-a-month) |
 | Distributable Portfolio MCP server (Docker) with its own README | [mcp_servers/portfolio/README.md](../mcp_servers/portfolio/README.md) |
 | Technical article, 1,454 words | [ARTICLE.md](ARTICLE.md) |
 | Engineering design review | [DESIGN_REVIEW.md](DESIGN_REVIEW.md) |
@@ -37,10 +38,12 @@ The spec's project artifacts and requirements, with where each one lives and wha
 ## Needs you (owner)
 
 1. **Commit and push.** Nothing from the recent sessions is committed.
-2. **Deploy on Render.** In the dashboard choose New > Blueprint and fill the secrets
-   ([DEPLOY.md](DEPLOY.md)). This is about $38 a month at list prices.
-3. **Judge calibration.** Score the 30 proposals in `evals/datasets/judge_labels.csv`
-   (1–5), then run:
+2. **Deploy the Hugging Face Space (free).** Log in with a write token, run
+   `uv run python infra/hf/push.py <user>/gigbid`, then add `GROQ_API_KEY`, `DEMO_EMAIL`
+   and `DEMO_PASSWORD` as Space secrets ([DEPLOY.md](DEPLOY.md)).
+3. **Judge calibration.** The 30 scores in `evals/datasets/judge_labels.csv` are
+   placeholders from the coding assistant (kappa 0.52). Replace each `human_score` with your
+   own (1–5), set `rater` to your name, then run:
 
    ```bash
    uv run python -m evals.runners.judge_calibration score
@@ -70,7 +73,7 @@ The spec's project artifacts and requirements, with where each one lives and wha
 | 5 | Prompt injection: defenses and weaknesses | `evals/runners/injection_eval.py`, [DESIGN_REVIEW.md](DESIGN_REVIEW.md) section 9 |
 | 6 | What memory learned; delete it in the UI | `test_memory_shows_what_an_edit_taught_and_forgets_on_request`, Settings page |
 | 7 | GigSim to Upwork with the graph unchanged | Partly: the graph only sees `agent/marketplace_port.py`; there is no Upwork adapter to switch to |
-| 8 | Human vs judge disagreements | Waiting on the human scores (owner step 3) |
+| 8 | Human vs judge disagreements | `evals/results/judge_calibration.json`, on placeholder assistant scores until owner step 3 |
 | 9 | Where the single agent beats the graph | C8, running |
 | 10 | Policy change and its diff | [DESIGN_REVIEW.md](DESIGN_REVIEW.md) section 6 |
 

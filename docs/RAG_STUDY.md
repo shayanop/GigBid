@@ -108,3 +108,9 @@ These need model calls and are run separately:
   `uv run python -m evals.runners.judge_calibration score`. This reports
   quadratic-weighted Cohen's kappa → `evals/results/judge_calibration.json`. The judge is
   only used for quality claims once kappa ≥ 0.6.
+- **Placeholder result, not a human calibration.** The current scores were filled in by the
+  coding assistant (the `rater` column says so). Against them the Groq gpt-oss-120b judge
+  reaches kappa 0.52, 37% exact agreement and 97% within one point, so it stays below the
+  bar. The one 2-point gap is `fr_ml-prop008`: the judge gave a 4 to a proposal whose
+  evidence (a vector index) is off the job (deploying a model). These numbers have to be
+  rerun with human scores before the judge is used.

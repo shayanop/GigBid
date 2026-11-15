@@ -110,8 +110,10 @@ not in the model's hands.
 
   Measured on 5 proposals, at about 14.6k tokens each.
 - **Judge calibration.** The quality judge is not used for claims until it reaches a
-  weighted kappa of 0.6 or more against human scores. The 30 human scores are not filled in
-  yet (`evals/datasets/judge_labels.csv`).
+  weighted kappa of 0.6 or more against human scores. The 30 scores in
+  `evals/datasets/judge_labels.csv` are a placeholder filled in by the coding assistant.
+  Against them the judge reaches kappa 0.52, below the bar; human scores replace them
+  before this counts ([RAG_STUDY.md](RAG_STUDY.md#claim-verification-and-judge-b3-b4)).
 
 ## 5. Agent experiment (C8)
 
@@ -231,7 +233,8 @@ Both pipelines saw the same posts with a planted instruction.
   only by the fake-model integration tests.
 
 **Residual risks.**
-- The quality judge is uncalibrated.
+- The quality judge is uncalibrated: kappa 0.52 against placeholder scores from the coding
+  assistant, with no human scores yet.
 - The scam rules do not transfer to employment-style scams: precision 0.017 on 44,042 real
   labelled postings, F1 0.42 with the model on a small sample.
 - Free-tier rate limits can still end a run as "needs attention"; the worker replays it.

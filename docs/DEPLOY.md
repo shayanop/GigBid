@@ -1,9 +1,93 @@
-# Deploying the public demo on Render
+# Deploying the public demo
 
-[`render.yaml`](../render.yaml) is a Render Blueprint for the public demonstration instance
-(spec E6). `docker compose up` remains the full local stack ([RUNBOOK.md](RUNBOOK.md)).
+The public demonstration instance (spec E6) runs as a free **Hugging Face Docker Space**.
+A Render Blueprint is kept as a paid alternative ([below](#alternative-render-about-38-a-month)).
+`docker compose up` remains the full local stack ([RUNBOOK.md](RUNBOOK.md)).
 
-## What it creates
+## Hugging Face Space (free)
+
+**Why.** The backend needs about 700 MB at idle, more than any free Render plan gives (512 MB).
+A free CPU Space gives 2 vCPU and 16 GB of RAM in one container, which is enough for the
+whole stack.
+
+**What runs.** [`infra/hf/Dockerfile`](../infra/hf/Dockerfile) builds one image, and
+[`infra/hf/start.sh`](../infra/hf/start.sh) starts these in the container:
+- Postgres and Redis on localhost;
+- the Next.js web app on port 7860, the Space's public port;
+- the API on 8000, behind the web app's `/api` proxy;
+- the worker, GigSim and the three MCP servers, through the same
+  [`infra/render/start.sh`](../infra/render/start.sh) as on Render.
+
+If any process exits, the container exits and the Space restarts it.
+
+**Trade-offs of the free tier.**
+- **No persistent disk.** The database lives in `/tmp`, so a restart resets it and the start
+  script re-seeds the demo account. To keep data, create a free external Postgres (for
+  example Neon) and set it as the `DATABASE_URL` secret; the script then skips the local
+  one. `REDIS_URL` works the same way.
+- **Sleeps.** A free Space sleeps after 48 hours without visitors. The first visit after
+  that waits for it to start again, about a minute.
+- **Public files.** A public Space shows its files. The push script sends only what git
+  tracks (never `.env`, `data/raw` or `data/processed`) and leaves out `evals/`, `tests/`
+  and `docs/`.
+
+### Steps
+
+1. Create a Hugging Face account and a **write** access token.
+2. Log in and push:
+
+   ```bash
+   uv run hf auth login
+   ```
+
+   ```bash
+   uv run python infra/hf/push.py <your-username>/gigbid
+   ```
+
+   The script creates the Space if needed. It uploads in one commit, so there is one
+   build, and [`infra/hf/README.md`](../infra/hf/README.md) becomes the Space card.
+3. In the Space's **Settings > Variables and secrets**, add these secrets:
+   - `GROQ_API_KEY`: the default `open` profile uses Groq only;
+   - `DEMO_EMAIL` and `DEMO_PASSWORD`: the demonstration login;
+   - optional: `CEREBRAS_API_KEY` with the variable `GIGBID_PROFILE=cerebras`, to spread
+     load over both providers ([RUNBOOK.md](RUNBOOK.md));
+   - optional: `DATABASE_URL` for data that survives restarts;
+   - optional: `PHOENIX_COLLECTOR_ENDPOINT` and `OTEL_EXPORTER_OTLP_HEADERS` for traces.
+
+   `SESSION_SECRET` and `MCP_SIGNING_SECRET` are generated on each start when not set.
+4. Wait for the build to finish (several minutes, because the image bakes the indexes),
+   then open `https://<your-username>-gigbid.hf.space` and sign in with the demo login.
+   Use that direct URL. The huggingface.co page shows the app in an iframe, and browsers
+   that block third-party cookies won't keep you signed in there.
+
+**Cookies.** The image sets `COOKIE_SECURE=1` and `COOKIE_SAMESITE=none`, so the session
+cookie also works inside Hugging Face's iframe when the browser allows it.
+
+### Checked locally
+
+On 2026-11-15 the image was built from `infra/hf/Dockerfile` (4.0 GB) and run the way a
+Space runs it:
+- one container, as uid 1000, with only port 7860 published;
+- no `DATABASE_URL` or `REDIS_URL`, so Postgres and Redis ran inside;
+- the scripted `fake` profile.
+
+What happened:
+- `/health` through the web app's proxy passed about 12 seconds after start, and the start
+  script seeded the demo account.
+- `/signin`, `/inbox` and `/onboarding` rendered. The session cookie was set with
+  `SameSite=None; Secure`.
+- Through `/api`, the demo login signed in and job `job_00012` ran to approval. Approving
+  it submitted the proposal to GigSim.
+- The container used 1.0 GB of memory.
+
+Nothing was pushed to Hugging Face, because that needs the account owner.
+
+## Alternative: Render (about $38 a month)
+
+[`render.yaml`](../render.yaml) is a Render Blueprint with separate managed Postgres and Key
+Value, and persistent data.
+
+### What it creates
 
 | Render resource | Plan | Runs |
 | --- | --- | --- |
@@ -28,7 +112,7 @@
 Starter web app and $6 for the database, so roughly $38 a month. Check render.com/pricing
 before creating it. The Key Value instance is free.
 
-## Steps
+### Steps on Render
 
 1. Push the repository to GitHub. Render deploys from a Git provider.
 2. In the Render dashboard choose **New > Blueprint**, pick the repository and confirm
@@ -45,7 +129,7 @@ before creating it. The Key Value instance is free.
    `gigbid-web` URL and sign in with the demo login. The persona is the AI/ML freelancer,
    seeded with one saved search; the start script re-seeds it on every boot.
 
-## Configuration notes
+### Configuration notes
 
 - **Model profile.** `GIGBID_PROFILE=cerebras` spreads nodes over Groq's and Cerebras'
   rate limits. On free tiers a busy demo still meets 429s ([RUNBOOK.md](RUNBOOK.md)). For a
@@ -60,7 +144,7 @@ before creating it. The Key Value instance is free.
 - **Schema.** The API applies the schema with `CREATE IF NOT EXISTS` on startup; there are
   no migrations yet (`apps/api/db.py`).
 
-## Checked locally
+### Checked locally on Render
 
 On 2026-11-15 both images were built and run the way Render runs them:
 - `PORT=10000`;

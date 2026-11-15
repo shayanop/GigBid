@@ -1,0 +1,20 @@
+{
+ "generated_at": "2026-11-15T11:55:57+00:00",
+ "judge_model": "groq:openai/gpt-oss-120b",
+ "raters": [
+  "assistant (Claude), placeholder"
+ ],
+ "items": 30,
+ "weighted_kappa": 0.522,
+ "exact_agreement": 0.367,
+ "within_one": 0.967,
+ "disagreements": [
+  {
+   "id": "fr_ml-prop008",
+   "human": 2,
+   "judge": 4,
+   "judge_reasons": "The proposal is specific and cites relevant past work with measurable results, but it lacks a detailed plan or concrete next steps beyond saying it can start this week.",
+   "proposal": "You need FastAPI, Hugging Face, OpenAI API; I shipped exactly that for a logistics client. In 'Deploy ML model behind FastAPI (logistics)' I stored the embeddings in a managed serverless vector index and raised conversion by 42%. Happy to start this week."
+  }
+ ]
+}

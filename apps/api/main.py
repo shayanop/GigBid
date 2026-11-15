@@ -61,7 +61,9 @@ def create_app() -> FastAPI:
                   # Readable names in the generated TypeScript client, e.g. jobsInbox.
                   generate_unique_id_function=lambda route: f"{route.tags[0]}_{route.name}")
     app.add_middleware(SessionMiddleware, secret_key=os.environ["SESSION_SECRET"],
-                       same_site="lax", https_only=os.getenv("COOKIE_SECURE") == "1",
+                       # "none" when the web app is embedded cross-site (HF Spaces)
+                       same_site=os.getenv("COOKIE_SAMESITE", "lax"),
+                       https_only=os.getenv("COOKIE_SECURE") == "1",
                        max_age=14 * 86400)
 
     @app.middleware("http")

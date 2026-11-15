@@ -2,7 +2,8 @@
 proposals, as quadratic-weighted Cohen's kappa.
 
 1. Export the items:  uv run python -m evals.runners.judge_calibration export
-2. A human fills the human_score column (1 to 5) in evals/datasets/judge_labels.csv.
+2. A human fills the human_score column (1 to 5) in evals/datasets/judge_labels.csv, and
+   their name in rater (the result lists the raters, so placeholder scores stay visible).
    Outcomes are left out on purpose so they cannot bias the scoring.
 3. Score:             uv run python -m evals.runners.judge_calibration score
 
@@ -26,7 +27,7 @@ from evals.runners.rag_eval import RESULTS, ROOT
 
 LABELS = ROOT / "evals" / "datasets" / "judge_labels.csv"
 PERSONAS = ROOT / "data" / "personas"
-FIELDS = ["id", "persona", "job_title", "proposal", "human_score"]
+FIELDS = ["id", "persona", "job_title", "proposal", "human_score", "rater"]
 
 
 def weighted_kappa(a: list[int], b: list[int], categories: int = 5) -> float:
@@ -53,7 +54,7 @@ def export(path: Path = LABELS, per_persona: int = 10) -> None:
         lines = (PERSONAS / persona / "proposals.jsonl").read_text(encoding="utf-8").splitlines()
         for item in rng.sample([json.loads(line) for line in lines], per_persona):
             rows.append({"id": item["id"], "persona": persona, "job_title": item["job_title"],
-                         "proposal": item["text"], "human_score": ""})
+                         "proposal": item["text"], "human_score": "", "rater": ""})
     rng.shuffle(rows)
     with path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDS)
@@ -80,6 +81,7 @@ def score(path: Path = LABELS) -> dict:
     result = {
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "judge_model": model_spec("judge")[0],
+        "raters": sorted({r.get("rater") or "human" for r in rows}),  # who filled human_score
         "items": len(rows),
         "weighted_kappa": round(weighted_kappa(humans, judges), 3),
         "exact_agreement": round(sum(h == j for h, j in zip(humans, judges)) / len(rows), 3),
