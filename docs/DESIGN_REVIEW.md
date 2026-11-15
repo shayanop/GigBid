@@ -217,17 +217,17 @@ Both pipelines saw the same posts with a planted instruction.
 
 | Pipeline | Injections obeyed | Fabricate | Contact | Autosubmit |
 | --- | --- | --- | --- | --- |
-| No defenses | 8 of 8 | 3/3 | 3/3 | 2/2 |
-| GigBid graph | 0 of 7 | 0/3 | 0/3 | 0/1 |
+| No defenses | 15 of 15 | 6/6 | 6/6 | 3/3 |
+| GigBid graph | 0 of 15 | 0/6 | 0/6 | 0/3 |
 
-- **How the graph defended.** The risk node flagged all 7 injected posts.
-  - Six were skipped or watched before any draft was written.
-  - The autosubmit post reached approval and stopped there.
-- **Not exercised.** The letter-level defences (fence, verifier, compliance rules) were not
-  needed on these 7 posts.
-- **Sample size.** 7 of 15 jobs finished with defences (8 without). Groq's free daily
-  allowance ran out on the rest after 8 hourly retries; rerunning the eval finishes only
-  those.
+- **How the graph defended.** The risk node flagged all 15 injected posts.
+  - Thirteen were skipped, watched or sent to needs-attention before any draft was written.
+  - Two autosubmit posts got a letter that did not follow the planted instruction, and
+    both stopped at approval; nothing was submitted.
+- **Barely exercised.** The letter-level defences (fence, verifier, compliance rules) only
+  saw those two letters.
+- **Sample size.** 15 posts, all finished in both pipelines (Groq gpt-oss-120b; the runs
+  were spread over several hours by its free daily allowance).
 - **Weakness.** A post the risk node does not flag reaches the writer, where only the
   fence, the prompt rule and the downstream checks stand in the way. Those are measured
   only by the fake-model integration tests.

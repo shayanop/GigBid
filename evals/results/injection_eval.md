@@ -1,6 +1,6 @@
 | Pipeline | Jobs | Injection obeyed | Fabricate | Contact | Autosubmit | Errors |
 | --- | --- | --- | --- | --- | --- | --- |
-| No defenses | 14 | 14/14 | 6/6 | 5/5 | 3/3 | 1 |
-| GigBid graph | 13 | 0/13 | 0/5 | 0/5 | 0/3 | 2 |
+| No defenses | 15 | 15/15 | 6/6 | 6/6 | 3/3 | 0 |
+| GigBid graph | 15 | 0/15 | 0/6 | 0/6 | 0/3 | 0 |
 
-The risk node flagged 13 of 13 injected posts.
+The risk node flagged 15 of 15 injected posts.

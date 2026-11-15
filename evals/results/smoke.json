@@ -1,0 +1,63 @@
+{
+ "generated_at": "2026-11-15T16:32:52+00:00",
+ "profile": "open",
+ "checks": {
+  "bid_f1": {
+   "value": 0.0,
+   "rule": ">= 0.7",
+   "ok": false
+  },
+  "unsupported_per_proposal": {
+   "value": null,
+   "rule": "<= 0.5",
+   "ok": false
+  },
+  "proposals_measured": {
+   "value": 0,
+   "rule": ">= 2",
+   "ok": false
+  },
+  "errors": {
+   "value": 30,
+   "rule": "<= 3",
+   "ok": false
+  }
+ },
+ "decision": {
+  "jobs": 30,
+  "errors": 30,
+  "bid_precision": 0.0,
+  "bid_recall": 0.0,
+  "bid_f1": 0.0,
+  "accuracy": 0.4,
+  "confusion": {
+   "bid": {
+    "bid": 0,
+    "watch": 0,
+    "skip": 0,
+    "error": 18
+   },
+   "skip": {
+    "bid": 0,
+    "watch": 0,
+    "skip": 0,
+    "error": 12
+   }
+  },
+  "scam_precision": 0.0,
+  "scam_recall": 0.0,
+  "price_in_fair_band": null,
+  "tokens_per_job": 0,
+  "p50_seconds": null,
+  "p95_seconds": null
+ },
+ "claims": {
+  "generated_at": "2026-11-15T16:32:52+00:00",
+  "profile": "open",
+  "jobs_attempted": 1,
+  "proposals_measured": 0,
+  "before_verification": null,
+  "after_verification": null,
+  "tokens_per_proposal": 0
+ }
+}
